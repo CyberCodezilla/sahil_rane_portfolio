@@ -44,12 +44,5 @@ vercel --prod
 Vercel will publish the site and provide a production URL.
 
 ## Notes
-- I added a minimal `vercel.json` to force static handling and a `.gitignore` for common files.
-- I cannot push to your GitHub repo from this environment — please run the git commands above locally.
-
-If you want, I can also:
-- Create a `README` content tailored for your bio and contact info.
-- Add a `CNAME` or custom domain guidance for Vercel.
-- Create a GitHub Action for automated checks (not required for static deploy).
-
-Tell me which of the above you'd like next, or run the push commands and I will help with the Vercel setup afterward.
+- A minimal `vercel.json` is included to force static handling.
+- `.gitignore` already excludes common local-only files such as `.vercel/`, `.env`, and `node_modules/`.
