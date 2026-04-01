@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahil Suresh Rane | Software Engineer</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
+</head>
+<body class="card-deck-mode">
+    <!-- Cursor follower -->
+    <div class="cursor-follower"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" aria-label="Toggle theme">
+        <i class="fas fa-moon theme-toggle-icon"></i>
+        <i class="fas fa-sun theme-toggle-icon"></i>
+    </button>
+
+    <!-- Particle background -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Fixed Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="javascript:void(0)" class="nav-logo" onclick="goToSection(0)">
+                <span class="logo-text">Sahil</span>
+                <span class="logo-dot">.</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="javascript:void(0)" onclick="goToSection(0)" class="nav-link active" data-section="0">Home</a></li>
+                <li><a href="javascript:void(0)" onclick="goToSection(1)" class="nav-link" data-section="1">Skills</a></li>
+                <li><a href="javascript:void(0)" onclick="goToSection(2)" class="nav-link" data-section="2">About</a></li>
+                <li><a href="javascript:void(0)" onclick="goToSection(3)" class="nav-link" data-section="3">Projects</a></li>
+                <li><a href="javascript:void(0)" onclick="goToSection(4)" class="nav-link" data-section="4">Achievements</a></li>
+                <li><a href="javascript:void(0)" onclick="goToSection(5)" class="nav-link" data-section="5">Contact</a></li>
+            </ul>
+            <div class="nav-contact">
+                <a href="mailto:sahilrane132007@gmail.com" class="nav-contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>sahilrane132007@gmail.com</span>
+                </a>
+                <a href="tel:+919326786943" class="nav-contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>+91 9326786943</span>
+                </a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Card Deck Container -->
+    <div class="card-deck-container">
+        
+        <!-- Card 1: Hero -->
+        <section class="card-section active" data-index="0" id="home">
+            <div class="card-content">
+                <div class="hero-container">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <span class="badge-line"></span>
+                            <span>Software Engineer</span>
+                        </div>
+                        <h1 class="hero-title">
+                            <span class="title-line">This is your</span>
+                            <span class="title-line">developer</span>
+                            <span class="title-line highlight-name">Sahil Suresh Rane</span>
+                        </h1>
+                        <p class="hero-description">
+                            Passionate about building scalable applications and solving complex problems. 
+                            I transform ideas into elegant, efficient code that makes a difference.
+                        </p>
+                        <div class="hero-cta">
+                            <a href="javascript:void(0)" class="magnetic-btn btn-glow" onclick="goToSection(3)">
+                                <span class="btn-text">View Projects</span>
+                                <span class="btn-gradient"></span>
+                                <span class="btn-glow-effect"></span>
+                            </a>
+                            <a href="javascript:void(0)" class="magnetic-btn btn-glass" onclick="goToSection(5)">
+                                <span class="btn-text">Contact Me</span>
+                                <span class="btn-border"></span>
+                            </a>
+                        </div>
+                        <div class="value-statement">
+                            <span class="code-bracket">&lt;</span>
+                            <span class="typing-text" id="typing-text"></span>
+                            <span class="code-bracket">/&gt;</span>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="image-wrapper-simple">
+                            <!-- Background glow effect -->
+                            <div class="profile-glow-effect"></div>
+                            <!-- Floating particles -->
+                            <div class="profile-particles">
+                                <span class="particle"></span>
+                                <span class="particle"></span>
+                                <span class="particle"></span>
+                                <span class="particle"></span>
+                                <span class="particle"></span>
+                                <span class="particle"></span>
+                            </div>
+                            <img src="profile.png" alt="Sahil Suresh Rane" class="profile-photo profile-photo-dark">
+                            <img src="profile_Light.png" alt="Sahil Suresh Rane" class="profile-photo profile-photo-light">
+                        </div>
+                        <div class="rotating-badge">
+                            <!-- Outer glow ring -->
+                            <div class="badge-glow-ring"></div>
+                            <!-- Orbital particles -->
+                            <div class="badge-orbit">
+                                <div class="orbit-dot dot-1"></div>
+                                <div class="orbit-dot dot-2"></div>
+                                <div class="orbit-dot dot-3"></div>
+                            </div>
+                            <!-- Reverse orbit -->
+                            <div class="badge-orbit-reverse">
+                                <div class="orbit-dot-small dot-4"></div>
+                                <div class="orbit-dot-small dot-5"></div>
+                            </div>
+                            <!-- Main rotating text -->
+                            <svg viewBox="0 0 200 200" class="badge-svg">
+                                <defs>
+                                    <path id="circlePath" d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"/>
+                                    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#a855f7"/>
+                                        <stop offset="50%" style="stop-color:#6366f1"/>
+                                        <stop offset="100%" style="stop-color:#a855f7"/>
+                                    </linearGradient>
+                                </defs>
+                                <text class="badge-text">
+                                    <textPath href="#circlePath">★ CODE ★ OPTIMIZE ★ DEPLOY ★ REPEAT </textPath>
+                                </text>
+                            </svg>
+                            <!-- Center icon with effects -->
+                            <div class="badge-center">
+                                <div class="badge-center-glow"></div>
+                                <div class="badge-center-ring"></div>
+                                <div class="badge-icon-wrapper">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-star star-1">★</div>
+                        <div class="floating-star star-2">★</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 2: Skills - Compact 3x2 Grid -->
+        <section class="card-section" data-index="1" id="skills">
+            <div class="card-content skills-content">
+                <div class="section-header-compact">
+                    <h2 class="section-title-compact">My <span class="highlight">Specialities</span></h2>
+                    <p class="section-desc-compact">Building robust solutions with modern technologies and best practices.</p>
+                </div>
+                <div class="skills-grid-compact">
+                    <div class="skill-card-compact">
+                        <div class="skill-icon-compact"><i class="fas fa-code"></i></div>
+                        <div class="skill-info">
+                            <h3>Programming Languages</h3>
+                            <p>C++, Python, Java, JavaScript - Building efficient algorithms</p>
+                            <div class="skill-tags-compact">
+                                <span>C++</span><span>Python</span><span>Java</span><span>JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card-compact">
+                        <div class="skill-icon-compact"><i class="fas fa-laptop-code"></i></div>
+                        <div class="skill-info">
+                            <h3>Web Technologies</h3>
+                            <p>Modern web development with responsive interfaces</p>
+                            <div class="skill-tags-compact">
+                                <span>HTML</span><span>CSS</span><span>React</span><span>Node.js</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card-compact">
+                        <div class="skill-icon-compact"><i class="fas fa-database"></i></div>
+                        <div class="skill-info">
+                            <h3>Databases</h3>
+                            <p>Designing efficient database systems</p>
+                            <div class="skill-tags-compact">
+                                <span>MySQL</span><span>MongoDB</span><span>PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card-compact">
+                        <div class="skill-icon-compact"><i class="fas fa-tools"></i></div>
+                        <div class="skill-info">
+                            <h3>Tools & Platforms</h3>
+                            <p>DevOps and cloud infrastructure</p>
+                            <div class="skill-tags-compact">
+                                <span>Git</span><span>Docker</span><span>Linux</span><span>AWS</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card-compact">
+                        <div class="skill-icon-compact"><i class="fas fa-brain"></i></div>
+                        <div class="skill-info">
+                            <h3>Core Concepts</h3>
+                            <p>Strong CS fundamentals</p>
+                            <div class="skill-tags-compact">
+                                <span>DSA</span><span>OOP</span><span>OS</span><span>DBMS</span><span>CN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skill-card-compact">
+                        <div class="skill-icon-compact"><i class="fas fa-users"></i></div>
+                        <div class="skill-info">
+                            <h3>Soft Skills</h3>
+                            <p>Effective collaboration abilities</p>
+                            <div class="skill-tags-compact">
+                                <span>Problem Solving</span><span>Teamwork</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 3: About & Timeline Combined -->
+        <section class="card-section" data-index="2" id="about">
+            <div class="card-content about-timeline-combined">
+                <div class="scrollable-section">
+                    <div class="section-header-compact">
+                        <h2 class="section-title-compact">About <span class="highlight">Me</span></h2>
+                    </div>
+                    <div class="about-grid-compact">
+                        <div class="about-card-compact">
+                            <div class="about-icon"><i class="fas fa-user-graduate"></i></div>
+                            <h3>Who I Am</h3>
+                            <p>A passionate Software Engineer who loves turning complex problems into elegant solutions.</p>
+                        </div>
+                        <div class="about-card-compact">
+                            <div class="about-icon"><i class="fas fa-rocket"></i></div>
+                            <h3>What Excites Me</h3>
+                            <p>The endless possibilities of technology - from AI to systems that impact millions.</p>
+                        </div>
+                        <div class="about-card-compact">
+                            <div class="about-icon"><i class="fas fa-graduation-cap"></i></div>
+                            <h3>Education</h3>
+                            <p>Computer Science degree with focus on modern technologies and problem-solving.</p>
+                        </div>
+                        <div class="about-card-compact">
+                            <div class="about-icon"><i class="fas fa-crosshairs"></i></div>
+                            <h3>Career Focus</h3>
+                            <p>Full-stack development, AI/ML, and building scalable applications.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="section-header-compact" style="margin-top: 2rem;">
+                        <h3 class="subsection-title">Career <span class="highlight">Timeline</span></h3>
+                    </div>
+                    <div class="timeline-wrapper-compact">
+                        <div class="timeline-item-compact">
+                            <div class="timeline-year">2025</div>
+                            <h4>Software Engineer</h4>
+                            <p>Building scalable applications and leading projects</p>
+                        </div>
+                        <div class="timeline-item-compact">
+                            <div class="timeline-year">2024</div>
+                            <h4>Full Stack Developer</h4>
+                            <p>Developed multiple client projects</p>
+                        </div>
+                        <div class="timeline-item-compact">
+                            <div class="timeline-year">2023</div>
+                            <h4>CS Student</h4>
+                            <p>Started software development journey</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 4: Projects & GitHub Combined -->
+        <section class="card-section" data-index="3" id="projects">
+            <div class="card-content projects-github-combined">
+                <div class="scrollable-section">
+                    <div class="section-header-compact">
+                        <h2 class="section-title-compact">My <span class="highlight">Work</span></h2>
+                    </div>
+                    <div class="projects-grid-compact">
+                        <a href="https://rake-2-0-sih.vercel.app/" target="_blank" class="project-card-compact" style="text-decoration: none; color: inherit;">
+                            <div class="project-image-compact">
+                                <i class="fas fa-train"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>RAKE MANAGEMENT SYSTEM</h3>
+                                <p>Railway rake management for efficient tracking.</p>
+                                <div class="project-tech-compact">
+                                    <span>React</span><span>Node.js</span><span>MongoDB</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://github.com/ivory-26/VIS" target="_blank" class="project-card-compact" style="text-decoration: none; color: inherit;">
+                            <div class="project-image-compact">
+                                <i class="fas fa-chalkboard"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>COLLABORATIVE WHITEBOARD</h3>
+                                <p>Real-time collaborative whiteboard.</p>
+                                <div class="project-tech-compact">
+                                    <span>React</span><span>Socket.io</span><span>Canvas</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://github.com/shubham2web/MUM-hackthon" target="_blank" class="project-card-compact" style="text-decoration: none; color: inherit;">
+                            <div class="project-image-compact">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="project-info">
+                                <h3>ATLAS Misinformation Detector</h3>
+                                <p>AI-powered misinformation detector.</p>
+                                <div class="project-tech-compact">
+                                    <span>Python</span><span>TensorFlow</span><span>NLP</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="section-header-compact" style="margin-top: 2rem;">
+                        <h3 class="subsection-title">GitHub <span class="highlight">Stats</span></h3>
+                    </div>
+                    <div class="github-stats-compact">
+                        <div class="stat-box" data-stat-value="150">
+                            <div class="stat-orbital-ring"></div>
+                            <div class="stat-orbital-ring ring-2"></div>
+                            <div class="stat-particles"></div>
+                            <div class="stat-hologram"></div>
+                            <i class="fab fa-github"></i>
+                            <div class="stat-num" data-target="150">0</div>
+                            <div class="stat-plus">+</div>
+                            <div class="stat-lbl">Repos</div>
+                            <div class="stat-glow-pulse"></div>
+                        </div>
+                        <div class="stat-box" data-stat-value="500">
+                            <div class="stat-orbital-ring"></div>
+                            <div class="stat-orbital-ring ring-2"></div>
+                            <div class="stat-particles"></div>
+                            <div class="stat-hologram"></div>
+                            <i class="fas fa-code-branch"></i>
+                            <div class="stat-num" data-target="500">0</div>
+                            <div class="stat-plus">+</div>
+                            <div class="stat-lbl">Commits</div>
+                            <div class="stat-glow-pulse"></div>
+                        </div>
+                        <div class="stat-box" data-stat-value="75">
+                            <div class="stat-orbital-ring"></div>
+                            <div class="stat-orbital-ring ring-2"></div>
+                            <div class="stat-particles"></div>
+                            <div class="stat-hologram"></div>
+                            <i class="fas fa-star"></i>
+                            <div class="stat-num" data-target="75">0</div>
+                            <div class="stat-plus">+</div>
+                            <div class="stat-lbl">Stars</div>
+                            <div class="stat-glow-pulse"></div>
+                        </div>
+                        <div class="stat-box" data-stat-value="120">
+                            <div class="stat-orbital-ring"></div>
+                            <div class="stat-orbital-ring ring-2"></div>
+                            <div class="stat-particles"></div>
+                            <div class="stat-hologram"></div>
+                            <i class="fas fa-code-pull-request"></i>
+                            <div class="stat-num" data-target="120">0</div>
+                            <div class="stat-plus">+</div>
+                            <div class="stat-lbl">PRs</div>
+                            <div class="stat-glow-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 5: Hackathons & Achievements Combined -->
+        <section class="card-section" data-index="4" id="achievements">
+            <div class="card-content achievements-hackathons-combined">
+                <div class="scrollable-section">
+                    <div class="section-header-compact">
+                        <h2 class="section-title-compact">Achievements & <span class="highlight">Recognition</span></h2>
+                    </div>
+                    <div class="achievements-grid-compact">
+                        <div class="achievement-card-compact">
+                            <div class="achievement-icon-compact"><i class="fas fa-book"></i></div>
+                            <h3>Data Structures Course</h3>
+                            <p>PREGRAD</p>
+                        </div>
+                        <div class="achievement-card-compact">
+                            <div class="achievement-icon-compact"><i class="fas fa-users"></i></div>
+                            <h3>Hackathon Participant</h3>
+                            <p>SIH, Mumhacks, Gen-AI</p>
+                        </div>
+                        <div class="achievement-card-compact">
+                            <div class="achievement-icon-compact"><i class="fas fa-code"></i></div>
+                            <h3>Full Stack Developer</h3>
+                            <p>Udemy Certified</p>
+                        </div>
+                        <div class="achievement-card-compact">
+                            <div class="achievement-icon-compact"><i class="fas fa-brain"></i></div>
+                            <h3>Machine Learning</h3>
+                            <p>Stanford Online</p>
+                        </div>
+                    </div>
+                    
+                    <div class="section-divider"></div>
+                    
+                    <div class="section-header-compact" style="margin-top: 2rem;">
+                        <h3 class="subsection-title">Hackathon <span class="highlight">Participations</span></h3>
+                    </div>
+                    <div class="hackathons-grid-compact">
+                        <div class="hackathon-card-compact">
+                            <div class="hackathon-icon-compact"><i class="fas fa-lightbulb"></i></div>
+                            <h3>Smart India Hackathon</h3>
+                            <p>National level problem-solving</p>
+                            <span class="hackathon-badge">National</span>
+                        </div>
+                        <div class="hackathon-card-compact">
+                            <div class="hackathon-icon-compact"><i class="fas fa-code"></i></div>
+                            <h3>Mum Hacks</h3>
+                            <p>Mumbai's premier hackathon</p>
+                            <span class="hackathon-badge">Regional</span>
+                        </div>
+                        <div class="hackathon-card-compact">
+                            <div class="hackathon-icon-compact"><i class="fas fa-robot"></i></div>
+                            <h3>Gen-AI Hackathon</h3>
+                            <p>AI & Machine Learning challenge</p>
+                            <span class="hackathon-badge">Competition</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 6: Contact & Testimonials Combined -->
+        <section class="card-section" data-index="5" id="contact">
+            <div class="card-content contact-testimonials-combined">
+                <div class="scrollable-section">
+                    <div class="section-header-compact">
+                        <h2 class="section-title-compact">Let's <span class="highlight">Connect</span></h2>
+                    </div>
+                    <div class="contact-grid-compact">
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=sahilrane132007@gmail.com" target="_blank" class="contact-box-compact">
+                            <i class="fas fa-envelope"></i>
+                            <span>sahilrane132007@gmail.com</span>
+                        </a>
+                        <a href="tel:+919326786943" class="contact-box-compact">
+                            <i class="fas fa-phone"></i>
+                            <span>+91 9326786943</span>
+                        </a>
+                        <a href="https://www.google.com/maps/place/Mumbai,+Maharashtra" target="_blank" class="contact-box-compact">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Mumbai, India</span>
+                        </a>
+                    </div>
+                    <div class="social-links-compact">
+                        <a href="https://www.linkedin.com/in/sahil-rane-6a539132b/" target="_blank" class="social-link-compact"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://github.com/CyberCodezilla" target="_blank" class="social-link-compact"><i class="fab fa-github"></i></a>
+                        <a href="https://www.instagram.com/itz_.sahil_13?igsh=MWRqYmRwazlodXRlNw==" target="_blank" class="social-link-compact"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    
+                    <p class="copyright-compact" style="margin-top: 3rem;">© 2025 Sahil Suresh Rane. All rights reserved.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
