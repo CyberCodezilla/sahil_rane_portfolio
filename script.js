@@ -112,6 +112,21 @@ function initEpicCardDeck() {
         const swipeDistance = touchStartY - touchEndY;
         const swipeTime = Date.now() - touchStartTime;
         const velocity = Math.abs(swipeDistance) / swipeTime;
+
+        // On smaller screens cards can scroll vertically. Only switch sections
+        // when user swipes at the scroll boundaries of the active card.
+        const activeCard = cardSections[currentSection];
+        if (activeCard) {
+            const hasVerticalOverflow = activeCard.scrollHeight - activeCard.clientHeight > 8;
+            if (hasVerticalOverflow) {
+                const atTop = activeCard.scrollTop <= 2;
+                const atBottom = activeCard.scrollTop + activeCard.clientHeight >= activeCard.scrollHeight - 2;
+
+                if ((swipeDistance > 0 && !atBottom) || (swipeDistance < 0 && !atTop)) {
+                    return;
+                }
+            }
+        }
         
         if (Math.abs(swipeDistance) > 30 || velocity > 0.5) {
             if (swipeDistance > 0 && currentSection < totalSections - 1) {

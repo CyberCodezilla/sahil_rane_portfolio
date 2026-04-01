@@ -4826,3 +4826,231 @@ body.light-mode .certificate-info {
         gap: 1.5rem;
     }
 }
+
+/* ============================================
+   COMPREHENSIVE MOBILE/TABLET FIT OVERRIDES
+   ============================================ */
+
+@media (max-width: 1024px) {
+    body {
+        height: 100dvh;
+    }
+
+    .navbar {
+        height: 64px;
+        padding: 0 16px;
+    }
+
+    .card-deck-container {
+        top: 64px;
+        height: calc(100dvh - 64px);
+    }
+
+    .card-section {
+        align-items: flex-start;
+        padding: 18px 16px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .card-content {
+        padding: 14px 8px 28px;
+        min-height: calc(100dvh - 96px);
+    }
+
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        text-align: center;
+        padding-top: 0;
+    }
+
+    .hero-content {
+        align-items: center;
+    }
+
+    .hero-description {
+        max-width: 100%;
+    }
+
+    .hero-cta {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .hero-image {
+        justify-content: center;
+        padding-right: 0;
+    }
+
+    .image-wrapper-simple {
+        width: min(72vw, 360px);
+        height: min(90vw, 460px);
+    }
+
+    .profile-photo-dark,
+    body.light-mode .profile-photo-light,
+    .profile-photo-light {
+        transform: translateX(0);
+    }
+
+    .profile-glow-effect {
+        width: min(70vw, 320px);
+        height: min(70vw, 320px);
+    }
+
+    .projects-grid-compact,
+    .hackathons-grid-compact,
+    .skills-grid-compact,
+    .journey-grid,
+    .about-grid-compact,
+    .github-stats-wrapper,
+    .repos-grid,
+    .achievements-grid,
+    .achievements-grid-compact,
+    .testimonials-wrapper,
+    .testimonials-compact,
+    .timeline-wrapper-compact {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .contact-grid-compact {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        height: 60px;
+        padding: 0 12px;
+    }
+
+    .card-deck-container {
+        top: 60px;
+        height: calc(100dvh - 60px);
+    }
+
+    .card-content {
+        padding: 12px 2px 26px;
+        min-height: calc(100dvh - 84px);
+    }
+
+    .section-header-compact {
+        margin-bottom: 20px;
+    }
+
+    .section-title-compact {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+
+    .section-desc-compact {
+        font-size: 0.92rem;
+    }
+
+    .title-line {
+        font-size: clamp(1.5rem, 8vw, 2.2rem);
+    }
+
+    .highlight-name {
+        font-size: clamp(1.8rem, 10vw, 2.8rem);
+    }
+
+    .hero-cta {
+        width: 100%;
+    }
+
+    .magnetic-btn {
+        width: 100%;
+        max-width: 340px;
+    }
+
+    .image-wrapper-simple {
+        width: min(82vw, 320px);
+        height: min(96vw, 420px);
+    }
+
+    .projects-grid-compact,
+    .hackathons-grid-compact,
+    .skills-grid-compact,
+    .journey-grid,
+    .about-grid-compact,
+    .github-stats-wrapper,
+    .repos-grid,
+    .achievements-grid,
+    .achievements-grid-compact,
+    .testimonials-wrapper,
+    .testimonials-compact,
+    .timeline-wrapper-compact,
+    .projects-github-combined,
+    .achievements-hackathons-combined,
+    .contact-testimonials-combined {
+        grid-template-columns: 1fr !important;
+    }
+
+    .project-info,
+    .hackathon-card-compact,
+    .skill-card-compact,
+    .about-card-compact {
+        padding: 16px;
+    }
+
+    .project-links {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .contact-grid-compact {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .contact-box-compact {
+        justify-content: center;
+        width: 100%;
+        padding: 13px 15px;
+    }
+
+    .social-links-compact {
+        flex-wrap: wrap;
+    }
+
+    .scrollable-section {
+        max-height: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-section {
+        padding: 14px 10px;
+    }
+
+    .card-content {
+        padding: 10px 0 24px;
+    }
+
+    .hero-badge {
+        font-size: 0.72rem;
+        letter-spacing: 1px;
+    }
+
+    .hero-description {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .project-image-compact {
+        height: 100px;
+    }
+
+    .project-image-compact i {
+        font-size: 2rem;
+    }
+
+    .social-link-compact {
+        width: 40px;
+        height: 40px;
+    }
+}
