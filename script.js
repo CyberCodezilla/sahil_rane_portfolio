@@ -744,6 +744,7 @@ function initThemeToggle() {
             } else {
                 document.body.classList.add('light-mode');
             }
+            updateGitHubStatsTheme();
         }
     });
 }
@@ -919,6 +920,7 @@ function createCreativeThemeTransition(toLight) {
     setTimeout(() => {
         document.body.classList.toggle('light-mode');
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        updateGitHubStatsTheme();
     }, 100);
     
     // Fade out and remove main overlay
@@ -1866,6 +1868,8 @@ document.addEventListener('DOMContentLoaded', () => {
     animateStatCounters();
     initLiveContent();
     injectAdminPortalLink();
+    updateGitHubStatsTheme();
+    fetchLiveGitHubStats();
 });
 
 console.log('%c👋 Hello Developer!', 'font-size: 24px; font-weight: bold; color: #6366f1;');
@@ -2133,5 +2137,64 @@ function escapeHtml(str) {
 }
 function escapeAttr(str) {
     return String(str || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ─── Live GitHub Stats Hydration ───────────────────────── */
+async function fetchLiveGitHubStats() {
+    try {
+        const profileRes = await fetch('https://api.github.com/users/CyberCodezilla');
+        if (!profileRes.ok) return;
+        const profile = await profileRes.json();
+        
+        const reposRes = await fetch('https://api.github.com/users/CyberCodezilla/repos?per_page=100');
+        if (!reposRes.ok) return;
+        const repos = await reposRes.json();
+        
+        let totalStars = 0;
+        repos.forEach(repo => {
+            totalStars += repo.stargazers_count || 0;
+        });
+        
+        const reposNum = document.querySelector('.github-stats-compact .stat-box:nth-child(1) .stat-num');
+        const starsNum = document.querySelector('.github-stats-compact .stat-box:nth-child(3) .stat-num');
+        
+        if (reposNum && profile.public_repos !== undefined) {
+            reposNum.setAttribute('data-target', profile.public_repos);
+            reposNum.textContent = '0';
+        }
+        
+        if (starsNum) {
+            starsNum.setAttribute('data-target', totalStars);
+            starsNum.textContent = '0';
+        }
+        
+        const countedElements = document.querySelectorAll('.github-stats-compact .stat-num');
+        countedElements.forEach(el => {
+            el.classList.remove('counted');
+        });
+        animateStatCounters();
+        
+    } catch (_) {
+        // Fallback silently to hardcoded counter values if API fails
+    }
+}
+
+/* ─── Update GitHub Readme Stats Theme ──────────────────── */
+function updateGitHubStatsTheme() {
+    const isLight = document.body.classList.contains('light-mode');
+    const langImg = document.querySelector('.github-diagrams-grid .lang-card img');
+    const statsImg = document.querySelector('.github-diagrams-grid .stats-card img');
+    
+    if (langImg) {
+        langImg.src = isLight
+            ? "https://github-readme-stats.vercel.app/api/top-langs/?username=CyberCodezilla&layout=compact&theme=default&bg_color=f8fafc&title_color=6366f1&icon_color=06b6d4&text_color=0f172a&border_color=6366f1&border_radius=14&hide_border=true"
+            : "https://github-readme-stats.vercel.app/api/top-langs/?username=CyberCodezilla&layout=compact&theme=tokyonight&bg_color=050510&title_color=6366f1&icon_color=06b6d4&text_color=f8fafc&border_color=6366f1&border_radius=14&hide_border=true";
+    }
+    
+    if (statsImg) {
+        statsImg.src = isLight
+            ? "https://github-readme-stats.vercel.app/api?username=CyberCodezilla&show_icons=true&theme=default&bg_color=f8fafc&title_color=6366f1&icon_color=06b6d4&text_color=0f172a&border_color=6366f1&border_radius=14&hide_border=true"
+            : "https://github-readme-stats.vercel.app/api?username=CyberCodezilla&show_icons=true&theme=tokyonight&bg_color=050510&title_color=6366f1&icon_color=06b6d4&text_color=f8fafc&border_color=6366f1&border_radius=14&hide_border=true";
+    }
 }
 

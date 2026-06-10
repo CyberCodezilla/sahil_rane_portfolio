@@ -5317,5 +5317,98 @@ body.light-mode .cert-lightbox-meta {
     background: #f8fafc;
 }
 
+/* ── GitHub Diagrams Grid ──────────────────── */
+.github-diagrams-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* On desktop, calendar spans 2 columns */
+.calendar-card {
+    grid-column: span 2;
+}
+
+.github-diagram-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.github-diagram-card h4 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    align-self: flex-start;
+    font-weight: 600;
+}
+
+.github-diagram-card img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.github-diagram-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.15);
+}
+
+/* Scroll wrapper for the calendar on small screens */
+.diagram-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
+}
+
+.diagram-scroll-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.diagram-scroll-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.diagram-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 3px;
+}
+
+/* Light mode overrides */
+body.light-mode .github-diagram-card {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .github-diagram-card:hover {
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 10px 25px rgba(99, 102, 241, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .github-diagrams-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendar-card {
+        grid-column: span 1;
+    }
+}
+
 
 
