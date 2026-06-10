@@ -2025,6 +2025,14 @@ function injectAdminPortalLink() {
     link.title = 'Admin Portal';
     link.setAttribute('aria-label', 'Admin Portal');
     document.body.appendChild(link);
+
+    // Keyboard shortcut: Ctrl + Shift + CapsLock to open admin portal
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key === 'CapsLock') {
+            e.preventDefault();
+            window.location.href = '/admin.html';
+        }
+    });
 }
 
 /* ─── HTML escape helpers ───────────────────────────────── */
