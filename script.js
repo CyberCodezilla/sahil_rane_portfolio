@@ -1882,30 +1882,31 @@ async function initLiveContent() {
 }
 
 function injectCertificateCards(certs) {
-    const achievementsSection = document.querySelector('#achievements .achievements-grid-compact');
-    if (!achievementsSection) return;
+    const achievementsCard = document.querySelector('#achievements');
+    if (!achievementsCard) return;
 
-    // Create a dedicated row for live certs
-    let certRow = document.getElementById('live-cert-row');
-    if (!certRow) {
-        // Insert a divider + heading before the cert row
-        const parent = achievementsSection.parentElement;
-        const divider = document.createElement('div');
-        divider.className = 'section-divider';
-        divider.style.marginTop = '1.5rem';
-        const heading = document.createElement('div');
-        heading.className = 'section-header-compact';
-        heading.style.marginTop = '1.5rem';
-        heading.innerHTML = '<h3 class="subsection-title">Certificates & <span class="highlight">Credentials</span></h3>';
-        certRow = document.createElement('div');
-        certRow.id = 'live-cert-row';
-        certRow.className = 'live-cert-grid';
-        parent.appendChild(divider);
-        parent.appendChild(heading);
-        parent.appendChild(certRow);
-    }
+    const scrollable = achievementsCard.querySelector('.scrollable-section');
+    if (!scrollable) return;
 
-    certRow.innerHTML = '';
+    // Remove any previously injected cert page
+    const existingPage = document.getElementById('cert-section-page');
+    if (existingPage) existingPage.remove();
+
+    // Build the certificate page content
+    const certPage = document.createElement('div');
+    certPage.id = 'cert-section-page';
+    certPage.className = 'section-page'; // hidden by default via CSS
+    certPage.innerHTML = `
+        <div class="section-header-compact" style="margin-top:0.5rem;">
+            <h3 class="subsection-title">Certificates & <span class="highlight">Credentials</span></h3>
+        </div>
+        <div id="live-cert-row" class="live-cert-grid"></div>
+    `;
+
+    // Append as a new page inside the scrollable section
+    scrollable.appendChild(certPage);
+
+    const certRow = certPage.querySelector('#live-cert-row');
 
     certs.forEach((cert, idx) => {
         const card = document.createElement('div');
@@ -1956,11 +1957,72 @@ function injectCertificateCards(certs) {
         });
     });
 
-    // Animate in
-    gsap.fromTo('.cert-card-live',
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out', delay: 0.2 }
-    );
+    // Re-wire the pagination for achievements section to include the new cert page
+    rebuildAchievementsPagination(scrollable);
+
+    // Animate in when page becomes visible
+    gsap.set('.cert-card-live', { opacity: 0, y: 30 });
+}
+
+/* ─── Rebuild Achievements Pagination ─────────────────────── */
+function rebuildAchievementsPagination(scrollable) {
+    // Gather all .section-page elements (including the new cert page)
+    const pages = scrollable.querySelectorAll('.section-page');
+    if (!pages.length) return;
+
+    const totalPages = pages.length;
+    let currentPage = 1;
+
+    // Find or create nav arrows
+    const achievementsCard = scrollable.closest('.card-section');
+    let navContainer = achievementsCard.querySelector('.page-nav-arrows');
+    if (!navContainer) {
+        navContainer = document.createElement('div');
+        navContainer.className = 'page-nav-arrows';
+        navContainer.innerHTML = `
+            <div class="page-nav-arrow prev-page">
+                <i class="fas fa-chevron-up"></i>
+            </div>
+            <div class="page-nav-arrow next-page">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        `;
+        achievementsCard.appendChild(navContainer);
+    }
+
+    const prevBtn = navContainer.querySelector('.prev-page');
+    const nextBtn = navContainer.querySelector('.next-page');
+
+    function updatePage() {
+        pages.forEach((page, index) => {
+            page.classList.toggle('active', index === currentPage - 1);
+        });
+        prevBtn.classList.toggle('disabled', currentPage === 1);
+        nextBtn.classList.toggle('disabled', currentPage === totalPages);
+
+        // Animate cert cards when their page becomes visible
+        if (pages[currentPage - 1].id === 'cert-section-page') {
+            gsap.fromTo('.cert-card-live',
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out', delay: 0.15 }
+            );
+        }
+    }
+
+    // Remove old event listeners by replacing buttons
+    const newPrev = prevBtn.cloneNode(true);
+    const newNext = nextBtn.cloneNode(true);
+    prevBtn.replaceWith(newPrev);
+    nextBtn.replaceWith(newNext);
+
+    newPrev.addEventListener('click', () => {
+        if (currentPage > 1) { currentPage--; updatePage(); }
+    });
+    newNext.addEventListener('click', () => {
+        if (currentPage < totalPages) { currentPage++; updatePage(); }
+    });
+
+    updatePage();
 }
 
 /* ─── Certificate Lightbox ───────────────────────────────── */
