@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel · Sahil Rane Portfolio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ─── CSS Custom Properties (matches portfolio palette) ─── */
+    :root {
+      --primary:       #6366f1;
+      --primary-light: #818cf8;
+      --accent:        #06b6d4;
+      --accent-light:  #22d3ee;
+      --bg-dark:       #0a0a0f;
+      --bg-card:       #111118;
+      --bg-glass:      rgba(17, 17, 24, 0.75);
+      --border:        rgba(99, 102, 241, 0.18);
+      --border-hover:  rgba(99, 102, 241, 0.45);
+      --text-primary:  #f1f5f9;
+      --text-muted:    #94a3b8;
+      --success:       #10b981;
+      --error:         #ef4444;
+      --warning:       #f59e0b;
+      --radius:        16px;
+      --shadow:        0 8px 40px rgba(99,102,241,0.12);
+      --glow:          0 0 30px rgba(99,102,241,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── Background ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%,  rgba(99,102,241,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 50% at 90% 80%,  rgba(6,182,212,0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 50% 50%,  rgba(168,85,247,0.05) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── Layout ─── */
+    #app { position: relative; z-index: 1; }
+
+    /* ════════════════════════════════════
+       LOGIN SCREEN
+    ════════════════════════════════════ */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.06);
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+    .login-logo-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 20px rgba(99,102,241,0.4);
+    }
+    .login-logo-text h1 { font-size: 1.1rem; font-weight: 700; }
+    .login-logo-text p  { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+
+    .login-heading {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--text-primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+    .login-sub { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; }
+
+    /* ─── Form Controls ─── */
+    .field { margin-bottom: 1.2rem; }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.5rem;
+    }
+    .field-wrap {
+      position: relative;
+    }
+    .field-wrap i {
+      position: absolute;
+      left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .field-wrap input:focus + i,
+    .field-wrap:focus-within i { color: var(--primary-light); }
+
+    input[type="text"], input[type="password"], input[type="date"],
+    textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+    textarea { padding-left: 1rem; resize: vertical; min-height: 80px; }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--primary);
+      background: rgba(99,102,241,0.06);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: inherit; font-size: 0.9rem; font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      border: none; cursor: pointer;
+      transition: all 0.25s;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), #0891b2);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(6,182,212,0.30);
+    }
+    .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(6,182,212,0.45); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.09); color: var(--text-primary); border-color: var(--border-hover); }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.30);
+      color: #fca5a5;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.22); border-color: rgba(239,68,68,0.55); }
+
+    .btn-full { width: 100%; justify-content: center; }
+    .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.8rem; border-radius: 8px; }
+
+    /* ─── Alert Messages ─── */
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .alert.show { display: flex; align-items: center; gap: 8px; }
+    .alert-error   { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.30); color: #fca5a5; }
+    .alert-success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.30); color: #6ee7b7; }
+    .alert-info    { background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.30); color: var(--primary-light); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Loading spinner */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ════════════════════════════════════
+       DASHBOARD LAYOUT
+    ════════════════════════════════════ */
+    #dashboard-screen { display: none; min-height: 100vh; }
+    #dashboard-screen.active { display: flex; flex-direction: column; }
+
+    /* ─── Top Bar ─── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(10,10,15,0.85);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 1rem;
+    }
+    .topbar-brand span {
+      background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .topbar-brand i {
+      color: var(--primary-light);
+      font-size: 1.1rem;
+    }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-user {
+      font-size: 0.8rem; color: var(--text-muted);
+      padding: 4px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+    .topbar-user span { color: var(--primary-light); font-weight: 600; }
+
+    /* ─── Main Content ─── */
+    .dash-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .dash-body { grid-template-columns: 1fr; }
+      .topbar { padding: 0 1rem; }
+    }
+
+    /* ─── Panel Cards ─── */
+    .panel {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+    .panel-full { grid-column: 1 / -1; }
+
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1rem; font-weight: 700;
+    }
+    .panel-title i {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(6,182,212,0.15));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      color: var(--primary-light);
+    }
+    .panel-count {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(99,102,241,0.15);
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
+    /* ─── Upload Drop Zone ─── */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--primary);
+      background: rgba(99,102,241,0.07);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+    .drop-zone-icon {
+      width: 48px; height: 48px;
+      margin: 0 auto 0.75rem;
+      border-radius: 12px;
+      background: rgba(99,102,241,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      color: var(--primary-light);
+    }
+    .drop-zone p { font-size: 0.85rem; color: var(--text-muted); }
+    .drop-zone strong { color: var(--primary-light); }
+    .drop-zone-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── Image Preview ─── */
+    .preview-wrap {
+      display: none;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 1.2rem;
+      position: relative;
+      background: #050508;
+    }
+    .preview-wrap.show { display: block; }
+    .preview-wrap img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      display: block;
+    }
+    .preview-meta {
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.4);
+      display: flex; justify-content: space-between;
+    }
+    .preview-remove {
+      position: absolute; top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(239,68,68,0.85);
+      border: none; cursor: pointer;
+      color: #fff; font-size: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .preview-remove:hover { transform: scale(1.1); }
+
+    /* ─── Upload Form Fields ─── */
+    .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .fields-row { grid-template-columns: 1fr; } }
+
+    /* ─── Certificate List ─── */
+    .cert-list { margin-top: 1.5rem; }
+    .cert-list-header {
+      font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .cert-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      margin-bottom: 0.6rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .cert-item:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.04); }
+    .cert-thumb {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(99,102,241,0.1);
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .cert-thumb-placeholder {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary-light); font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .cert-item-info { flex: 1; min-width: 0; }
+    .cert-item-title {
+      font-size: 0.875rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cert-item-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+    .cert-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .empty-state {
+      text-align: center; padding: 2rem;
+      color: var(--text-muted); font-size: 0.85rem;
+    }
+    .empty-state i { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4; display: block; }
+
+    /* ─── Content Editor ─── */
+    .content-section { margin-bottom: 1.5rem; }
+    .content-section-title {
+      font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .content-section-title::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: var(--border);
+    }
+    /* remove icon prefix for label in content-section fields */
+    .content-section .field-wrap input,
+    .content-section .field-wrap textarea {
+      padding-left: 1rem;
+    }
+
+    /* ─── Progress / Status ─── */
+    .progress-bar-wrap {
+      height: 4px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.07);
+      overflow: hidden;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .progress-bar-wrap.show { display: block; }
+    .progress-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* ─── Skeleton loader ─── */
+    .skeleton {
+      border-radius: 8px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    /* ─── Toast Notifications ─── */
+    #toast-container {
+      position: fixed; bottom: 2rem; right: 2rem;
+      z-index: 9999;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0.85rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.875rem; font-weight: 500;
+      min-width: 280px; max-width: 360px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      animation: slideInRight 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+      border: 1px solid transparent;
+    }
+    .toast-success { background: rgba(16,185,129,0.18); border-color: rgba(16,185,129,0.35); color: #6ee7b7; }
+    .toast-error   { background: rgba(239,68,68,0.18);  border-color: rgba(239,68,68,0.35);  color: #fca5a5; }
+    .toast-info    { background: rgba(99,102,241,0.18); border-color: rgba(99,102,241,0.35); color: var(--primary-light); }
+    .toast.hiding  { animation: fadeOut 0.3s ease forwards; }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(40px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
+    @keyframes fadeOut      { to   { opacity: 0; transform: translateY(8px); } }
+
+    /* ─── Utility ─── */
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+    .text-muted { color: var(--text-muted); }
+    .text-sm { font-size: 0.8rem; }
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ════════════════════ LOGIN SCREEN ════════════════════ -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-icon"><i class="fas fa-shield-halved"></i></div>
+        <div class="login-logo-text">
+          <h1>Portfolio Admin</h1>
+          <p>Sahil Suresh Rane</p>
+        </div>
+      </div>
+      <h2 class="login-heading">Welcome back</h2>
+      <p class="login-sub">Sign in to manage your portfolio content.</p>
+
+      <div class="alert alert-error" id="login-error">
+        <i class="fas fa-circle-exclamation"></i>
+        <span id="login-error-msg">Invalid credentials.</span>
+      </div>
+
+      <form id="login-form" autocomplete="off">
+        <div class="field">
+          <label for="username">Username</label>
+          <div class="field-wrap">
+            <input id="username" name="username" type="text" placeholder="admin" autocomplete="username" required>
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="field-wrap">
+            <input id="password" name="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+            <i class="fas fa-lock"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+          <span class="spinner" id="login-spinner"></span>
+          <span id="login-btn-text">Sign In</span>
+          <i class="fas fa-arrow-right" id="login-btn-icon"></i>
+        </button>
+      </form>
+
+      <p class="text-sm text-muted mt-2" style="text-align:center;">
+        <a href="/" style="color:var(--primary-light); text-decoration:none;">
+          <i class="fas fa-arrow-left"></i> Back to Portfolio
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════ DASHBOARD SCREEN ════════════════════ -->
+  <div id="dashboard-screen">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-brand">
+        <i class="fas fa-gauge-high"></i>
+        <span>Admin Dashboard</span>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-user">Signed in as <span id="dash-username">admin</span></div>
+        <button class="btn btn-ghost btn-sm" id="logout-btn">
+          <i class="fas fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <main class="dash-body">
+
+      <!-- ─── LEFT: Certificate Upload ─── -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fas fa-certificate"></i>
+            Upload Certificate
+          </div>
+        </div>
+
+        <div class="alert alert-error"  id="upload-error"><i class="fas fa-circle-exclamation"></i><span id="upload-error-msg"></span></div>
+        <div class="alert alert-success" id="upload-success"><i class="fas fa-circle-check"></i><span id="upload-success-msg"></span></div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="cert-file" accept="image/png,image/jpeg,image/jpg" aria-label="Upload certificate image">
+          <div class="drop-zone-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+          <p><strong>Drag & drop</strong> or click to browse</p>
+          <p class="drop-zone-meta">PNG, JPG / max 4 MB</p>
+        </div>
+
+        <!-- Preview -->
+        <div class="preview-wrap" id="preview-wrap">
+          <img id="preview-img" src="" alt="Certificate preview">
+          <div class="preview-meta">
+            <span id="preview-filename"></span>
+            <span id="preview-dims"></span>
+          </div>
+          <button class="preview-remove" id="preview-remove" title="Remove image">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Upload Fields -->
+        <div class="fields-row">
+          <div class="field">
+            <label for="cert-title">Title</label>
+            <div class="field-wrap">
+              <input id="cert-title" type="text" placeholder="e.g. Full Stack Developer" style="padding-left:1rem;">
+            </div>
+          </div>
+          <div class="field">
+            <label for="cert-issuer">Issuer</label>
+            <div class="field-wrap">
+              <input id="cert-issuer" type="text" placeholder="e.g. Udemy" style="padding-left:1rem;">
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="cert-date">Date Issued</label>
+          <div class="field-wrap">
+            <input id="cert-date" type="date" style="padding-left:1rem;">
+          </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-bar-wrap" id="upload-progress-wrap">
+          <div class="progress-bar" id="upload-progress-bar"></div>
+        </div>
+
+        <button class="btn btn-accent btn-full" id="upload-btn" disabled>
+          <span class="spinner" id="upload-spinner"></span>
+          <i class="fas fa-certificate" id="upload-icon"></i>
+          <span id="upload-btn-text">Upload Certificate</span>
+        </button>
+      </div>
+
+      <!-- ─── RIGHT: Existing Certificates ─── -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fas fa-images"></i>
+            Certificates
+          </div>
+          <span class="panel-count" id="cert-count">0</span>
+        </div>
+
+        <div id="cert-list-body">
+          <div class="empty-state" id="cert-empty">
+            <i class="fas fa-inbox"></i>
+            No certificates yet. Upload one to get started.
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── FULL WIDTH: Content Editor ─── -->
+      <div class="panel panel-full">
+        <div class="panel-header">
+          <div class="panel-title">
+            <i class="fas fa-pen-to-square"></i>
+            Site Content Editor
+          </div>
+        </div>
+
+        <div class="alert alert-error"  id="content-error"><i class="fas fa-circle-exclamation"></i><span id="content-error-msg"></span></div>
+        <div class="alert alert-success" id="content-success"><i class="fas fa-circle-check"></i><span id="content-success-msg"></span></div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+
+          <!-- Hero Section -->
+          <div>
+            <div class="content-section">
+              <div class="content-section-title">Hero Section</div>
+              <div class="field content-section">
+                <label for="hero-heading">Heading Line 1</label>
+                <div class="field-wrap">
+                  <input id="hero-heading" type="text" placeholder="This is your">
+                </div>
+              </div>
+              <div class="field content-section">
+                <label for="hero-heading2">Heading Line 2</label>
+                <div class="field-wrap">
+                  <input id="hero-heading2" type="text" placeholder="developer">
+                </div>
+              </div>
+              <div class="field content-section">
+                <label for="hero-description">Description</label>
+                <div class="field-wrap">
+                  <textarea id="hero-description" placeholder="Passionate about building scalable applications..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- About Section -->
+          <div>
+            <div class="content-section">
+              <div class="content-section-title">About Section</div>
+              <div class="field content-section">
+                <label for="about-who">Who I Am</label>
+                <div class="field-wrap">
+                  <textarea id="about-who" placeholder="A passionate Software Engineer who loves turning complex problems..."></textarea>
+                </div>
+              </div>
+              <div class="field content-section">
+                <label for="about-excites">What Excites Me</label>
+                <div class="field-wrap">
+                  <textarea id="about-excites" placeholder="The endless possibilities of technology..."></textarea>
+                </div>
+              </div>
+              <div class="field content-section">
+                <label for="about-focus">Career Focus</label>
+                <div class="field-wrap">
+                  <textarea id="about-focus" placeholder="Full-stack development, AI/ML..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button class="btn btn-ghost" id="content-reset-btn">
+            <i class="fas fa-rotate-left"></i> Reset
+          </button>
+          <button class="btn btn-primary" id="content-save-btn">
+            <span class="spinner" id="content-spinner"></span>
+            <i class="fas fa-floppy-disk" id="content-icon"></i>
+            Save Content
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</div><!-- #app -->
+
+<!-- Toast container -->
+<div id="toast-container" role="status" aria-live="polite"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   ADMIN PANEL — Vanilla JS Controller
+════════════════════════════════════════════════════════════ */
+
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+// ─── Toast System ──────────────────────────────────────────
+function toast(msg, type = 'info', duration = 3500) {
+  const container = $('#toast-container');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  const icons = { success: 'fas fa-circle-check', error: 'fas fa-circle-exclamation', info: 'fas fa-circle-info' };
+  el.innerHTML = `<i class="${icons[type] || icons.info}"></i> ${msg}`;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('hiding');
+    el.addEventListener('animationend', () => el.remove());
+  }, duration);
+}
+
+// ─── Alert helpers ─────────────────────────────────────────
+function showAlert(el, msgEl, message, type = 'error') {
+  el.className = `alert alert-${type} show`;
+  if (msgEl) msgEl.textContent = message;
+}
+function hideAlert(el) { el.className = 'alert'; }
+
+// ─── Loading state helpers ──────────────────────────────────
+function setLoading(btn, spinnerEl, iconEl, textEl, text, loading) {
+  btn.disabled = loading;
+  spinnerEl.style.display = loading ? 'block' : 'none';
+  if (iconEl) iconEl.style.display = loading ? 'none' : 'inline';
+  if (textEl) textEl.textContent = text;
+}
+
+/* ════════════════════════════════════════════════════════════
+   APP STATE
+════════════════════════════════════════════════════════════ */
+let contentData = { certificates: [], hero: {}, about: {} };
+let selectedFile = null;
+let selectedAspectRatio = null;
+
+/* ════════════════════════════════════════════════════════════
+   SESSION CHECK — show correct screen on load
+════════════════════════════════════════════════════════════ */
+async function checkSession() {
+  try {
+    const res = await fetch('/api/session', { credentials: 'include' });
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      $('#dash-username').textContent = data.user || 'admin';
+      showDashboard();
+    }
+  } catch (_) { /* stay on login */ }
+}
+
+function showDashboard() {
+  $('#login-screen').style.display = 'none';
+  const dash = $('#dashboard-screen');
+  dash.style.display = 'flex';
+  dash.classList.add('active');
+  loadContent();
+}
+
+/* ════════════════════════════════════════════════════════════
+   LOGIN
+════════════════════════════════════════════════════════════ */
+$('#login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideAlert($('#login-error'));
+
+  const btn      = $('#login-btn');
+  const spinner  = $('#login-spinner');
+  const icon     = $('#login-btn-icon');
+  const text     = $('#login-btn-text');
+  setLoading(btn, spinner, icon, text, 'Signing in…', true);
+
+  const username = $('#username').value.trim();
+  const password = $('#password').value;
+
+  try {
+    const res  = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+      credentials: 'include',
+    });
+    const data = await res.json();
+
+    if (res.ok && data.ok) {
+      $('#dash-username').textContent = username;
+      showDashboard();
+    } else if (res.status === 429) {
+      showAlert($('#login-error'), $('#login-error-msg'), 'Too many attempts. Please try again in 15 minutes.');
+    } else {
+      showAlert($('#login-error'), $('#login-error-msg'), 'Invalid username or password.');
+    }
+  } catch (_) {
+    showAlert($('#login-error'), $('#login-error-msg'), 'Network error. Is the API running?');
+  } finally {
+    setLoading(btn, spinner, icon, text, 'Sign In', false);
+  }
+});
+
+/* ════════════════════════════════════════════════════════════
+   LOGOUT
+════════════════════════════════════════════════════════════ */
+$('#logout-btn').addEventListener('click', async () => {
+  try {
+    await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+  } catch (_) {}
+  location.reload();
+});
+
+/* ════════════════════════════════════════════════════════════
+   FILE SELECTION & PREVIEW
+════════════════════════════════════════════════════════════ */
+function handleFileSelect(file) {
+  if (!file) return;
+  if (file.size > 4 * 1024 * 1024) {
+    toast('File exceeds 4 MB limit.', 'error');
+    return;
+  }
+  if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+    toast('Only PNG and JPG files are accepted.', 'error');
+    return;
+  }
+
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      selectedAspectRatio = +(img.naturalWidth / img.naturalHeight).toFixed(4);
+      $('#preview-dims').textContent = `${img.naturalWidth}×${img.naturalHeight} · AR ${selectedAspectRatio}`;
+    };
+    img.src = ev.target.result;
+    $('#preview-img').src = ev.target.result;
+    $('#preview-filename').textContent = file.name;
+    $('#preview-wrap').classList.add('show');
+    $('#drop-zone').style.display = 'none';
+    $('#upload-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+$('#cert-file').addEventListener('change', (e) => handleFileSelect(e.target.files[0]));
+
+// Drag and drop
+const dropZone = $('#drop-zone');
+['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, (e) => {
+  e.preventDefault(); dropZone.classList.add('drag-over');
+}));
+['dragleave','drop'].forEach(ev => dropZone.addEventListener(ev, (e) => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  if (ev === 'drop' && e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]);
+}));
+
+$('#preview-remove').addEventListener('click', () => {
+  selectedFile = null; selectedAspectRatio = null;
+  $('#preview-wrap').classList.remove('show');
+  $('#drop-zone').style.display = '';
+  $('#cert-file').value = '';
+  $('#upload-btn').disabled = true;
+  $('#preview-img').src = '';
+});
+
+/* ════════════════════════════════════════════════════════════
+   UPLOAD CERTIFICATE
+════════════════════════════════════════════════════════════ */
+$('#upload-btn').addEventListener('click', async () => {
+  if (!selectedFile) return;
+
+  hideAlert($('#upload-error'));
+  hideAlert($('#upload-success'));
+
+  const title  = $('#cert-title').value.trim();
+  const issuer = $('#cert-issuer').value.trim();
+  const date   = $('#cert-date').value;
+
+  if (!title)  { toast('Please enter a certificate title.', 'error'); return; }
+  if (!issuer) { toast('Please enter the issuer name.', 'error'); return; }
+  if (!date)   { toast('Please select the issue date.', 'error'); return; }
+
+  const btn     = $('#upload-btn');
+  const spinner = $('#upload-spinner');
+  const icon    = $('#upload-icon');
+  const text    = $('#upload-btn-text');
+  const progressWrap = $('#upload-progress-wrap');
+  const progressBar  = $('#upload-progress-bar');
+
+  setLoading(btn, spinner, icon, text, 'Uploading…', true);
+  progressWrap.classList.add('show');
+
+  // Simulate progress during upload
+  let progress = 0;
+  const progressInterval = setInterval(() => {
+    progress = Math.min(progress + Math.random() * 15, 85);
+    progressBar.style.width = progress + '%';
+  }, 200);
+
+  try {
+    // Step 1: Upload file to Vercel Blob
+    const filename = selectedFile.name;
+    const uploadRes = await fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': selectedFile.type },
+      body: selectedFile,
+      credentials: 'include',
+    });
+
+    if (!uploadRes.ok) {
+      const err = await uploadRes.json().catch(() => ({}));
+      throw new Error(err.error || `Upload failed (${uploadRes.status})`);
+    }
+
+    const { blob } = await uploadRes.json();
+    progressBar.style.width = '70%';
+
+    // Step 2: Fetch current content, append new cert, save back
+    const contentRes = await fetch('/api/content', { credentials: 'include' });
+    const contentJson = await contentRes.json();
+    const existing = contentJson.content || contentData;
+
+    const newCert = {
+      id:          crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36),
+      title,
+      issuer,
+      date,
+      aspectRatio: selectedAspectRatio,
+      file:        { pathname: blob.pathname, contentType: blob.contentType },
+    };
+
+    const updated = {
+      ...existing,
+      certificates: [...(existing.certificates || []), newCert],
+    };
+
+    progressBar.style.width = '85%';
+
+    const saveRes = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+      credentials: 'include',
+    });
+
+    if (!saveRes.ok) throw new Error('Failed to save content.');
+
+    progressBar.style.width = '100%';
+    contentData = updated;
+
+    clearInterval(progressInterval);
+    setTimeout(() => {
+      progressWrap.classList.remove('show');
+      progressBar.style.width = '0%';
+    }, 600);
+
+    toast(`"${title}" uploaded successfully!`, 'success');
+    showAlert($('#upload-success'), $('#upload-success-msg'), `Certificate "${title}" uploaded and saved.`, 'success');
+
+    // Reset upload form
+    $('#preview-remove').click();
+    $('#cert-title').value = '';
+    $('#cert-issuer').value = '';
+    $('#cert-date').value = '';
+
+    renderCertList();
+
+  } catch (err) {
+    clearInterval(progressInterval);
+    progressWrap.classList.remove('show');
+    progressBar.style.width = '0%';
+    toast(err.message, 'error');
+    showAlert($('#upload-error'), $('#upload-error-msg'), err.message);
+  } finally {
+    setLoading(btn, spinner, icon, text, 'Upload Certificate', false);
+    btn.disabled = true; // re-disable until new file selected
+  }
+});
+
+/* ════════════════════════════════════════════════════════════
+   LOAD & RENDER CONTENT
+════════════════════════════════════════════════════════════ */
+async function loadContent() {
+  try {
+    const res  = await fetch('/api/content', { credentials: 'include' });
+    const data = await res.json();
+    if (data.content) {
+      contentData = data.content;
+      populateContentEditor(contentData);
+      renderCertList();
+    }
+  } catch (_) {
+    toast('Could not load content from API.', 'error');
+  }
+}
+
+function populateContentEditor(data) {
+  if (data.hero) {
+    $('#hero-heading').value     = data.hero.heading  || '';
+    $('#hero-heading2').value    = data.hero.heading2 || '';
+    $('#hero-description').value = data.hero.description || '';
+  }
+  if (data.about) {
+    $('#about-who').value     = data.about.who     || '';
+    $('#about-excites').value = data.about.excites || '';
+    $('#about-focus').value   = data.about.focus   || '';
+  }
+}
+
+function renderCertList() {
+  const certs = contentData.certificates || [];
+  const body  = $('#cert-list-body');
+  const empty = $('#cert-empty');
+  $('#cert-count').textContent = certs.length;
+
+  if (!certs.length) {
+    body.innerHTML = '';
+    body.appendChild(empty);
+    empty.style.display = '';
+    return;
+  }
+
+  body.innerHTML = '';
+  certs.forEach((cert, idx) => {
+    const item = document.createElement('div');
+    item.className = 'cert-item';
+
+    // Thumb: use a signed viewUrl if present, otherwise placeholder
+    const thumbHtml = cert.viewUrl
+      ? `<img class="cert-thumb" src="${cert.viewUrl}" alt="${cert.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+      : '';
+    const placeholderHtml = `<div class="cert-thumb-placeholder" ${cert.viewUrl ? 'style="display:none"' : ''}><i class="fas fa-certificate"></i></div>`;
+
+    item.innerHTML = `
+      ${thumbHtml}
+      ${placeholderHtml}
+      <div class="cert-item-info">
+        <div class="cert-item-title">${escapeHtml(cert.title)}</div>
+        <div class="cert-item-meta">${escapeHtml(cert.issuer)} · ${cert.date || '—'}</div>
+      </div>
+      <div class="cert-item-actions">
+        ${cert.viewUrl ? `<a href="${cert.viewUrl}" target="_blank" class="btn btn-ghost btn-sm" title="Preview"><i class="fas fa-eye"></i></a>` : ''}
+        <button class="btn btn-danger btn-sm" data-idx="${idx}" title="Delete">
+          <i class="fas fa-trash-can"></i>
+        </button>
+      </div>
+    `;
+    body.appendChild(item);
+  });
+
+  // Delete handlers
+  $$('.btn-danger[data-idx]', body).forEach(btn => {
+    btn.addEventListener('click', () => deleteCert(+btn.dataset.idx));
+  });
+}
+
+async function deleteCert(idx) {
+  const cert = (contentData.certificates || [])[idx];
+  if (!cert) return;
+  if (!confirm(`Delete "${cert.title}"? This cannot be undone.`)) return;
+
+  const updated = {
+    ...contentData,
+    certificates: contentData.certificates.filter((_, i) => i !== idx),
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Failed to delete.');
+    contentData = updated;
+    renderCertList();
+    toast(`"${cert.title}" removed.`, 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   CONTENT EDITOR — SAVE
+════════════════════════════════════════════════════════════ */
+$('#content-save-btn').addEventListener('click', async () => {
+  hideAlert($('#content-error'));
+  hideAlert($('#content-success'));
+
+  const btn     = $('#content-save-btn');
+  const spinner = $('#content-spinner');
+  const icon    = $('#content-icon');
+  setLoading(btn, spinner, icon, null, '', true);
+  btn.querySelector('#content-spinner').style.display = 'inline-block';
+
+  const updated = {
+    ...contentData,
+    hero: {
+      heading:     $('#hero-heading').value.trim(),
+      heading2:    $('#hero-heading2').value.trim(),
+      description: $('#hero-description').value.trim(),
+    },
+    about: {
+      who:     $('#about-who').value.trim(),
+      excites: $('#about-excites').value.trim(),
+      focus:   $('#about-focus').value.trim(),
+    },
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Save failed.');
+    contentData = updated;
+    toast('Content saved successfully!', 'success');
+    showAlert($('#content-success'), $('#content-success-msg'), 'Content saved. Portfolio will reflect changes on next load.', 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+    showAlert($('#content-error'), $('#content-error-msg'), err.message);
+  } finally {
+    setLoading(btn, spinner, icon, null, '', false);
+    btn.innerHTML = `<span class="spinner" id="content-spinner"></span><i class="fas fa-floppy-disk" id="content-icon"></i> Save Content`;
+  }
+});
+
+$('#content-reset-btn').addEventListener('click', () => {
+  populateContentEditor(contentData);
+  toast('Fields reset to saved values.', 'info');
+});
+
+/* ════════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════════ */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+checkSession();
+</script>
+</body>
+</html>

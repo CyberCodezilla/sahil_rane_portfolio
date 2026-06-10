@@ -1,0 +1,13 @@
+{
+  "name": "sahil-rane-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Portfolio with admin panel and Vercel API routes",
+  "type": "commonjs",
+  "dependencies": {
+    "@upstash/redis": "^1.28.0",
+    "@vercel/blob": "^2.3.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

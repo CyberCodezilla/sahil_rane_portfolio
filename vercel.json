@@ -1,0 +1,21 @@
+{
+  "rewrites": [
+    { "source": "/api/login",    "destination": "/api/login.js" },
+    { "source": "/api/logout",   "destination": "/api/logout.js" },
+    { "source": "/api/session",  "destination": "/api/session.js" },
+    { "source": "/api/upload",   "destination": "/api/upload.js" },
+    { "source": "/api/content",  "destination": "/api/content.js" },
+    { "source": "/api/cert-url", "destination": "/api/cert-url.js" },
+    { "source": "/api/cert-file","destination": "/api/cert-file.js" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options",  "value": "nosniff" },
+        { "key": "X-Frame-Options",          "value": "DENY" },
+        { "key": "Referrer-Policy",          "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

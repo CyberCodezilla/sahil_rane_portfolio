@@ -5054,3 +5054,284 @@ body.light-mode .certificate-info {
         height: 40px;
     }
 }
+
+/* ============================================
+   LIVE CONTENT ENGINE STYLES
+   Certificate Cards, Lightbox, Admin Link
+   ============================================ */
+
+/* ── Live Certificate Grid ─────────────────── */
+.live-cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* ── Certificate Card ──────────────────────── */
+.cert-card-live {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.cert-card-live:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(99, 102, 241, 0.45);
+    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.18);
+}
+
+/* Thumbnail — preserves aspect ratio via padding-top hack */
+.cert-card-live-thumb {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: rgba(5, 5, 16, 0.8);
+}
+
+.cert-card-live-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* UNCROPPED — fills without cropping */
+    object-position: center;
+    transition: transform 0.4s ease;
+}
+
+.cert-card-live:hover .cert-card-live-thumb img {
+    transform: scale(1.04);
+}
+
+.cert-thumb-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(99, 102, 241, 0.4);
+    font-size: 2.5rem;
+}
+
+/* Card body */
+.cert-card-live-body {
+    padding: 0.85rem 1rem;
+}
+
+.cert-card-live-body h4 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cert-card-live-body .cert-issuer {
+    font-size: 0.75rem;
+    color: var(--primary-light, #818cf8);
+    margin-bottom: 0.2rem;
+}
+
+.cert-card-live-body .cert-date {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+}
+
+.cert-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-light, #818cf8);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    font-family: inherit;
+}
+
+.cert-view-btn:hover {
+    background: rgba(99, 102, 241, 0.22);
+    border-color: rgba(99, 102, 241, 0.6);
+    transform: translateY(-1px);
+}
+
+/* Light mode overrides for cert cards */
+body.light-mode .cert-card-live {
+    background: #ffffff;
+    border-color: rgba(99, 102, 241, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+body.light-mode .cert-card-live:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+}
+
+body.light-mode .cert-card-live-thumb {
+    background: #f8fafc;
+}
+
+/* ── Certificate Lightbox ──────────────────── */
+.cert-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cert-lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 16, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.cert-lightbox-inner {
+    position: relative;
+    z-index: 1;
+    max-width: min(90vw, 900px);
+    width: 100%;
+    background: rgba(13, 13, 21, 0.95);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 40px 80px rgba(0, 0, 0, 0.6),
+        0 0 60px rgba(99, 102, 241, 0.12);
+}
+
+.cert-lightbox-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.cert-lightbox-close:hover {
+    background: rgba(239, 68, 68, 0.4);
+    transform: scale(1.1);
+}
+
+.cert-lightbox-img-wrap {
+    width: 100%;
+    max-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #050508;
+    overflow: hidden;
+}
+
+.cert-lightbox-img-wrap img {
+    width: 100%;
+    height: 100%;
+    max-height: 75vh;
+    object-fit: contain; /* FULLY UNCROPPED */
+    object-position: center;
+    display: block;
+}
+
+.cert-lightbox-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid rgba(99, 102, 241, 0.12);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.cert-lightbox-meta strong {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cert-lightbox-meta span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Light mode lightbox */
+body.light-mode .cert-lightbox-inner {
+    background: #ffffff;
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+body.light-mode .cert-lightbox-img-wrap {
+    background: #f8fafc;
+}
+
+body.light-mode .cert-lightbox-close {
+    border-color: rgba(0, 0, 0, 0.12);
+    background: rgba(0, 0, 0, 0.06);
+    color: #0f172a;
+}
+
+body.light-mode .cert-lightbox-meta {
+    border-color: rgba(0, 0, 0, 0.08);
+    background: #f8fafc;
+}
+
+/* ── Admin Portal Link ─────────────────────── */
+.admin-portal-link {
+    position: fixed;
+    bottom: 1.2rem;
+    right: 1.2rem;
+    z-index: 500;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    color: rgba(99, 102, 241, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.admin-portal-link:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.45);
+    color: var(--primary-light, #818cf8);
+    transform: scale(1.1);
+}
+
+body.light-mode .admin-portal-link {
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(99, 102, 241, 0.2);
+    color: rgba(99, 102, 241, 0.4);
+}
+

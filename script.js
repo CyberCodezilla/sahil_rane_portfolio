@@ -1828,8 +1828,212 @@ function animateCounter(element) {
 // Initialize stat counters
 document.addEventListener('DOMContentLoaded', () => {
     animateStatCounters();
+    initLiveContent();
+    injectAdminPortalLink();
 });
 
 console.log('%c👋 Hello Developer!', 'font-size: 24px; font-weight: bold; color: #6366f1;');
 console.log('%c Built with ❤️ by Sahil Suresh Rane', 'font-size: 14px; color: #06b6d4;');
 console.log('%c Code • Optimize • Deploy • Repeat', 'font-size: 12px; color: #a1a1aa;');
+
+/* ============================================
+   LIVE CONTENT ENGINE
+   Fetches dynamic content from /api/content
+   and hydrates the portfolio sections.
+   Fully graceful: no errors if API is offline.
+   ============================================ */
+async function initLiveContent() {
+    try {
+        const res = await fetch('/api/content', { credentials: 'include' });
+        if (!res.ok) return;
+        const { content } = await res.json();
+        if (!content) return;
+
+        // ── Inject live certificate cards ───────────────
+        const certs = content.certificates;
+        if (Array.isArray(certs) && certs.length) {
+            injectCertificateCards(certs);
+        }
+
+        // ── Hydrate Hero text (if admin has saved overrides) ─
+        if (content.hero) {
+            const h = content.hero;
+            const lines = document.querySelectorAll('.hero-title .title-line');
+            if (h.heading  && lines[0]) lines[0].textContent = h.heading;
+            if (h.heading2 && lines[1]) lines[1].textContent = h.heading2;
+            if (h.description) {
+                const desc = document.querySelector('.hero-description');
+                if (desc) desc.textContent = h.description;
+            }
+        }
+
+        // ── Hydrate About blurbs ────────────────────────
+        if (content.about) {
+            const a = content.about;
+            const aboutCards = document.querySelectorAll('.about-card-compact p');
+            if (a.who     && aboutCards[0]) aboutCards[0].textContent = a.who;
+            if (a.excites && aboutCards[1]) aboutCards[1].textContent = a.excites;
+            if (a.focus   && aboutCards[3]) aboutCards[3].textContent = a.focus;
+        }
+
+    } catch (_) {
+        // Silently fail if API is unreachable (local dev without backend)
+    }
+}
+
+function injectCertificateCards(certs) {
+    const achievementsSection = document.querySelector('#achievements .achievements-grid-compact');
+    if (!achievementsSection) return;
+
+    // Create a dedicated row for live certs
+    let certRow = document.getElementById('live-cert-row');
+    if (!certRow) {
+        // Insert a divider + heading before the cert row
+        const parent = achievementsSection.parentElement;
+        const divider = document.createElement('div');
+        divider.className = 'section-divider';
+        divider.style.marginTop = '1.5rem';
+        const heading = document.createElement('div');
+        heading.className = 'section-header-compact';
+        heading.style.marginTop = '1.5rem';
+        heading.innerHTML = '<h3 class="subsection-title">Certificates & <span class="highlight">Credentials</span></h3>';
+        certRow = document.createElement('div');
+        certRow.id = 'live-cert-row';
+        certRow.className = 'live-cert-grid';
+        parent.appendChild(divider);
+        parent.appendChild(heading);
+        parent.appendChild(certRow);
+    }
+
+    certRow.innerHTML = '';
+
+    certs.forEach((cert, idx) => {
+        const card = document.createElement('div');
+        card.className = 'cert-card-live';
+        card.setAttribute('data-cert-idx', idx);
+
+        const hasImage = cert.viewUrl;
+        const aspectPadding = cert.aspectRatio
+            ? (100 / cert.aspectRatio).toFixed(2) + '%'
+            : '66.67%';
+
+        card.innerHTML = `
+            <div class="cert-card-live-thumb" style="padding-top:${aspectPadding}">
+                ${hasImage
+                    ? `<img src="${escapeAttr(cert.viewUrl)}" alt="${escapeHtml(cert.title)}" loading="lazy">`
+                    : `<div class="cert-thumb-icon"><i class="fas fa-certificate"></i></div>`
+                }
+            </div>
+            <div class="cert-card-live-body">
+                <h4>${escapeHtml(cert.title)}</h4>
+                <p class="cert-issuer">${escapeHtml(cert.issuer)}</p>
+                <p class="cert-date">${escapeHtml(cert.date || '')}</p>
+                ${hasImage
+                    ? `<button class="cert-view-btn" data-cert-idx="${idx}" aria-label="View ${escapeAttr(cert.title)} certificate">
+                        <i class="fas fa-expand"></i> View
+                       </button>`
+                    : ''
+                }
+            </div>
+        `;
+        certRow.appendChild(card);
+    });
+
+    // Attach lightbox triggers
+    certRow.querySelectorAll('.cert-view-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = +btn.dataset.certIdx;
+            openCertLightbox(certs[idx]);
+        });
+    });
+
+    // Card click also opens lightbox
+    certRow.querySelectorAll('.cert-card-live').forEach(card => {
+        card.addEventListener('click', () => {
+            const idx = +card.dataset.certIdx;
+            if (certs[idx]?.viewUrl) openCertLightbox(certs[idx]);
+        });
+    });
+
+    // Animate in
+    gsap.fromTo('.cert-card-live',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out', delay: 0.2 }
+    );
+}
+
+/* ─── Certificate Lightbox ───────────────────────────────── */
+function openCertLightbox(cert) {
+    if (!cert?.viewUrl) return;
+
+    // Remove any existing lightbox
+    const existing = document.getElementById('cert-lightbox');
+    if (existing) existing.remove();
+
+    const lb = document.createElement('div');
+    lb.id = 'cert-lightbox';
+    lb.className = 'cert-lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', cert.title);
+    lb.innerHTML = `
+        <div class="cert-lightbox-backdrop"></div>
+        <div class="cert-lightbox-inner">
+            <button class="cert-lightbox-close" aria-label="Close lightbox">
+                <i class="fas fa-xmark"></i>
+            </button>
+            <div class="cert-lightbox-img-wrap">
+                <img src="${escapeAttr(cert.viewUrl)}" alt="${escapeHtml(cert.title)}" loading="lazy">
+            </div>
+            <div class="cert-lightbox-meta">
+                <strong>${escapeHtml(cert.title)}</strong>
+                <span>${escapeHtml(cert.issuer)}${cert.date ? ' · ' + escapeHtml(cert.date) : ''}</span>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(lb);
+
+    // Animate open
+    gsap.fromTo(lb, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power2.out' });
+    gsap.fromTo(lb.querySelector('.cert-lightbox-inner'),
+        { scale: 0.9, y: 20 },
+        { scale: 1, y: 0, duration: 0.35, ease: 'back.out(1.4)' }
+    );
+
+    // Close triggers
+    const close = () => {
+        gsap.to(lb, {
+            opacity: 0, duration: 0.2, ease: 'power2.in',
+            onComplete: () => lb.remove()
+        });
+    };
+    lb.querySelector('.cert-lightbox-close').addEventListener('click', close);
+    lb.querySelector('.cert-lightbox-backdrop').addEventListener('click', close);
+    document.addEventListener('keydown', function onEsc(e) {
+        if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onEsc); }
+    });
+}
+
+/* ─── Admin Portal Link (subtle, bottom-right) ────────────── */
+function injectAdminPortalLink() {
+    const link = document.createElement('a');
+    link.href = '/admin.html';
+    link.className = 'admin-portal-link';
+    link.innerHTML = '<i class="fas fa-lock"></i>';
+    link.title = 'Admin Portal';
+    link.setAttribute('aria-label', 'Admin Portal');
+    document.body.appendChild(link);
+}
+
+/* ─── HTML escape helpers ───────────────────────────────── */
+function escapeHtml(str) {
+    return String(str || '')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escapeAttr(str) {
+    return String(str || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
