@@ -3597,12 +3597,29 @@ body.light-mode .deck-shuffle-shadow {
 
 /* Scrollable Section Container */
 .scrollable-section {
-    max-height: calc(100vh - 120px);
-    overflow: hidden;
+    max-height: calc(100vh - 170px);
+    overflow-y: auto;
     padding: 2rem 80px 2rem 1.5rem;
     margin: 0 auto;
     max-width: 1400px;
     position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
+}
+
+/* Custom scrollbar styling for premium look */
+.scrollable-section::-webkit-scrollbar {
+    width: 6px;
+}
+.scrollable-section::-webkit-scrollbar-track {
+    background: transparent;
+}
+.scrollable-section::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 3px;
+}
+.scrollable-section::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.5);
 }
 
 /* Page Navigation Arrows */
@@ -5300,38 +5317,5 @@ body.light-mode .cert-lightbox-meta {
     background: #f8fafc;
 }
 
-/* ── Admin Portal Link ─────────────────────── */
-.admin-portal-link {
-    position: fixed;
-    bottom: 1.2rem;
-    right: 1.2rem;
-    z-index: 500;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(99, 102, 241, 0.15);
-    color: rgba(99, 102, 241, 0.35);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    text-decoration: none;
-    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.2s;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
 
-.admin-portal-link:hover {
-    background: rgba(99, 102, 241, 0.15);
-    border-color: rgba(99, 102, 241, 0.45);
-    color: var(--primary-light, #818cf8);
-    transform: scale(1.1);
-}
-
-body.light-mode .admin-portal-link {
-    background: rgba(0, 0, 0, 0.04);
-    border-color: rgba(99, 102, 241, 0.2);
-    color: rgba(99, 102, 241, 0.4);
-}
 

@@ -77,6 +77,37 @@ function initEpicCardDeck() {
     const wheelCooldown = 650; // ms between scrolls (matches animation duration)
     
     document.addEventListener('wheel', (e) => {
+        // Find if wheel event target is inside a scrollable container
+        let target = e.target;
+        let isScrollable = false;
+        while (target && target !== document.body) {
+            const style = window.getComputedStyle(target);
+            const overflowY = style.overflowY;
+            const isScrollableY = overflowY === 'auto' || overflowY === 'scroll';
+            if (isScrollableY && target.scrollHeight - target.clientHeight > 8) {
+                const scrollTop = target.scrollTop;
+                const scrollHeight = target.scrollHeight;
+                const clientHeight = target.clientHeight;
+                const delta = e.deltaY;
+                
+                // If scrolling down and we have space to scroll down
+                if (delta > 0 && scrollTop + clientHeight < scrollHeight - 8) {
+                    isScrollable = true;
+                    break;
+                }
+                // If scrolling up and we have space to scroll up
+                if (delta < 0 && scrollTop > 8) {
+                    isScrollable = true;
+                    break;
+                }
+            }
+            target = target.parentElement;
+        }
+        
+        if (isScrollable) {
+            return; // Let internal scrolling happen
+        }
+        
         e.preventDefault();
         
         const now = Date.now();
@@ -1729,7 +1760,12 @@ function initSmoothScroll() {
         }
         */
         
-        section.appendChild(navContainer);
+        const cardSection = section.closest('.card-section');
+        if (cardSection) {
+            cardSection.appendChild(navContainer);
+        } else {
+            section.appendChild(navContainer);
+        }
         // section.appendChild(indicatorsContainer);
         
         // Navigation logic
@@ -2080,14 +2116,6 @@ function openCertLightbox(cert) {
 
 /* ─── Admin Portal Link (subtle, bottom-right) ────────────── */
 function injectAdminPortalLink() {
-    const link = document.createElement('a');
-    link.href = '/admin.html';
-    link.className = 'admin-portal-link';
-    link.innerHTML = '<i class="fas fa-lock"></i>';
-    link.title = 'Admin Portal';
-    link.setAttribute('aria-label', 'Admin Portal');
-    document.body.appendChild(link);
-
     // Keyboard shortcut: Ctrl + Shift + CapsLock to open admin portal
     window.addEventListener('keydown', (e) => {
         if (e.ctrlKey && e.shiftKey && e.key === 'CapsLock') {
