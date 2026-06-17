@@ -51,6 +51,15 @@
     
     /* Theme transition */
     --theme-transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Fluid Type Scales using clamp() to prevent mobile clipping and desktop bloat */
+    --font-hero-title: clamp(2rem, 4.5vw + 1rem, 4.5rem);
+    --font-section-heading: clamp(1.75rem, 3.5vw, 3rem);
+    --font-body-copy: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
+
+    /* Adaptive Spacing Matrix */
+    --fluid-gutter: clamp(1rem, 4vw, 3.5rem);
+    --card-min-width: clamp(260px, 28vw, 360px);
 }
 
 /* ============================================
@@ -479,6 +488,9 @@ html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 body {
@@ -489,8 +501,13 @@ body {
     transform: translateZ(0);
     backface-visibility: hidden;
     overflow: hidden;
+    overflow-x: hidden;
     cursor: auto;
     height: 100vh;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
     /* Performance: Enable GPU acceleration */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -659,7 +676,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px 40px;
+    padding: 30px var(--fluid-gutter);
     overflow: hidden;
     /* Performance: GPU acceleration */
     will-change: transform, opacity;
@@ -919,7 +936,7 @@ body {
 }
 
 .title-line {
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: var(--font-hero-title);
     font-weight: 800;
     line-height: 1.1;
     font-family: 'Poppins', sans-serif;
@@ -929,7 +946,7 @@ body {
 .highlight-name {
     position: relative;
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(2.5rem, 5vw, 4.8rem);
+    font-size: var(--font-hero-title);
     font-weight: 900;
     letter-spacing: -0.02em;
     color: transparent;
@@ -2047,7 +2064,7 @@ body.light-mode .profile-photo:hover {
 }
 
 .section-title-compact {
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: var(--font-section-heading);
     font-weight: 700;
     font-family: 'Space Grotesk', sans-serif;
     margin-bottom: 12px;
@@ -2073,7 +2090,7 @@ body.light-mode .profile-photo:hover {
 
 .section-desc-compact {
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: var(--font-body-copy);
     font-family: 'Outfit', sans-serif;
     font-weight: 400;
     letter-spacing: 0.01em;
@@ -2164,8 +2181,8 @@ body.light-mode .profile-photo:hover {
 
 .skills-grid-compact {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: 1.5rem;
 }
 
 .skill-card-compact {
@@ -2377,8 +2394,8 @@ body.light-mode .profile-photo:hover {
 
 .projects-grid-compact {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: 1.5rem;
 }
 
 .project-card-compact {
@@ -2509,8 +2526,8 @@ body.light-mode .profile-photo:hover {
 
 .hackathons-grid-compact {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    gap: 1.5rem;
 }
 
 .hackathon-card-compact {
@@ -3446,15 +3463,6 @@ body.light-mode .theme-toggle::before {
     .nav-contact {
         display: none;
     }
-    
-    .skills-grid-compact {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .projects-grid-compact,
-    .hackathons-grid-compact {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 @media (max-width: 900px) {
@@ -3506,12 +3514,6 @@ body.light-mode .theme-toggle::before {
 @media (max-width: 600px) {
     .card-section {
         padding: 20px;
-    }
-    
-    .skills-grid-compact,
-    .projects-grid-compact,
-    .hackathons-grid-compact {
-        grid-template-columns: 1fr;
     }
     
     .skill-card-compact {
@@ -3811,7 +3813,7 @@ body.light-mode .deck-shuffle-shadow {
 
 .github-stats-compact {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     margin-top: 2rem;
     max-width: 1000px;
@@ -4726,9 +4728,13 @@ body.light-mode .deck-shuffle-shadow {
         0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.certificate-image {
+.certificate-image,
+.certificate-frame img {
     width: 100%;
+    max-width: 100%;
     height: auto;
+    object-fit: contain;
+    aspect-ratio: auto;
     display: block;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
@@ -4918,12 +4924,10 @@ body.light-mode .certificate-info {
         height: min(70vw, 320px);
     }
 
-    .projects-grid-compact,
-    .hackathons-grid-compact,
-    .skills-grid-compact,
     .journey-grid,
     .about-grid-compact,
     .github-stats-wrapper,
+    .github-stats-compact,
     .repos-grid,
     .achievements-grid,
     .achievements-grid-compact,
@@ -4942,7 +4946,11 @@ body.light-mode .certificate-info {
 @media (max-width: 768px) {
     .navbar {
         height: 60px;
-        padding: 0 12px;
+        padding: 0;
+    }
+
+    .nav-container {
+        padding: 0 16px;
     }
 
     .card-deck-container {
@@ -4957,22 +4965,6 @@ body.light-mode .certificate-info {
 
     .section-header-compact {
         margin-bottom: 20px;
-    }
-
-    .section-title-compact {
-        font-size: clamp(1.5rem, 7vw, 2rem);
-    }
-
-    .section-desc-compact {
-        font-size: 0.92rem;
-    }
-
-    .title-line {
-        font-size: clamp(1.5rem, 8vw, 2.2rem);
-    }
-
-    .highlight-name {
-        font-size: clamp(1.8rem, 10vw, 2.8rem);
     }
 
     .hero-cta {
@@ -4995,6 +4987,7 @@ body.light-mode .certificate-info {
     .journey-grid,
     .about-grid-compact,
     .github-stats-wrapper,
+    .github-stats-compact,
     .repos-grid,
     .achievements-grid,
     .achievements-grid-compact,

@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCardAnimations();
     initThemeToggle();
     initSmoothScroll();
+    initMobileMenu();
 });
 
 /* ============================================
@@ -1402,7 +1403,7 @@ function initSmoothScroll() {
                 });
                 
                 // Close mobile menu if open
-                const hamburger = document.querySelector('.hamburger');
+                const hamburger = document.querySelector('.nav-toggle');
                 const navLinks = document.querySelector('.nav-links');
                 if (hamburger && navLinks) {
                     hamburger.classList.remove('active');
@@ -1417,7 +1418,7 @@ function initSmoothScroll() {
    MOBILE MENU
    ============================================ */
 function initMobileMenu() {
-    const hamburger = document.querySelector('.hamburger');
+    const hamburger = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
     const navRight = document.querySelector('.nav-right');
     
@@ -1497,13 +1498,13 @@ function initMobileMenu() {
                 .mobile-contact i {
                     color: var(--primary);
                 }
-                .hamburger.active span:nth-child(1) {
+                .nav-toggle.active span:nth-child(1) {
                     transform: rotate(45deg) translate(5px, 5px);
                 }
-                .hamburger.active span:nth-child(2) {
+                .nav-toggle.active span:nth-child(2) {
                     opacity: 0;
                 }
-                .hamburger.active span:nth-child(3) {
+                .nav-toggle.active span:nth-child(3) {
                     transform: rotate(-45deg) translate(7px, -7px);
                 }
             `;
@@ -2197,4 +2198,17 @@ function updateGitHubStatsTheme() {
             : "https://github-readme-stats.vercel.app/api?username=CyberCodezilla&show_icons=true&theme=tokyonight&bg_color=050510&title_color=6366f1&icon_color=06b6d4&text_color=f8fafc&border_color=6366f1&border_radius=14&hide_border=true";
     }
 }
+
+// Synchronize layout positions dynamically on device resize or shift
+let debounceTimer;
+window.addEventListener("resize", () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        // Forces GSAP ScrollTrigger to recalculate positioning bounds for the 3D Card Deck
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh();
+            console.log('ScrollTrigger refreshed');
+        }
+    }, 200); 
+});
 
