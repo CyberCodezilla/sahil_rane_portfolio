@@ -1,19 +1,13 @@
 /* ============================================
    PORTFOLIO - SAHIL SURESH RANE
    JavaScript - Animations & Interactions
-   PERFORMANCE OPTIMIZED
+   PERFORMANCE OPTIMIZED (Updated Aug 2, 2026)
    ============================================ */
 
-// Global variables for card deck
-let currentSection = 0;
-let totalSections = 0;
-let isAnimating = false;
-let touchStartY = 0;
-let touchEndY = 0;
-let cardSections = [];
-const animatedCards = new Set(); // Track visited cards
+// Global visited card tracker for reveal animations
+const animatedCards = new Set();
 
-// Performance: Throttle utility for smooth 120fps
+// Performance: Throttle utility for smooth rendering
 const throttle = (fn, ms) => {
     let lastCall = 0;
     return (...args) => {
@@ -28,18 +22,33 @@ const throttle = (fn, ms) => {
 // Performance: RAF-based smooth value interpolation
 const lerp = (start, end, factor) => start + (end - start) * factor;
 
-// Wait for DOM to load
+// Single Master Initialization on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize all features
+    // Theme toggle MUST run first so body class is set before WebGL initialization
+    initThemeToggle();
     initLoader();
-    initEpicCardDeck();
     initCursor();
-    initParticles();
+    initGalaxyBackground();
+    initNavbar();
+    initSmoothScroll();
     initTypingEffect();
     initCardAnimations();
-    initThemeToggle();
-    initSmoothScroll();
+    initScrollAnimations();
+    initParallax();
     initMobileMenu();
+
+    // Deferred initialization for optimal performance
+    requestAnimationFrame(() => {
+        animateStatCounters();
+        initLiveContent();
+        injectAdminPortalLink();
+        updateGitHubStatsTheme();
+        fetchLiveGitHubStats();
+        initRevealOnScroll();
+        animateHero();
+        initSatelliteTelemetry();
+        initFloatingAstronaut();
+    });
 });
 
 /* ============================================
@@ -54,550 +63,79 @@ function initLoader() {
     window.addEventListener('load', () => {
         setTimeout(() => {
             loader.classList.add('hidden');
-            // Epic entrance for first card
-            epicCardEntrance(0);
-        }, 800);
+        }, 600);
     });
 }
+
+// Global Smooth Scroll Helper
+window.goToSection = function(target) {
+    const sections = ['#home', '#skills', '#about', '#projects', '#achievements', '#contact'];
+    let targetEl = null;
+
+    if (typeof target === 'number') {
+        const selector = sections[target] || sections[0];
+        targetEl = document.querySelector(selector);
+    } else if (typeof target === 'string') {
+        targetEl = document.querySelector(target);
+    }
+
+    if (targetEl) {
+        const offsetTop = targetEl.offsetTop - 75;
+        window.scrollTo({
+            top: Math.max(0, offsetTop),
+            behavior: 'smooth'
+        });
+    }
+};
 
 /* ============================================
-   EPIC 3D CARD DECK ANIMATION SYSTEM
+   NAVBAR & SCROLL SPY ACTIVE TABS SYSTEM
    ============================================ */
-function initEpicCardDeck() {
-    cardSections = document.querySelectorAll('.card-section');
-    const pageDots = document.querySelectorAll('.page-dot');
-    totalSections = cardSections.length;
-    
-    console.log('Card Deck Initialized:', totalSections, 'sections found');
-    
-    // Initialize card positions with GSAP
-    initializeCardPositions();
-    
-    // Wheel navigation - smooth and responsive
-    let lastWheelTime = 0;
-    const wheelCooldown = 650; // ms between scrolls (matches animation duration)
-    
-    document.addEventListener('wheel', (e) => {
-        // Find if wheel event target is inside a scrollable container
-        let target = e.target;
-        let isScrollable = false;
-        while (target && target !== document.body) {
-            const style = window.getComputedStyle(target);
-            const overflowY = style.overflowY;
-            const isScrollableY = overflowY === 'auto' || overflowY === 'scroll';
-            if (isScrollableY && target.scrollHeight - target.clientHeight > 8) {
-                const scrollTop = target.scrollTop;
-                const scrollHeight = target.scrollHeight;
-                const clientHeight = target.clientHeight;
-                const delta = e.deltaY;
-                
-                // If scrolling down and we have space to scroll down
-                if (delta > 0 && scrollTop + clientHeight < scrollHeight - 8) {
-                    isScrollable = true;
-                    break;
-                }
-                // If scrolling up and we have space to scroll up
-                if (delta < 0 && scrollTop > 8) {
-                    isScrollable = true;
-                    break;
-                }
-            }
-            target = target.parentElement;
-        }
-        
-        if (isScrollable) {
-            return; // Let internal scrolling happen
-        }
-        
-        e.preventDefault();
-        
-        const now = Date.now();
-        if (isAnimating || now - lastWheelTime < wheelCooldown) return;
-        
-        const delta = e.deltaY;
-        
-        if (delta > 20 && currentSection < totalSections - 1) {
-            lastWheelTime = now;
-            console.log('Scrolling DOWN to section', currentSection + 1);
-            navigateToCard(currentSection + 1, 'down');
-        } else if (delta < -20 && currentSection > 0) {
-            lastWheelTime = now;
-            console.log('Scrolling UP to section', currentSection - 1);
-            navigateToCard(currentSection - 1, 'up');
-        }
-    }, { passive: false });
-    
-    // Keyboard navigation
-    document.addEventListener('keydown', handleKeyboard);
-    
-    // Touch navigation with velocity
-    let touchStartTime = 0;
-    document.addEventListener('touchstart', (e) => {
-        touchStartY = e.changedTouches[0].screenY;
-        touchStartTime = Date.now();
-    }, { passive: true });
-    
-    document.addEventListener('touchend', (e) => {
-        if (isAnimating) return;
-        
-        touchEndY = e.changedTouches[0].screenY;
-        const swipeDistance = touchStartY - touchEndY;
-        const swipeTime = Date.now() - touchStartTime;
-        const velocity = Math.abs(swipeDistance) / swipeTime;
-
-        // On smaller screens cards can scroll vertically. Only switch sections
-        // when user swipes at the scroll boundaries of the active card.
-        const activeCard = cardSections[currentSection];
-        if (activeCard) {
-            const hasVerticalOverflow = activeCard.scrollHeight - activeCard.clientHeight > 8;
-            if (hasVerticalOverflow) {
-                const atTop = activeCard.scrollTop <= 2;
-                const atBottom = activeCard.scrollTop + activeCard.clientHeight >= activeCard.scrollHeight - 2;
-
-                if ((swipeDistance > 0 && !atBottom) || (swipeDistance < 0 && !atTop)) {
-                    return;
-                }
-            }
-        }
-        
-        if (Math.abs(swipeDistance) > 30 || velocity > 0.5) {
-            if (swipeDistance > 0 && currentSection < totalSections - 1) {
-                navigateToCard(currentSection + 1, 'down');
-            } else if (swipeDistance < 0 && currentSection > 0) {
-                navigateToCard(currentSection - 1, 'up');
-            }
-        }
-    }, { passive: true });
-    
-    // Page dot navigation
-    pageDots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            if (!isAnimating && index !== currentSection) {
-                const direction = index > currentSection ? 'down' : 'up';
-                navigateToCard(index, direction);
-            }
-        });
-    });
-}
-
-function initializeCardPositions() {
-    // Set perspective on container for 3D depth
-    const container = document.querySelector('.card-deck-container');
-    if (container) {
-        container.style.perspective = '1200px';
-        container.style.perspectiveOrigin = '50% 50%';
-    }
-    
-    cardSections.forEach((card, index) => {
-        card.style.willChange = 'transform, opacity';
-        
-        if (index === 0) {
-            // First card visible
-            gsap.set(card, {
-                opacity: 1,
-                y: 0,
-                scale: 1
-            });
-        } else {
-            // Other cards hidden below
-            gsap.set(card, {
-                opacity: 0,
-                y: '100%',
-                scale: 1
-            });
-        }
-    });
-}
-
-// ============================================
-// ✨ SMOOTH MORPHING CARD TRANSITIONS
-// ============================================
-function navigateToCard(targetIndex, direction) {
-    if (isAnimating || targetIndex === currentSection) return;
-    
-    isAnimating = true;
-    const previousIndex = currentSection;
-    currentSection = targetIndex;
-    
-    const currentCard = cardSections[previousIndex];
-    const nextCard = cardSections[targetIndex];
-    
-    // Update UI
-    updatePageDots();
-    
-    // Always show transition effect
-    createSmoothReveal(direction);
-    
-    // Smooth timing
-    const duration = 0.8;
-    
-    // Create master timeline
-    const tl = gsap.timeline({
-        onComplete: () => {
-            isAnimating = false;
-            // Always animate content
-            animateCardContent(nextCard);
-        }
-    });
-    
-    if (direction === 'down') {
-        // Current card - smooth slide out
-        tl.to(currentCard, {
-            y: '-50%',
-            opacity: 0,
-            duration: duration * 0.6,
-            ease: 'power2.inOut'
-        });
-        
-        // Set next card starting position (off-screen)
-        gsap.set(nextCard, { y: '50%', opacity: 0 });
-        
-        // Next card slides in
-        tl.to(nextCard, {
-            y: 0,
-            opacity: 1,
-            duration: duration,
-            ease: 'power2.out'
-        }, '-=0.3');
-        
-    } else {
-        // Current card - slide down
-        tl.to(currentCard, {
-            y: '50%',
-            opacity: 0,
-            duration: duration * 0.6,
-            ease: 'power2.inOut'
-        });
-        
-        // Set next card starting position (off-screen above)
-        gsap.set(nextCard, { y: '-50%', opacity: 0 });
-        
-        // Previous card slides in
-        tl.to(nextCard, {
-            y: 0,
-            opacity: 1,
-            duration: duration,
-            ease: 'power2.out'
-        }, '-=0.3');
-    }
-}
-
-// ============================================
-// 🌊 SMOOTH REVEAL EFFECT - Elegant & Clean
-// ============================================
-function createSmoothReveal(direction) {
-    const container = document.querySelector('.card-deck-container');
-    if (!container) return;
-    
-    // Create gradient wipe overlay
-    const wipe = document.createElement('div');
-    wipe.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 9999;
-        background: linear-gradient(${direction === 'down' ? '0deg' : '180deg'},
-            transparent 0%,
-            rgba(99, 102, 241, 0.08) 30%,
-            rgba(99, 102, 241, 0.15) 50%,
-            rgba(99, 102, 241, 0.08) 70%,
-            transparent 100%);
-        opacity: 0;
-        transform: translateY(${direction === 'down' ? '-100%' : '100%'});
-    `;
-    container.appendChild(wipe);
-    
-    // Animate the wipe across the screen
-    gsap.timeline()
-        .to(wipe, {
-            opacity: 1,
-            duration: 0.15,
-            ease: 'power1.in'
-        })
-        .to(wipe, {
-            y: direction === 'down' ? '100%' : '-100%',
-            duration: 0.5,
-            ease: 'power2.inOut'
-        }, 0)
-        .to(wipe, {
-            opacity: 0,
-            duration: 0.2,
-            ease: 'power1.out',
-            onComplete: () => wipe.remove()
-        }, '-=0.2');
-    
-    // Add subtle shimmer particles
-    createShimmerParticles(container, direction);
-}
-
-// ✨ Subtle shimmer particles for extra polish
-function createShimmerParticles(container, direction) {
-    const particleCount = 12;
-    
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        const size = 3 + Math.random() * 4;
-        const xPos = Math.random() * 100;
-        const delay = Math.random() * 0.3;
-        
-        particle.style.cssText = `
-            position: fixed;
-            left: ${xPos}%;
-            ${direction === 'down' ? 'top: -20px' : 'bottom: -20px'};
-            width: ${size}px;
-            height: ${size}px;
-            background: radial-gradient(circle, 
-                rgba(255, 255, 255, 0.9) 0%, 
-                rgba(99, 102, 241, 0.6) 50%,
-                transparent 100%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            opacity: 0;
-        `;
-        container.appendChild(particle);
-        
-        // Animate particle
-        gsap.timeline()
-            .to(particle, {
-                opacity: 1,
-                duration: 0.2,
-                delay: delay
-            })
-            .to(particle, {
-                y: direction === 'down' ? window.innerHeight + 40 : -(window.innerHeight + 40),
-                duration: 0.6 + Math.random() * 0.3,
-                ease: 'power1.inOut'
-            }, `-=${0.15}`)
-            .to(particle, {
-                opacity: 0,
-                duration: 0.2,
-                onComplete: () => particle.remove()
-            }, '-=0.25');
-    }
-}
-
-// Disabled - replaced with new effects
-function createDepthShadow(direction) { return; }
-function createMomentumTrail(card, direction) { return; }
-function createEdgeGlow(direction) { return; }
-function animateContentParallax(card, direction) { return; }
-
-// ✨ Smooth entrance animation for first card
-function epicCardEntrance(index) {
-    const card = cardSections[index];
-    if (!card) return;
-    
-    // Smooth elegant entrance
-    gsap.fromTo(card,
-        {
-            opacity: 0,
-            y: 40,
-            scale: 0.96
-        },
-        {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.9,
-            ease: 'power2.out',
-            onComplete: () => animateCardContent(card)
-        }
-    );
-}
-
-// Flash effect on first load - made subtle
-function createEntranceFlash() {
-    const flash = document.createElement('div');
-    flash.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(ellipse at center, 
-            rgba(99, 102, 241, 0.1) 0%, 
-            transparent 70%);
-        pointer-events: none;
-        z-index: 9999;
-        opacity: 0;
-    `;
-    document.body.appendChild(flash);
-    
-    gsap.to(flash, {
-        opacity: 1,
-        duration: 0.3,
-        ease: 'power2.out',
-        onComplete: () => {
-            gsap.to(flash, {
-                opacity: 0,
-                duration: 0.4,
-                ease: 'power2.in',
-                onComplete: () => flash.remove()
-            });
-        }
-    });
-}
-
-// Disabled for performance
-
-// Disabled for performance
-function createEntranceParticles() { return; }
-
-// animatedCards is defined globally at top of file
-
-// 🎭 Smooth content reveal animation with text effects - only runs ONCE per card
-function animateCardContent(card) {
-    if (!card) return;
-    
-    // Skip animation if this card was already shown
-    if (animatedCards.has(card)) return;
-    animatedCards.add(card);
-    
-    // Animate section title with letter-by-letter effect
-    const title = card.querySelector('.section-title-compact');
-    if (title) {
-        animateTextReveal(title);
-    }
-    
-    // Animate description with fade up
-    const desc = card.querySelector('.section-desc-compact');
-    if (desc) {
-        gsap.fromTo(desc,
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.6, delay: 0.4, ease: 'power2.out' }
-        );
-    }
-    
-    // Get grid/list containers
-    const containers = card.querySelectorAll('.skills-grid-compact, .journey-grid, .projects-grid-compact, .hackathons-grid-compact, .about-grid-compact, .stats-row-compact');
-    
-    containers.forEach((container, containerIndex) => {
-        const items = container.children;
-        
-        gsap.fromTo(items,
-            { 
-                opacity: 0, 
-                y: 30
-            },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                stagger: {
-                    each: 0.08,
-                    from: 'start'
-                },
-                delay: 0.5 + (containerIndex * 0.1),
-                ease: 'power3.out'
-            }
-        );
-    });
-    
-    // Contact section - smooth entrance
-    const contactBoxes = card.querySelectorAll('.contact-box-compact, .contact-card-compact');
-    if (contactBoxes.length) {
-        gsap.fromTo(contactBoxes,
-            { opacity: 0, y: 25 },
-            { 
-                opacity: 1, 
-                y: 0,
-                duration: 0.6,
-                stagger: 0.1,
-                delay: 0.3,
-                ease: 'power3.out'
-            }
-        );
-    }
-}
-
-// ✨ Text reveal animation - letter by letter
-function animateTextReveal(element) {
-    if (!element) return;
-    
-    const text = element.textContent;
-    element.innerHTML = '';
-    
-    // Split text into characters
-    const chars = text.split('');
-    chars.forEach((char, index) => {
-        const span = document.createElement('span');
-        span.textContent = char === ' ' ? '\u00A0' : char;
-        span.style.display = 'inline-block';
-        span.style.opacity = '0';
-        span.style.transform = 'translateY(25px)';
-        element.appendChild(span);
-        
-        // Animate each character
-        gsap.to(span, {
-            opacity: 1,
-            y: 0,
-            duration: 0.4,
-            delay: 0.025 * index,
-            ease: 'power2.out'
-        });
-    });
-}
-
-// Global navigation function
-window.goToSection = function(index) {
-    if (isAnimating || index === currentSection || index < 0 || index >= totalSections) return;
-    const direction = index > currentSection ? 'down' : 'up';
-    navigateToCard(index, direction);
-}
-
-// Update page dots and nav links
-function updatePageDots() {
-    const pageDots = document.querySelectorAll('.page-dot');
-    
-    pageDots.forEach((dot, index) => {
-        dot.classList.remove('active');
-        if (index === currentSection) {
-            dot.classList.add('active');
-        }
-    });
-    
-    // Also update navbar links
+function initNavbar() {
     const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach((link, index) => {
-        link.classList.remove('active');
-        if (index === currentSection) {
-            link.classList.add('active');
-        }
-    });
-}
+    const sections = document.querySelectorAll('.section');
+    if (!sections.length || !navLinks.length) return;
 
-function handleKeyboard(e) {
-    if (isAnimating) return;
-    
-    switch(e.key) {
-        case 'ArrowDown':
-        case 'PageDown':
-        case ' ':
-            e.preventDefault();
-            if (currentSection < totalSections - 1) {
-                goToSection(currentSection + 1);
+    // Smooth scroll for nav links
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetId = link.getAttribute('href');
+            if (targetId && targetId.startsWith('#')) {
+                e.preventDefault();
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    const offsetTop = targetSection.offsetTop - 75;
+                    window.scrollTo({
+                        top: Math.max(0, offsetTop),
+                        behavior: 'smooth'
+                    });
+                }
             }
-            break;
-        case 'ArrowUp':
-        case 'PageUp':
-            e.preventDefault();
-            if (currentSection > 0) {
-                goToSection(currentSection - 1);
+        });
+    });
+
+    // IntersectionObserver to auto-highlight active nav tab on scroll
+    const observerOptions = {
+        root: null,
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const activeId = entry.target.getAttribute('id');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${activeId}`) {
+                        link.classList.add('active');
+                    }
+                });
             }
-            break;
-        case 'Home':
-            e.preventDefault();
-            goToSection(0);
-            break;
-        case 'End':
-            e.preventDefault();
-            goToSection(totalSections - 1);
-            break;
-    }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
 }
 
 /* ============================================
@@ -725,28 +263,21 @@ function initThemeToggle() {
     const themeToggle = document.querySelector('.theme-toggle');
     if (!themeToggle) return;
     
-    // Check for saved theme preference or system preference
+    // Check for saved theme preference (defaults to dark mode on first visit)
     const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+    if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
+    } else {
+        document.body.classList.remove('light-mode');
+    }
+
+    if (window.updateGalaxyTheme) {
+        window.updateGalaxyTheme();
     }
     
     themeToggle.addEventListener('click', () => {
         toggleTheme();
-    });
-    
-    // Also listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-                document.body.classList.remove('light-mode');
-            } else {
-                document.body.classList.add('light-mode');
-            }
-            updateGitHubStatsTheme();
-        }
     });
 }
 
@@ -922,6 +453,7 @@ function createCreativeThemeTransition(toLight) {
         document.body.classList.toggle('light-mode');
         localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         updateGitHubStatsTheme();
+        if (window.updateGalaxyTheme) window.updateGalaxyTheme();
     }, 100);
     
     // Fade out and remove main overlay
@@ -966,102 +498,400 @@ function createCreativeThemeTransition(toLight) {
 window.toggleTheme = toggleTheme;
 
 /* ============================================
-   LIGHTWEIGHT STARFIELD BACKGROUND
-   Optimized for low-end devices
+   PHOTOREALISTIC 3D SPIRAL GALAXY & COSMIC NEBULA (THREE.JS WEBGL)
+   - Layer 1: Distant Deep-Space Starfield
+   - Layer 2: Volumetric Interstellar Dust & Cosmic Nebula Gas
+   - Layer 3: Logarithmic 4-Arm Spiral Disk (Morgan-Keenan Spectral Star Colors)
+   - Layer 4: Landmark Supergiant Flare Stars
    ============================================ */
-function initParticles() {
-    const canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
-    
+
+// Soft radial star texture
+function createGlowStarTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
     const ctx = canvas.getContext('2d');
-    let stars = [];
-    let width, height;
-    let animationId;
-    
-    // Performance: Limit star count based on screen size
-    const getStarCount = () => Math.min(150, Math.floor((width * height) / 15000));
-    
-    // Star colors
-    const colors = ['#ffffff', '#f0f5ff', '#fff5f0', '#e0e7ff', '#cffafe'];
-    
-    function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        createStars();
+    const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    grad.addColorStop(0.15, 'rgba(235, 243, 255, 0.95)');
+    grad.addColorStop(0.4, 'rgba(129, 140, 248, 0.45)');
+    grad.addColorStop(0.8, 'rgba(6, 182, 212, 0.15)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(canvas);
+}
+
+// Volumetric cosmic nebula gas texture
+function createNebulaGasTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    const grad = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grad.addColorStop(0, 'rgba(168, 85, 247, 0.35)');
+    grad.addColorStop(0.35, 'rgba(99, 102, 241, 0.22)');
+    grad.addColorStop(0.7, 'rgba(6, 182, 212, 0.08)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 128, 128);
+    return new THREE.CanvasTexture(canvas);
+}
+
+function initGalaxyBackground() {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.position.set(0, 0, 3.6);
+
+    const starTexture = createGlowStarTexture();
+    const gasTexture = createNebulaGasTexture();
+
+    // ─── 1. Deep Space Distant Starfield ───────────────────────
+    const bgStarCount = 800;
+    const bgGeo = new THREE.BufferGeometry();
+    const bgPos = new Float32Array(bgStarCount * 3);
+    const bgCols = new Float32Array(bgStarCount * 3);
+
+    for (let i = 0; i < bgStarCount; i++) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+        const r = 25 + Math.random() * 20;
+
+        bgPos[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
+        bgPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        bgPos[i * 3 + 2] = r * Math.cos(phi);
+
+        const col = new THREE.Color().setHSL(0.6 + Math.random() * 0.2, 0.6, 0.7 + Math.random() * 0.3);
+        bgCols[i * 3]     = col.r;
+        bgCols[i * 3 + 1] = col.g;
+        bgCols[i * 3 + 2] = col.b;
     }
-    
-    function createStars() {
-        stars = [];
-        const count = getStarCount();
-        for (let i = 0; i < count; i++) {
-            stars.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                size: Math.random() * 1.5 + 0.5,
-                opacity: Math.random() * 0.6 + 0.3,
-                twinkleSpeed: Math.random() * 0.02 + 0.01,
-                phase: Math.random() * Math.PI * 2,
-                color: colors[Math.floor(Math.random() * colors.length)]
-            });
+    bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+    bgGeo.setAttribute('color', new THREE.BufferAttribute(bgCols, 3));
+
+    const bgMat = new THREE.PointsMaterial({
+        size: 0.025,
+        map: starTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        depthWrite: false
+    });
+    const bgStarfield = new THREE.Points(bgGeo, bgMat);
+    scene.add(bgStarfield);
+
+    // ─── 2. Volumetric Cosmic Nebula Gas Clouds ───────────────
+    const gasCount = 350;
+    const gasGeo = new THREE.BufferGeometry();
+    const gasPos = new Float32Array(gasCount * 3);
+    const gasCols = new Float32Array(gasCount * 3);
+
+    const arms = 4;
+    const radiusMax = 6.0;
+    const spinFactor = 1.65;
+
+    for (let i = 0; i < gasCount; i++) {
+        const radius = Math.pow(Math.random(), 1.2) * radiusMax;
+        const spinAngle = radius * spinFactor;
+        const branchAngle = ((i % arms) * 2 * Math.PI) / arms;
+        const spread = (Math.random() - 0.5) * (radius * 0.35 + 0.2);
+
+        gasPos[i * 3]     = Math.cos(branchAngle + spinAngle) * radius + spread;
+        gasPos[i * 3 + 1] = (Math.random() - 0.5) * (0.35 + radius * 0.08);
+        gasPos[i * 3 + 2] = Math.sin(branchAngle + spinAngle) * radius + spread * 0.7;
+
+        // Nebula colors: Violet core → Deep Indigo → Neon Teal tips
+        const t = radius / radiusMax;
+        const col = t < 0.3
+            ? new THREE.Color(0xd8b4fe).lerp(new THREE.Color(0x818cf8), t / 0.3)
+            : new THREE.Color(0x818cf8).lerp(new THREE.Color(0x06b6d4), (t - 0.3) / 0.7);
+
+        gasCols[i * 3]     = col.r;
+        gasCols[i * 3 + 1] = col.g;
+        gasCols[i * 3 + 2] = col.b;
+    }
+    gasGeo.setAttribute('position', new THREE.BufferAttribute(gasPos, 3));
+    gasGeo.setAttribute('color', new THREE.BufferAttribute(gasCols, 3));
+
+    const gasMat = new THREE.PointsMaterial({
+        size: 0.38,
+        map: gasTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.25,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    const nebulaSystem = new THREE.Points(gasGeo, gasMat);
+    nebulaSystem.rotation.x = 0.65;
+    scene.add(nebulaSystem);
+
+    // ─── 3. Main 4-Arm Logarithmic Spiral Star System ──────────
+    const starCount = 3600;
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(starCount * 3);
+    const starCols = new Float32Array(starCount * 3);
+
+    // Realistic Spectral Stellar Temperatures
+    const cCore   = new THREE.Color(0xffffff); // Nucleus White
+    const cGold   = new THREE.Color(0xfef08a); // Warm Amber Core
+    const cIndigo = new THREE.Color(0x818cf8); // Mid-Arm Indigo
+    const cCyan   = new THREE.Color(0x38bdf8); // Outer Arm Cyan
+    const cMagenta= new THREE.Color(0xf43f5e); // H-II Stellar Nursery Red
+
+    for (let i = 0; i < starCount; i++) {
+        let radius, spinAngle, branchAngle, spreadX, spreadY, spreadZ;
+
+        if (i < starCount * 0.28) {
+            // Central Galactic Bulge / Nucleus
+            radius = Math.pow(Math.random(), 3.5) * 1.3;
+            spinAngle = radius * spinFactor;
+            branchAngle = Math.random() * Math.PI * 2;
+            spreadX = (Math.random() - 0.5) * 0.28;
+            spreadY = (Math.random() - 0.5) * 0.28;
+            spreadZ = (Math.random() - 0.5) * 0.28;
+        } else {
+            // Logarithmic Spiral Arms
+            radius = Math.pow(Math.random(), 1.3) * radiusMax;
+            spinAngle = radius * spinFactor;
+            branchAngle = ((i % arms) * 2 * Math.PI) / arms;
+
+            const armSpread = Math.pow(Math.random(), 2.2) * (Math.random() < 0.5 ? 1 : -1) * (radius * 0.22 + 0.08);
+            spreadX = armSpread;
+            spreadY = Math.pow(Math.random() - 0.5, 3) * (0.2 + radius * 0.06);
+            spreadZ = armSpread * 0.65;
         }
+
+        starPos[i * 3]     = Math.cos(branchAngle + spinAngle) * radius + spreadX;
+        starPos[i * 3 + 1] = spreadY;
+        starPos[i * 3 + 2] = Math.sin(branchAngle + spinAngle) * radius + spreadZ;
+
+        // Stellar Spectral Color Blend based on radius and stellar age
+        let starColor;
+        const normR = Math.min(1, radius / radiusMax);
+        if (normR < 0.15) {
+            starColor = cCore.clone().lerp(cGold, normR / 0.15);
+        } else if (normR < 0.55) {
+            starColor = cGold.clone().lerp(cIndigo, (normR - 0.15) / 0.4);
+        } else if (normR < 0.85) {
+            starColor = cIndigo.clone().lerp(cCyan, (normR - 0.55) / 0.3);
+        } else {
+            starColor = cCyan.clone().lerp(cMagenta, (normR - 0.85) / 0.15);
+        }
+
+        starCols[i * 3]     = starColor.r;
+        starCols[i * 3 + 1] = starColor.g;
+        starCols[i * 3 + 2] = starColor.b;
     }
-    
-    // Throttled resize
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    starGeo.setAttribute('color', new THREE.BufferAttribute(starCols, 3));
+
+    const starMat = new THREE.PointsMaterial({
+        size: 0.045,
+        map: starTexture,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.95,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    const galaxySystem = new THREE.Points(starGeo, starMat);
+    galaxySystem.rotation.x = 0.65;
+    scene.add(galaxySystem);
+
+    // ─── Dynamic Dual-Mode Theme Adapter (Dark & Light Mode Galaxy) ───
+    function updateGalaxyTheme() {
+        const isLight = document.body.classList.contains('light-mode');
+
+        if (isLight) {
+            starMat.blending = THREE.NormalBlending;
+            starMat.opacity = 0.92;
+            gasMat.blending = THREE.NormalBlending;
+            gasMat.opacity = 0.32;
+            bgMat.opacity = 0.75;
+
+            // Vibrant Light-Theme Cosmic Palette (Royal Indigo -> Violet -> Sapphire -> Ocean Cyan -> Orchid Pink)
+            const lcCore   = new THREE.Color(0x4f46e5); // Royal Indigo Core
+            const lcViolet = new THREE.Color(0x7c3aed); // Luminous Violet
+            const lcBlue   = new THREE.Color(0x2563eb); // Sapphire Blue
+            const lcCyan   = new THREE.Color(0x0284c7); // Ocean Cyan
+            const lcOrchid = new THREE.Color(0xd946ef); // Orchid Pink Arm Tips
+
+            for (let i = 0; i < starCount; i++) {
+                const normR = Math.min(1, Math.hypot(starPos[i * 3], starPos[i * 3 + 2]) / radiusMax);
+                let col;
+                if (normR < 0.15) col = lcCore.clone().lerp(lcViolet, normR / 0.15);
+                else if (normR < 0.5) col = lcViolet.clone().lerp(lcBlue, (normR - 0.15) / 0.35);
+                else if (normR < 0.8) col = lcBlue.clone().lerp(lcCyan, (normR - 0.5) / 0.3);
+                else col = lcCyan.clone().lerp(lcOrchid, (normR - 0.8) / 0.2);
+
+                starCols[i * 3]     = col.r;
+                starCols[i * 3 + 1] = col.g;
+                starCols[i * 3 + 2] = col.b;
+            }
+            starGeo.attributes.color.needsUpdate = true;
+
+            // Cosmic Gas Cloud Colors: Luminous Violet -> Sapphire -> Ocean Cyan
+            for (let i = 0; i < gasCount; i++) {
+                const normR = Math.min(1, Math.hypot(gasPos[i * 3], gasPos[i * 3 + 2]) / radiusMax);
+                const col = normR < 0.4
+                    ? lcViolet.clone().lerp(lcBlue, normR / 0.4)
+                    : lcBlue.clone().lerp(lcCyan, (normR - 0.4) / 0.6);
+
+                gasCols[i * 3]     = col.r;
+                gasCols[i * 3 + 1] = col.g;
+                gasCols[i * 3 + 2] = col.b;
+            }
+            gasGeo.attributes.color.needsUpdate = true;
+
+            // Background Stars: Deep Sapphire Blue in Light Mode
+            for (let i = 0; i < bgStarCount; i++) {
+                bgCols[i * 3]     = 0.14; // 0x25 / 255
+                bgCols[i * 3 + 1] = 0.38; // 0x63 / 255
+                bgCols[i * 3 + 2] = 0.92; // 0xeb / 255
+            }
+            bgGeo.attributes.color.needsUpdate = true;
+
+        } else {
+            starMat.blending = THREE.AdditiveBlending;
+            starMat.opacity = 0.95;
+            gasMat.blending = THREE.AdditiveBlending;
+            gasMat.opacity = 0.25;
+            bgMat.opacity = 0.6;
+
+            for (let i = 0; i < starCount; i++) {
+                const normR = Math.min(1, Math.hypot(starPos[i * 3], starPos[i * 3 + 2]) / radiusMax);
+                let col;
+                if (normR < 0.15) col = cCore.clone().lerp(cGold, normR / 0.15);
+                else if (normR < 0.55) col = cGold.clone().lerp(cIndigo, (normR - 0.15) / 0.4);
+                else if (normR < 0.85) col = cIndigo.clone().lerp(cCyan, (normR - 0.55) / 0.3);
+                else col = cCyan.clone().lerp(cMagenta, (normR - 0.85) / 0.15);
+
+                starCols[i * 3]     = col.r;
+                starCols[i * 3 + 1] = col.g;
+                starCols[i * 3 + 2] = col.b;
+            }
+            starGeo.attributes.color.needsUpdate = true;
+
+            for (let i = 0; i < gasCount; i++) {
+                const normR = Math.min(1, Math.hypot(gasPos[i * 3], gasPos[i * 3 + 2]) / radiusMax);
+                const col = normR < 0.3
+                    ? new THREE.Color(0xd8b4fe).lerp(new THREE.Color(0x818cf8), normR / 0.3)
+                    : new THREE.Color(0x818cf8).lerp(new THREE.Color(0x06b6d4), (normR - 0.3) / 0.7);
+
+                gasCols[i * 3]     = col.r;
+                gasCols[i * 3 + 1] = col.g;
+                gasCols[i * 3 + 2] = col.b;
+            }
+            gasGeo.attributes.color.needsUpdate = true;
+
+            for (let i = 0; i < bgStarCount; i++) {
+                const col = new THREE.Color().setHSL(0.6 + Math.random() * 0.2, 0.6, 0.7 + Math.random() * 0.3);
+                bgCols[i * 3]     = col.r;
+                bgCols[i * 3 + 1] = col.g;
+                bgCols[i * 3 + 2] = col.b;
+            }
+            bgGeo.attributes.color.needsUpdate = true;
+        }
+
+        starMat.needsUpdate = true;
+        gasMat.needsUpdate = true;
+        bgMat.needsUpdate = true;
+    }
+
+    window.updateGalaxyTheme = updateGalaxyTheme;
+    updateGalaxyTheme();
+    renderer.render(scene, camera);
+
+    // Mouse Parallax Interaction
+    let mouseX = 0;
+    let mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) - 0.5;
+        mouseY = (e.clientY / window.innerHeight) - 0.5;
+    }, { passive: true });
+
+    // Scroll Integration: Realistic Orbital Swirl & Depth Shift
+    let targetScrollProgress = 0;
+    let currentScrollProgress = 0;
+
+    const onScroll = () => {
+        const totalScroll = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
+        targetScrollProgress = totalScroll > 0 ? window.scrollY / totalScroll : 0;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // Animation Loop
+    const clock = new THREE.Clock();
+    let animationId;
+    let isTabVisible = true;
+
+    function animate() {
+        if (!isTabVisible) return;
+        animationId = requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+
+        // Smooth scroll interpolation
+        currentScrollProgress += (targetScrollProgress - currentScrollProgress) * 0.08;
+
+        // Continuous Realistic Orbital Rotation & Scroll Dynamics
+        const rotY = elapsedTime * 0.05 + currentScrollProgress * Math.PI * 2.5;
+        const rotX = 0.65 + Math.sin(elapsedTime * 0.25) * 0.04 + currentScrollProgress * 0.3;
+        const rotZ = Math.cos(elapsedTime * 0.2) * 0.03 + currentScrollProgress * 0.2;
+
+        galaxySystem.rotation.y = rotY;
+        galaxySystem.rotation.x = rotX;
+        galaxySystem.rotation.z = rotZ;
+
+        nebulaSystem.rotation.y = rotY;
+        nebulaSystem.rotation.x = rotX;
+        nebulaSystem.rotation.z = rotZ;
+
+        bgStarfield.rotation.y = elapsedTime * 0.005;
+
+        // 3D Camera Depth Movement
+        camera.position.z = 3.6 + currentScrollProgress * 1.6;
+
+        // Mouse Parallax
+        galaxySystem.rotation.y += (mouseX * 0.3 - (galaxySystem.rotation.y % 0.1)) * 0.04;
+        galaxySystem.rotation.x += (-mouseY * 0.3 - (galaxySystem.rotation.x % 0.1)) * 0.04;
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Pause when tab is hidden
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            isTabVisible = false;
+            if (animationId) cancelAnimationFrame(animationId);
+        } else {
+            isTabVisible = true;
+            animate();
+        }
+    }, { passive: true });
+
+    // Fluid resize
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(resize, 200);
-    }, { passive: true });
-    
-    // Animation with frame skip for performance
-    let lastTime = 0;
-    const targetFPS = 30; // Limit to 30fps for performance
-    const frameInterval = 1000 / targetFPS;
-    
-    function animate(timestamp) {
-        animationId = requestAnimationFrame(animate);
-        
-        // Frame rate limiting
-        const delta = timestamp - lastTime;
-        if (delta < frameInterval) return;
-        lastTime = timestamp - (delta % frameInterval);
-        
-        // Clear canvas
-        ctx.fillStyle = '#050510';
-        ctx.fillRect(0, 0, width, height);
-        
-        // Draw all stars in a single batch
-        const time = timestamp * 0.001;
-        
-        for (let i = 0; i < stars.length; i++) {
-            const star = stars[i];
-            const twinkle = Math.sin(time * star.twinkleSpeed + star.phase);
-            const opacity = star.opacity + twinkle * 0.2;
-            
-            if (opacity > 0.1) {
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                ctx.fillStyle = star.color;
-                ctx.globalAlpha = Math.min(1, Math.max(0.1, opacity));
-                ctx.fill();
-            }
-        }
-        
-        ctx.globalAlpha = 1;
-    }
-    
-    // Initialize
-    resize();
-    animate(0);
-    
-    // Pause animation when tab is not visible (saves resources)
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            cancelAnimationFrame(animationId);
-        } else {
-            lastTime = 0;
-            animate(0);
-        }
+        resizeTimeout = setTimeout(() => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        }, 100);
     }, { passive: true });
 }
 
@@ -1109,11 +939,6 @@ function initNavbar() {
    CARD ENTRANCE ANIMATIONS
    ============================================ */
 function initCardAnimations() {
-    // Initial animation for first card
-    setTimeout(() => {
-        animateCurrentCard();
-    }, 1000);
-    
     // Initialize liquid gradient hover effect
     initLiquidGradientCards();
 }
@@ -1689,190 +1514,6 @@ function preloadImages() {
 // Call preload
 preloadImages();
 
-/* ============================================
-   PAGE NAVIGATION SYSTEM (No Scrolling)
-   ============================================ */
-function initSmoothScroll() {
-    const scrollableSections = document.querySelectorAll('.scrollable-section');
-    
-    scrollableSections.forEach(section => {
-        // Skip pagination for contact section
-        if (section.closest('#contact')) {
-            return;
-        }
-        
-        // Check if section has multiple subsections that can be paginated
-        const hasMultipleSubsections = section.children.length > 3;
-        
-        if (!hasMultipleSubsections) return; // Skip if content fits in one page
-        
-        // Wrap sections in pages
-        const children = Array.from(section.children);
-        let currentPage = 1;
-        const itemsPerPage = 2; // Show 2 major sections per page
-        const totalPages = Math.ceil((children.length - 1) / itemsPerPage); // -1 for header
-        
-        if (totalPages <= 1) return; // No need for navigation
-        
-        // Create page wrappers
-        const pages = [];
-        let pageWrapper = document.createElement('div');
-        pageWrapper.className = 'section-page active';
-        
-        // Always keep the first child (header) visible
-        const header = children[0];
-        section.appendChild(header);
-        
-        // Group remaining children into pages
-        for (let i = 1; i < children.length; i++) {
-            pageWrapper.appendChild(children[i]);
-            
-            if ((i - 1) % itemsPerPage === itemsPerPage - 1 || i === children.length - 1) {
-                pages.push(pageWrapper);
-                section.appendChild(pageWrapper);
-                
-                if (i < children.length - 1) {
-                    pageWrapper = document.createElement('div');
-                    pageWrapper.className = 'section-page';
-                }
-            }
-        }
-        
-        // Create navigation controls
-        const navContainer = document.createElement('div');
-        navContainer.className = 'page-nav-arrows';
-        navContainer.innerHTML = `
-            <div class="page-nav-arrow prev-page">
-                <i class="fas fa-chevron-up"></i>
-            </div>
-            <div class="page-nav-arrow next-page">
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        `;
-        
-        // Page indicators removed - no longer needed
-        /*
-        // Create page indicators
-        const indicatorsContainer = document.createElement('div');
-        indicatorsContainer.className = 'page-indicators';
-        for (let i = 0; i < totalPages; i++) {
-            const dot = document.createElement('div');
-            dot.className = `page-indicator-dot ${i === 0 ? 'active' : ''}`;
-            dot.dataset.page = i;
-            indicatorsContainer.appendChild(dot);
-        }
-        */
-        
-        const cardSection = section.closest('.card-section');
-        if (cardSection) {
-            cardSection.appendChild(navContainer);
-        } else {
-            section.appendChild(navContainer);
-        }
-        // section.appendChild(indicatorsContainer);
-        
-        // Navigation logic
-        const prevBtn = navContainer.querySelector('.prev-page');
-        const nextBtn = navContainer.querySelector('.next-page');
-        // const dots = indicatorsContainer.querySelectorAll('.page-indicator-dot');
-        
-        function updatePage() {
-            pages.forEach((page, index) => {
-                page.classList.toggle('active', index === currentPage - 1);
-            });
-            
-            /* dots removed
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentPage - 1);
-            });
-            */
-            
-            prevBtn.classList.toggle('disabled', currentPage === 1);
-            nextBtn.classList.toggle('disabled', currentPage === totalPages);
-        }
-        
-        prevBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePage();
-            }
-        });
-        
-        nextBtn.addEventListener('click', () => {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePage();
-            }
-        });
-        
-        // Page indicator dot clicks removed
-        /*
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                currentPage = parseInt(dot.dataset.page) + 1;
-                updatePage();
-            });
-        });
-        */
-        
-        updatePage();
-    });
-}
-
-// Animated Counter for GitHub Stats
-function animateStatCounters() {
-    const statNumbers = document.querySelectorAll('.stat-num[data-target]');
-    
-    const observerOptions = {
-        threshold: 0.5,
-        rootMargin: '0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
-                entry.target.classList.add('counted');
-                animateCounter(entry.target);
-            }
-        });
-    }, observerOptions);
-    
-    statNumbers.forEach(stat => observer.observe(stat));
-}
-
-function animateCounter(element) {
-    const target = parseInt(element.getAttribute('data-target'));
-    const duration = 2000; // 2 seconds
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = target;
-            clearInterval(timer);
-            
-            // Add completion pulse effect
-            element.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                element.style.transform = 'scale(1)';
-            }, 200);
-        } else {
-            element.textContent = Math.floor(current);
-        }
-    }, duration / steps);
-}
-
-// Initialize stat counters
-document.addEventListener('DOMContentLoaded', () => {
-    animateStatCounters();
-    initLiveContent();
-    injectAdminPortalLink();
-    updateGitHubStatsTheme();
-    fetchLiveGitHubStats();
-});
-
 console.log('%c👋 Hello Developer!', 'font-size: 24px; font-weight: bold; color: #6366f1;');
 console.log('%c Built with ❤️ by Sahil Suresh Rane', 'font-size: 14px; color: #06b6d4;');
 console.log('%c Code • Optimize • Deploy • Repeat', 'font-size: 12px; color: #a1a1aa;');
@@ -1926,28 +1567,28 @@ function injectCertificateCards(certs) {
     const achievementsCard = document.querySelector('#achievements');
     if (!achievementsCard) return;
 
-    const scrollable = achievementsCard.querySelector('.scrollable-section');
-    if (!scrollable) return;
+    const container = achievementsCard.querySelector('.scrollable-section') || achievementsCard.querySelector('.card-content');
+    if (!container) return;
 
-    // Remove any previously injected cert page
-    const existingPage = document.getElementById('cert-section-page');
-    if (existingPage) existingPage.remove();
+    // Remove any previously injected cert section
+    const existingBlock = document.getElementById('cert-section-block');
+    if (existingBlock) existingBlock.remove();
 
-    // Build the certificate page content
-    const certPage = document.createElement('div');
-    certPage.id = 'cert-section-page';
-    certPage.className = 'section-page'; // hidden by default via CSS
-    certPage.innerHTML = `
-        <div class="section-header-compact" style="margin-top:0.5rem;">
+    // Build the certificate section block
+    const certBlock = document.createElement('div');
+    certBlock.id = 'cert-section-block';
+    certBlock.style.marginTop = '2.5rem';
+    certBlock.innerHTML = `
+        <div class="section-divider"></div>
+        <div class="section-header-compact" style="margin-top:2rem;">
             <h3 class="subsection-title">Certificates & <span class="highlight">Credentials</span></h3>
         </div>
         <div id="live-cert-row" class="live-cert-grid"></div>
     `;
 
-    // Append as a new page inside the scrollable section
-    scrollable.appendChild(certPage);
+    container.appendChild(certBlock);
 
-    const certRow = certPage.querySelector('#live-cert-row');
+    const certRow = certBlock.querySelector('#live-cert-row');
 
     certs.forEach((cert, idx) => {
         const card = document.createElement('div');
@@ -1998,72 +1639,11 @@ function injectCertificateCards(certs) {
         });
     });
 
-    // Re-wire the pagination for achievements section to include the new cert page
-    rebuildAchievementsPagination(scrollable);
-
-    // Animate in when page becomes visible
-    gsap.set('.cert-card-live', { opacity: 0, y: 30 });
-}
-
-/* ─── Rebuild Achievements Pagination ─────────────────────── */
-function rebuildAchievementsPagination(scrollable) {
-    // Gather all .section-page elements (including the new cert page)
-    const pages = scrollable.querySelectorAll('.section-page');
-    if (!pages.length) return;
-
-    const totalPages = pages.length;
-    let currentPage = 1;
-
-    // Find or create nav arrows
-    const achievementsCard = scrollable.closest('.card-section');
-    let navContainer = achievementsCard.querySelector('.page-nav-arrows');
-    if (!navContainer) {
-        navContainer = document.createElement('div');
-        navContainer.className = 'page-nav-arrows';
-        navContainer.innerHTML = `
-            <div class="page-nav-arrow prev-page">
-                <i class="fas fa-chevron-up"></i>
-            </div>
-            <div class="page-nav-arrow next-page">
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        `;
-        achievementsCard.appendChild(navContainer);
-    }
-
-    const prevBtn = navContainer.querySelector('.prev-page');
-    const nextBtn = navContainer.querySelector('.next-page');
-
-    function updatePage() {
-        pages.forEach((page, index) => {
-            page.classList.toggle('active', index === currentPage - 1);
-        });
-        prevBtn.classList.toggle('disabled', currentPage === 1);
-        nextBtn.classList.toggle('disabled', currentPage === totalPages);
-
-        // Animate cert cards when their page becomes visible
-        if (pages[currentPage - 1].id === 'cert-section-page') {
-            gsap.fromTo('.cert-card-live',
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, ease: 'power3.out', delay: 0.15 }
-            );
-        }
-    }
-
-    // Remove old event listeners by replacing buttons
-    const newPrev = prevBtn.cloneNode(true);
-    const newNext = nextBtn.cloneNode(true);
-    prevBtn.replaceWith(newPrev);
-    nextBtn.replaceWith(newNext);
-
-    newPrev.addEventListener('click', () => {
-        if (currentPage > 1) { currentPage--; updatePage(); }
-    });
-    newNext.addEventListener('click', () => {
-        if (currentPage < totalPages) { currentPage++; updatePage(); }
-    });
-
-    updatePage();
+    // Animate in cert cards
+    gsap.fromTo('.cert-card-live',
+        { opacity: 0, y: 25 },
+        { opacity: 1, y: 0, stagger: 0.08, duration: 0.5, ease: 'power3.out', delay: 0.1 }
+    );
 }
 
 /* ─── Certificate Lightbox ───────────────────────────────── */
@@ -2140,63 +1720,523 @@ function escapeAttr(str) {
     return String(str || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-/* ─── Live GitHub Stats Hydration ───────────────────────── */
+/* ============================================
+   ANIMATED NUMERIC STAT COUNTERS
+   ============================================ */
+function animateStatCounters() {
+    const statNums = document.querySelectorAll('.stat-num');
+    if (!statNums.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                entry.target.classList.add('counted');
+                const target = parseInt(entry.target.getAttribute('data-target') || '0', 10);
+                if (isNaN(target) || target <= 0) {
+                    entry.target.textContent = '0';
+                    return;
+                }
+
+                const duration = 1800; // ms
+                const start = 0;
+                const startTime = performance.now();
+
+                const updateCount = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                    const currentCount = Math.floor(start + easeProgress * (target - start));
+                    entry.target.textContent = currentCount.toLocaleString();
+
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        entry.target.textContent = target.toLocaleString();
+                    }
+                };
+
+                requestAnimationFrame(updateCount);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    statNums.forEach(num => observer.observe(num));
+}
+
+/* ============================================
+   LIVE GITHUB STATS & REPO HYDRATION
+   ============================================ */
 async function fetchLiveGitHubStats() {
+    const username = 'CyberCodezilla';
+    const repoNumEl   = document.querySelector('.github-stats-compact .stat-box:nth-child(1) .stat-num');
+    const commitNumEl = document.querySelector('.github-stats-compact .stat-box:nth-child(2) .stat-num');
+    const starNumEl   = document.querySelector('.github-stats-compact .stat-box:nth-child(3) .stat-num');
+    const prNumEl     = document.querySelector('.github-stats-compact .stat-box:nth-child(4) .stat-num');
+
+    let langCounts = {};
+    let repoCount = 0, commitCount = 0, starCount = 0, prCount = 0;
+
     try {
-        const profileRes = await fetch('https://api.github.com/users/CyberCodezilla');
-        if (!profileRes.ok) return;
-        const profile = await profileRes.json();
-        
-        const reposRes = await fetch('https://api.github.com/users/CyberCodezilla/repos?per_page=100');
-        if (!reposRes.ok) return;
-        const repos = await reposRes.json();
-        
-        let totalStars = 0;
-        repos.forEach(repo => {
-            totalStars += repo.stargazers_count || 0;
-        });
-        
-        const reposNum = document.querySelector('.github-stats-compact .stat-box:nth-child(1) .stat-num');
-        const starsNum = document.querySelector('.github-stats-compact .stat-box:nth-child(3) .stat-num');
-        
-        if (reposNum && profile.public_repos !== undefined) {
-            reposNum.setAttribute('data-target', profile.public_repos);
-            reposNum.textContent = '0';
+        // 1. Fetch Profile (Public Repos)
+        const profileRes = await fetch(`https://api.github.com/users/${username}`);
+        if (profileRes.ok) {
+            const profile = await profileRes.json();
+            if (profile.public_repos !== undefined) {
+                repoCount = profile.public_repos;
+                if (repoNumEl) repoNumEl.setAttribute('data-target', repoCount);
+            }
         }
-        
-        if (starsNum) {
-            starsNum.setAttribute('data-target', totalStars);
-            starsNum.textContent = '0';
+
+        // 2. Fetch Repos List (Total Stars & Languages)
+        const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
+        if (reposRes.ok) {
+            const repos = await reposRes.json();
+            if (Array.isArray(repos)) {
+                repos.forEach(repo => {
+                    starCount += (repo.stargazers_count || 0);
+                    if (repo.language) {
+                        langCounts[repo.language] = (langCounts[repo.language] || 0) + 1;
+                    }
+                });
+
+                if (starNumEl) {
+                    starNumEl.setAttribute('data-target', Math.max(starCount, 1));
+                }
+            }
         }
-        
-        const countedElements = document.querySelectorAll('.github-stats-compact .stat-num');
-        countedElements.forEach(el => {
-            el.classList.remove('counted');
-        });
+
+        // 3. Fetch Total Commits Count via GitHub Search API
+        const commitRes = await fetch(`https://api.github.com/search/commits?q=author:${username}`);
+        if (commitRes.ok) {
+            const commitsData = await commitRes.json();
+            if (commitsData.total_count !== undefined) {
+                commitCount = commitsData.total_count;
+                if (commitNumEl) commitNumEl.setAttribute('data-target', commitCount);
+            }
+        }
+
+        // 4. Fetch Total Pull Requests Count via GitHub Search API
+        const prRes = await fetch(`https://api.github.com/search/issues?q=author:${username}+type:pr`);
+        if (prRes.ok) {
+            const prData = await prRes.json();
+            if (prData.total_count !== undefined) {
+                prCount = prData.total_count;
+                if (prNumEl) prNumEl.setAttribute('data-target', prCount);
+            }
+        }
+
+    } catch (err) {
+        console.warn('GitHub API live fetch fallback active:', err);
+    } finally {
+        // Trigger smooth counter animation
+        const countedElements = document.querySelectorAll('.stat-num');
+        countedElements.forEach(el => el.classList.remove('counted'));
         animateStatCounters();
-        
-    } catch (_) {
-        // Fallback silently to hardcoded counter values if API fails
+
+        // Store data and render all canvas charts
+        _githubChartData = { langCounts, repos: repoCount, commits: commitCount, stars: starCount, prs: prCount };
+
+        // Render contribution heatmap (fetches its own event data)
+        renderContributionHeatmap(username);
+
+        // Render animated donut chart
+        renderLangDonutChart(langCounts);
+
+        // Render performance radar chart
+        renderPerfRadarChart(_githubChartData);
     }
 }
 
-/* ─── Update GitHub Readme Stats Theme ──────────────────── */
+/* ─── Canvas-based Dynamic GitHub Chart Renderers ─── */
+
+// ── Shared Language Color Palette ──
+const LANG_COLORS = {
+    'TypeScript': '#3178c6', 'JavaScript': '#f7df1e', 'Python': '#3572A5',
+    'Java': '#b07219', 'C++': '#f34b7d', 'C': '#555555', 'C#': '#178600',
+    'HTML': '#e34c26', 'CSS': '#563d7c', 'Go': '#00ADD8', 'Rust': '#dea584',
+    'Ruby': '#701516', 'PHP': '#4F5D95', 'Shell': '#89e051', 'Kotlin': '#A97BFF',
+    'Swift': '#F05138', 'Dart': '#00B4AB', 'Scala': '#c22d40', 'Lua': '#000080',
+    'Vue': '#41b883', 'Svelte': '#ff3e00', 'SCSS': '#c6538c', 'Jupyter Notebook': '#DA5B0B'
+};
+function getLangColor(lang) { return LANG_COLORS[lang] || '#6366f1'; }
+
+// Store fetched data for chart rendering
+let _githubChartData = { langCounts: {}, repos: 0, commits: 0, stars: 0, prs: 0 };
+
+// ── 1. CONTRIBUTION HEATMAP (Full year, real GitHub data with levels 0-4) ──
+async function renderContributionHeatmap(username) {
+    const canvas = document.getElementById('contribution-heatmap');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // Fetch real contribution data (date + level 0-4) from GitHub
+    let contributions = {}; // { "2025-08-01": 3, ... } where value = level 0-4
+    let dataIsLevel = false; // true = data is level (0-4), false = data is raw count
+
+    try {
+        // Primary: GitHub Contributions API — returns real level data matching GitHub profile
+        const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.contributions && Array.isArray(data.contributions)) {
+                data.contributions.forEach(c => {
+                    contributions[c.date] = c.level; // level is 0-4, exact GitHub colors
+                });
+                dataIsLevel = true;
+            }
+        }
+    } catch(e) { /* fallback below */ }
+
+    // Fallback: GitHub Events API (last ~90 days, raw counts)
+    if (!dataIsLevel || Object.keys(contributions).length === 0) {
+        dataIsLevel = false;
+        try {
+            const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            const fetches = pages.map(p =>
+                fetch(`https://api.github.com/users/${username}/events?per_page=30&page=${p}`)
+                    .then(r => r.ok ? r.json() : []).catch(() => [])
+            );
+            const allPages = await Promise.all(fetches);
+            allPages.flat().forEach(evt => {
+                if (evt.created_at) {
+                    const day = evt.created_at.slice(0, 10);
+                    contributions[day] = (contributions[day] || 0) + 1;
+                }
+            });
+        } catch(e) { /* empty heatmap */ }
+    }
+
+    // Full year: 52 weeks × 7 days
+    const WEEKS = 52;
+    const DAYS = 7;
+    const today = new Date();
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dayLabels = ['','Mon','','Wed','','Fri',''];
+
+    // Dynamically size cells to fill the card width
+    const dpr = window.devicePixelRatio || 1;
+    const containerW = canvas.parentElement.getBoundingClientRect().width;
+    const labelW = 28;
+    const gap = 2;
+    const cellSize = Math.max(3, Math.floor((containerW - labelW - 4) / WEEKS - gap));
+    const monthHeaderH = 14;
+    const totalW = labelW + WEEKS * (cellSize + gap);
+    const totalH = monthHeaderH + DAYS * (cellSize + gap) + 4;
+
+    canvas.width = totalW * dpr;
+    canvas.height = totalH * dpr;
+    canvas.style.width = totalW + 'px';
+    canvas.style.height = totalH + 'px';
+    ctx.scale(dpr, dpr);
+
+    // Compute start date (52 weeks ago, aligned to Sunday)
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - (WEEKS * 7 - 1));
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    // Purple color scale matching GitHub's 5 levels (0-4)
+    const colorByLevel = [
+        'rgba(30, 30, 50, 0.45)',  // Level 0 — no activity
+        '#312e81',                   // Level 1 — light
+        '#4f46e5',                   // Level 2 — medium
+        '#818cf8',                   // Level 3 — active
+        '#c4b5fd',                   // Level 4 — very active
+    ];
+
+    // For raw count fallback, map count → level
+    function countToLevel(count) {
+        if (count === 0) return 0;
+        if (count <= 2) return 1;
+        if (count <= 5) return 2;
+        if (count <= 9) return 3;
+        return 4;
+    }
+
+    function getCellColor(dateStr) {
+        const val = contributions[dateStr] || 0;
+        const level = dataIsLevel ? val : countToLevel(val);
+        return colorByLevel[Math.min(level, 4)];
+    }
+
+    // Draw month labels on top
+    ctx.fillStyle = '#64748b';
+    ctx.font = `${Math.max(8, cellSize)}px JetBrains Mono, monospace`;
+    ctx.textBaseline = 'top';
+    let lastMonth = -1;
+    for (let w = 0; w < WEEKS; w++) {
+        const weekDate = new Date(startDate);
+        weekDate.setDate(weekDate.getDate() + w * 7);
+        const m = weekDate.getMonth();
+        if (m !== lastMonth) {
+            lastMonth = m;
+            const x = labelW + w * (cellSize + gap);
+            ctx.fillText(monthNames[m], x, 0);
+        }
+    }
+
+    // Draw day labels (Mon, Wed, Fri)
+    ctx.fillStyle = '#64748b';
+    ctx.font = `${Math.max(7, cellSize - 1)}px JetBrains Mono, monospace`;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'right';
+    for (let d = 0; d < DAYS; d++) {
+        if (dayLabels[d]) {
+            const y = monthHeaderH + d * (cellSize + gap) + cellSize / 2;
+            ctx.fillText(dayLabels[d], labelW - 4, y);
+        }
+    }
+    ctx.textAlign = 'left';
+
+    // Draw cells with staggered animation
+    let cellIndex = 0;
+    for (let w = 0; w < WEEKS; w++) {
+        for (let d = 0; d < DAYS; d++) {
+            const cellDate = new Date(startDate);
+            cellDate.setDate(cellDate.getDate() + w * 7 + d);
+            if (cellDate > today) continue;
+            const dateStr = cellDate.toISOString().slice(0, 10);
+            const x = labelW + w * (cellSize + gap);
+            const y = monthHeaderH + d * (cellSize + gap);
+
+            const idx = cellIndex++;
+            setTimeout(() => {
+                ctx.beginPath();
+                ctx.roundRect(x, y, cellSize, cellSize, Math.max(1, cellSize / 5));
+                ctx.fillStyle = getCellColor(dateStr);
+                ctx.fill();
+            }, idx * 1.5);
+        }
+    }
+
+    // Render legend
+    const legendEl = document.getElementById('heatmap-legend');
+    if (legendEl) {
+        legendEl.innerHTML = `
+            <span>Less</span>
+            ${colorByLevel.map(c => `<span class="hm-swatch" style="background:${c}"></span>`).join('')}
+            <span>More</span>
+        `;
+    }
+}
+
+// ── 2. ANIMATED DONUT CHART (Languages) ──
+function renderLangDonutChart(langCounts) {
+    const canvas = document.getElementById('lang-donut-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const total = Object.values(langCounts).reduce((a, b) => a + b, 0) || 1;
+    const sorted = Object.entries(langCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    if (!sorted.length) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const size = 260;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+
+    const cx = size / 2, cy = size / 2;
+    const outerR = 110, innerR = 65;
+
+    // Animate sweep
+    let animProgress = 0;
+    function drawFrame() {
+        animProgress = Math.min(animProgress + 0.025, 1);
+        ctx.clearRect(0, 0, size, size);
+
+        // Background ring
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+        ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
+        ctx.fillStyle = 'rgba(30, 30, 50, 0.4)';
+        ctx.fill();
+
+        let startAngle = -Math.PI / 2;
+        const sweepEnd = animProgress * Math.PI * 2;
+
+        sorted.forEach(([lang, count]) => {
+            const sliceAngle = (count / total) * Math.PI * 2;
+            const drawAngle = Math.min(sliceAngle, Math.max(0, sweepEnd - (startAngle + Math.PI / 2)));
+            if (drawAngle > 0) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, outerR, startAngle, startAngle + drawAngle);
+                ctx.arc(cx, cy, innerR, startAngle + drawAngle, startAngle, true);
+                ctx.closePath();
+                ctx.fillStyle = getLangColor(lang);
+                ctx.fill();
+
+                // Subtle glow
+                ctx.shadowColor = getLangColor(lang);
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            startAngle += sliceAngle;
+        });
+
+        // Center text
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 22px Outfit, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(sorted.length, cx, cy - 8);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px JetBrains Mono, monospace';
+        ctx.fillText('languages', cx, cy + 12);
+
+        if (animProgress < 1) requestAnimationFrame(drawFrame);
+    }
+    drawFrame();
+
+    // Legend
+    const legendEl = document.getElementById('lang-legend');
+    if (legendEl) {
+        legendEl.innerHTML = sorted.map(([lang, count]) => {
+            const pct = Math.round((count / total) * 100);
+            return `<div class="lang-item">
+                <span class="lang-dot" style="background:${getLangColor(lang)}"></span>
+                <span>${lang}</span>
+                <span class="lang-pct">${pct}%</span>
+            </div>`;
+        }).join('');
+    }
+}
+
+// ── 3. ANIMATED RADAR CHART (Performance Metrics) ──
+function renderPerfRadarChart(data) {
+    const canvas = document.getElementById('perf-radar-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const dpr = window.devicePixelRatio || 1;
+    const size = 260;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+
+    const cx = size / 2, cy = size / 2;
+    const maxR = 100;
+
+    // Metrics: normalize each to 0-1 range with sensible caps
+    const metrics = [
+        { label: 'Repos', value: data.repos, max: 80, icon: '📦' },
+        { label: 'Commits', value: data.commits, max: 1500, icon: '🔥' },
+        { label: 'Stars', value: data.stars, max: 50, icon: '⭐' },
+        { label: 'PRs', value: data.prs, max: 50, icon: '🔀' },
+        { label: 'Languages', value: Object.keys(data.langCounts).length, max: 15, icon: '🌐' },
+    ];
+    const n = metrics.length;
+    const angleStep = (Math.PI * 2) / n;
+
+    // Animate growth
+    let animProgress = 0;
+    function drawFrame() {
+        animProgress = Math.min(animProgress + 0.02, 1);
+        ctx.clearRect(0, 0, size, size);
+
+        // Draw concentric grid rings
+        for (let ring = 1; ring <= 4; ring++) {
+            const r = (ring / 4) * maxR;
+            ctx.beginPath();
+            for (let i = 0; i <= n; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const x = cx + Math.cos(angle) * r;
+                const y = cy + Math.sin(angle) * r;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        // Draw axis lines
+        for (let i = 0; i < n; i++) {
+            const angle = i * angleStep - Math.PI / 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.12)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        // Draw data polygon (animated)
+        ctx.beginPath();
+        metrics.forEach((m, i) => {
+            const norm = Math.min(m.value / m.max, 1) * animProgress;
+            const r = norm * maxR;
+            const angle = i * angleStep - Math.PI / 2;
+            const x = cx + Math.cos(angle) * r;
+            const y = cy + Math.sin(angle) * r;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+
+        // Fill with gradient
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+        grad.addColorStop(0, 'rgba(99, 102, 241, 0.35)');
+        grad.addColorStop(1, 'rgba(168, 85, 247, 0.15)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.strokeStyle = '#818cf8';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw data points
+        metrics.forEach((m, i) => {
+            const norm = Math.min(m.value / m.max, 1) * animProgress;
+            const r = norm * maxR;
+            const angle = i * angleStep - Math.PI / 2;
+            const x = cx + Math.cos(angle) * r;
+            const y = cy + Math.sin(angle) * r;
+
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#a78bfa';
+            ctx.fill();
+            ctx.strokeStyle = '#f8fafc';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        });
+
+        // Axis labels
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        metrics.forEach((m, i) => {
+            const angle = i * angleStep - Math.PI / 2;
+            const labelR = maxR + 22;
+            const x = cx + Math.cos(angle) * labelR;
+            const y = cy + Math.sin(angle) * labelR;
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '11px Outfit, sans-serif';
+            ctx.fillText(m.label, x, y);
+        });
+
+        if (animProgress < 1) requestAnimationFrame(drawFrame);
+    }
+    drawFrame();
+
+    // Labels below
+    const labelsEl = document.getElementById('perf-labels');
+    if (labelsEl) {
+        labelsEl.innerHTML = metrics.map(m =>
+            `<div class="perf-item">
+                <span>${m.icon}</span>
+                <span>${m.label}</span>
+                <span class="perf-val">${m.value.toLocaleString()}</span>
+            </div>`
+        ).join('');
+    }
+}
+
+// ── Theme updater (no longer needs image src swaps) ──
 function updateGitHubStatsTheme() {
-    const isLight = document.body.classList.contains('light-mode');
-    const langImg = document.querySelector('.github-diagrams-grid .lang-card img');
-    const statsImg = document.querySelector('.github-diagrams-grid .stats-card img');
-    
-    if (langImg) {
-        langImg.src = isLight
-            ? "https://github-readme-stats.vercel.app/api/top-langs/?username=CyberCodezilla&layout=compact&theme=default&bg_color=f8fafc&title_color=6366f1&icon_color=06b6d4&text_color=0f172a&border_color=6366f1&border_radius=14&hide_border=true"
-            : "https://github-readme-stats.vercel.app/api/top-langs/?username=CyberCodezilla&layout=compact&theme=tokyonight&bg_color=050510&title_color=6366f1&icon_color=06b6d4&text_color=f8fafc&border_color=6366f1&border_radius=14&hide_border=true";
-    }
-    
-    if (statsImg) {
-        statsImg.src = isLight
-            ? "https://github-readme-stats.vercel.app/api?username=CyberCodezilla&show_icons=true&theme=default&bg_color=f8fafc&title_color=6366f1&icon_color=06b6d4&text_color=0f172a&border_color=6366f1&border_radius=14&hide_border=true"
-            : "https://github-readme-stats.vercel.app/api?username=CyberCodezilla&show_icons=true&theme=tokyonight&bg_color=050510&title_color=6366f1&icon_color=06b6d4&text_color=f8fafc&border_color=6366f1&border_radius=14&hide_border=true";
-    }
+    // Charts are canvas-based, no theme image swaps needed
 }
 
 // Synchronize layout positions dynamically on device resize or shift
@@ -2204,11 +2244,179 @@ let debounceTimer;
 window.addEventListener("resize", () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-        // Forces GSAP ScrollTrigger to recalculate positioning bounds for the 3D Card Deck
         if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.refresh();
-            console.log('ScrollTrigger refreshed');
         }
     }, 200); 
 });
 
+/* ============================================
+   ZERO-G SPACE DRIFT & SCROLL-DRIVEN SATELLITE ENGINE
+   ============================================ */
+function initSatelliteTelemetry() {
+  const satellite = document.getElementById('anime-satellite');
+  const aboutSection = document.querySelector('.about-satellite-section');
+  const satTabs = document.querySelectorAll('.sat-tab');
+  const satContents = document.querySelectorAll('.sat-content');
+
+  if (!satellite || !aboutSection) return;
+
+  let currentX = -450;
+  let currentY = 0;
+  let currentRot = -10;
+
+  let targetX = 0;
+  let targetY = 0;
+  let targetRot = 0;
+
+  let mouseX = 0;
+  let mouseY = 0;
+
+  // Subtle Mouse Parallax Accent
+  window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 35;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 25;
+  }, { passive: true });
+
+  // 60FPS Space Float & Scroll Trajectory Engine (100% Scoped within About Me section)
+  function animateSatellite() {
+    const rect = aboutSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    // Calculate scroll progress strictly within about section
+    let progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+    progress = Math.min(Math.max(progress, 0), 1);
+
+    // 1. Outer Margin Trajectory: Passes quickly above top of tabs (-52vw, -130px) -> Glides to Outer Right Margin (+52vw, -40px)
+    const startX = -window.innerWidth * 0.52;
+    const endX = window.innerWidth * 0.52;
+    const scrollX = lerp(startX, endX, progress);
+
+    const startY = -130;
+    const endY = -40;
+    const scrollY = lerp(startY, endY, progress);
+
+    const scrollRot = -10 + progress * 28;
+
+    // 2. Realistic Zero-G Space Micro-Drift (random sinusoidal space wobble)
+    const time = performance.now() * 0.001;
+    const driftX = Math.sin(time * 0.9) * 20 + Math.cos(time * 1.5) * 10;
+    const driftY = Math.cos(time * 1.1) * 15 + Math.sin(time * 1.8) * 8;
+    const driftRot = Math.sin(time * 0.7) * 5;
+
+    targetX = scrollX + driftX + mouseX;
+    targetY = scrollY + driftY + mouseY;
+    targetRot = scrollRot + driftRot;
+
+    // Smooth lerp interpolation for buttery-smooth rendering
+    currentX = lerp(currentX, targetX, 0.08);
+    currentY = lerp(currentY, targetY, 0.08);
+    currentRot = lerp(currentRot, targetRot, 0.08);
+
+    // 3D Perspective Pitch, Yaw & Roll
+    const rotX = Math.sin(time * 0.6) * 10 + (mouseY / 25) * 8;
+    const rotY = -22 + progress * 44 + (mouseX / 35) * 12;
+
+    satellite.style.transform = `perspective(1200px) translate3d(calc(-50% + ${currentX.toFixed(2)}px), ${currentY.toFixed(2)}px, 0px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) rotateZ(${currentRot.toFixed(2)}deg)`;
+
+    requestAnimationFrame(animateSatellite);
+  }
+
+  requestAnimationFrame(animateSatellite);
+
+  // Tab Click: Fire Signal Transmission Waves & Decode Content
+  satTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-tab');
+
+      // Update active states
+      satTabs.forEach(t => t.classList.remove('active'));
+      satContents.forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      const targetContent = document.getElementById(targetId);
+      
+      // Trigger Telemetry Pulse Wave Animation on Satellite
+      satellite.classList.add('transmitting');
+      setTimeout(() => satellite.classList.remove('transmitting'), 1200);
+
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+    });
+  });
+}
+
+/* ============================================
+   FLOATING ASTRONAUT ZERO-G DRIFT ENGINE
+   (Right-to-Left across Projects -> GitHub Stats)
+   ============================================ */
+function initFloatingAstronaut() {
+  const astronaut = document.getElementById('floating-astronaut');
+  const projectsSection = document.getElementById('projects');
+
+  if (!astronaut || !projectsSection) return;
+
+  let aCurrentX = window.innerWidth * 0.48;
+  let aCurrentY = -80;
+  let aCurrentRot = 15;
+
+  let aTargetX = 0;
+  let aTargetY = 0;
+  let aTargetRot = 0;
+
+  let aMouseX = 0;
+  let aMouseY = 0;
+
+  // Subtle Mouse Parallax
+  window.addEventListener('mousemove', (e) => {
+    aMouseX = (e.clientX / window.innerWidth - 0.5) * 30;
+    aMouseY = (e.clientY / window.innerHeight - 0.5) * 20;
+  }, { passive: true });
+
+  // 60FPS Astronaut Float & Scroll Trajectory (RIGHT to LEFT, opposite of satellite)
+  function animateAstronaut() {
+    const rect = projectsSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    // Scroll progress scoped within #projects section
+    let progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+    progress = Math.min(Math.max(progress, 0), 1);
+
+    // 1. RIGHT-to-LEFT outer margin trajectory: Starts Outer Right (+54vw, 380px) -> Ends Outer Bottom-Left (-54vw, +720px)
+    const startX = window.innerWidth * 0.54;
+    const endX = -window.innerWidth * 0.54;
+    const scrollX = lerp(startX, endX, progress);
+
+    const startY = 380;
+    const endY = 720;
+    const scrollY = lerp(startY, endY, progress);
+
+    const scrollRot = 15 - progress * 30;
+
+    // 2. Realistic Zero-G Space Float (different frequencies from satellite for variety)
+    const time = performance.now() * 0.001;
+    const driftX = Math.sin(time * 0.7) * 18 + Math.cos(time * 1.3) * 9;
+    const driftY = Math.cos(time * 0.8) * 14 + Math.sin(time * 1.5) * 7;
+    const driftRot = Math.sin(time * 0.5) * 6;
+
+    aTargetX = scrollX + driftX + aMouseX;
+    aTargetY = scrollY + driftY + aMouseY;
+    aTargetRot = scrollRot + driftRot;
+
+    // Smooth lerp interpolation
+    aCurrentX = lerp(aCurrentX, aTargetX, 0.06);
+    aCurrentY = lerp(aCurrentY, aTargetY, 0.06);
+    aCurrentRot = lerp(aCurrentRot, aTargetRot, 0.06);
+
+    // 3D Perspective Pitch, Yaw & Roll (tumbling astronaut)
+    const rotX = Math.sin(time * 0.45) * 14 + (aMouseY / 20) * 6;
+    const rotY = 18 - progress * 36 + (aMouseX / 30) * 10;
+
+    astronaut.style.transform = `perspective(1200px) translate3d(calc(50% + ${aCurrentX.toFixed(2)}px), ${aCurrentY.toFixed(2)}px, 0px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) rotateZ(${aCurrentRot.toFixed(2)}deg)`;
+
+    requestAnimationFrame(animateAstronaut);
+  }
+
+  requestAnimationFrame(animateAstronaut);
+}
