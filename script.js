@@ -1915,14 +1915,22 @@ async function renderContributionHeatmap(username) {
         }
     });
 
-    // Full year: 52 weeks × 7 days
+    // Format YYYY-MM-DD in local time
+    function formatLocalDate(d) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // Rolling 52-week grid (364 days sliding window)
     const WEEKS = 52;
     const DAYS = 7;
     const today = new Date();
     const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const dayLabels = ['','Mon','','Wed','','Fri',''];
 
-    // Dynamically size cells to fill the card width
+    // Dynamically size cells to fill card width
     const dpr = window.devicePixelRatio || 1;
     const containerW = canvas.parentElement.getBoundingClientRect().width;
     const labelW = 28;
@@ -1938,7 +1946,8 @@ async function renderContributionHeatmap(username) {
     canvas.style.height = totalH + 'px';
     ctx.scale(dpr, dpr);
 
-    // Compute start date (52 weeks ago, aligned to Sunday)
+    // Calculate rolling start date (52 weeks before today, Sunday aligned)
+    // As days/weeks advance in the future, old weeks auto-drop off the left side
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - (WEEKS * 7 - 1));
     startDate.setDate(startDate.getDate() - startDate.getDay());
@@ -1957,18 +1966,20 @@ async function renderContributionHeatmap(username) {
         return colorByLevel[Math.min(level, 4)];
     }
 
-    // Draw month labels on top
+    // Draw month labels dynamically at the first week column of each month
     ctx.fillStyle = '#64748b';
     ctx.font = `${Math.max(8, cellSize)}px JetBrains Mono, monospace`;
     ctx.textBaseline = 'top';
     let lastMonth = -1;
+    let lastLabelX = -100;
     for (let w = 0; w < WEEKS; w++) {
         const weekDate = new Date(startDate);
         weekDate.setDate(weekDate.getDate() + w * 7);
         const m = weekDate.getMonth();
-        if (m !== lastMonth) {
+        const x = labelW + w * (cellSize + gap);
+        if (m !== lastMonth && (x - lastLabelX) >= 20) {
             lastMonth = m;
-            const x = labelW + w * (cellSize + gap);
+            lastLabelX = x;
             ctx.fillText(monthNames[m], x, 0);
         }
     }
@@ -1992,8 +2003,8 @@ async function renderContributionHeatmap(username) {
         for (let d = 0; d < DAYS; d++) {
             const cellDate = new Date(startDate);
             cellDate.setDate(cellDate.getDate() + w * 7 + d);
-            if (cellDate > today) continue;
-            const dateStr = cellDate.toISOString().slice(0, 10);
+            if (cellDate > today) continue; // Future days remain undrawn
+            const dateStr = formatLocalDate(cellDate);
             const x = labelW + w * (cellSize + gap);
             const y = monthHeaderH + d * (cellSize + gap);
 
@@ -2246,6 +2257,7 @@ window.addEventListener("resize", () => {
         if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.refresh();
         }
+        renderContributionHeatmap('CyberCodezilla');
     }, 200); 
 });
 
