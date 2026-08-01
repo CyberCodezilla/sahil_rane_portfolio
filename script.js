@@ -1870,41 +1870,50 @@ async function renderContributionHeatmap(username) {
     const ctx = canvas.getContext('2d');
 
     // Fetch real contribution data (date + level 0-4) from GitHub
-    let contributions = {}; // { "2025-08-01": 3, ... } where value = level 0-4
-    let dataIsLevel = false; // true = data is level (0-4), false = data is raw count
+    let contributions = {}; // { "2025-08-01": level (0-4) }
+    let liveEventCounts = {}; // Real-time fallback/supplement from GitHub Events API
 
+    // 1. Fetch live events for instant real-time data
     try {
-        // Primary: GitHub Contributions API — returns real level data matching GitHub profile
+        const pages = [1, 2, 3, 4, 5];
+        const fetches = pages.map(p =>
+            fetch(`https://api.github.com/users/${username}/events?per_page=30&page=${p}`)
+                .then(r => r.ok ? r.json() : []).catch(() => [])
+        );
+        const allPages = await Promise.all(fetches);
+        allPages.flat().forEach(evt => {
+            if (evt.created_at) {
+                const day = evt.created_at.slice(0, 10);
+                liveEventCounts[day] = (liveEventCounts[day] || 0) + 1;
+            }
+        });
+    } catch(e) { /* silent fallback */ }
+
+    // 2. Fetch full-year level data from Contributions API
+    try {
         const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
         if (res.ok) {
             const data = await res.json();
             if (data.contributions && Array.isArray(data.contributions)) {
                 data.contributions.forEach(c => {
-                    contributions[c.date] = c.level; // level is 0-4, exact GitHub colors
+                    contributions[c.date] = c.level; // 0-4
                 });
-                dataIsLevel = true;
             }
         }
-    } catch(e) { /* fallback below */ }
+    } catch(e) { /* silent fallback */ }
 
-    // Fallback: GitHub Events API (last ~90 days, raw counts)
-    if (!dataIsLevel || Object.keys(contributions).length === 0) {
-        dataIsLevel = false;
-        try {
-            const pages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            const fetches = pages.map(p =>
-                fetch(`https://api.github.com/users/${username}/events?per_page=30&page=${p}`)
-                    .then(r => r.ok ? r.json() : []).catch(() => [])
-            );
-            const allPages = await Promise.all(fetches);
-            allPages.flat().forEach(evt => {
-                if (evt.created_at) {
-                    const day = evt.created_at.slice(0, 10);
-                    contributions[day] = (contributions[day] || 0) + 1;
-                }
-            });
-        } catch(e) { /* empty heatmap */ }
-    }
+    // 3. Merge: If contributions API returns level 0 for recent active days, overlay live event levels
+    Object.keys(liveEventCounts).forEach(day => {
+        const evtCount = liveEventCounts[day];
+        let calculatedLevel = 1;
+        if (evtCount >= 6) calculatedLevel = 4;
+        else if (evtCount >= 4) calculatedLevel = 3;
+        else if (evtCount >= 2) calculatedLevel = 2;
+
+        if (!contributions[day] || contributions[day] < calculatedLevel) {
+            contributions[day] = calculatedLevel;
+        }
+    });
 
     // Full year: 52 weeks × 7 days
     const WEEKS = 52;
@@ -1943,18 +1952,8 @@ async function renderContributionHeatmap(username) {
         '#c4b5fd',                   // Level 4 — very active
     ];
 
-    // For raw count fallback, map count → level
-    function countToLevel(count) {
-        if (count === 0) return 0;
-        if (count <= 2) return 1;
-        if (count <= 5) return 2;
-        if (count <= 9) return 3;
-        return 4;
-    }
-
     function getCellColor(dateStr) {
-        const val = contributions[dateStr] || 0;
-        const level = dataIsLevel ? val : countToLevel(val);
+        const level = contributions[dateStr] || 0;
         return colorByLevel[Math.min(level, 4)];
     }
 
