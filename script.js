@@ -1930,14 +1930,15 @@ async function renderContributionHeatmap(username) {
     const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const dayLabels = ['','Mon','','Wed','','Fri',''];
 
-    // Dynamically size cells to fill card width
+    // Dynamically size cells to fill card width + right padding for month label overflow
     const dpr = window.devicePixelRatio || 1;
     const containerW = canvas.parentElement.getBoundingClientRect().width;
     const labelW = 28;
     const gap = 2;
-    const cellSize = Math.max(3, Math.floor((containerW - labelW - 4) / WEEKS - gap));
-    const monthHeaderH = 14;
-    const totalW = labelW + WEEKS * (cellSize + gap);
+    const rightPadding = 26; // Extra room for month text on rightmost columns (e.g. Aug)
+    const cellSize = Math.max(3, Math.floor((containerW - labelW - rightPadding - 4) / WEEKS - gap));
+    const monthHeaderH = 16;
+    const totalW = labelW + WEEKS * (cellSize + gap) + rightPadding;
     const totalH = monthHeaderH + DAYS * (cellSize + gap) + 4;
 
     canvas.width = totalW * dpr;
@@ -1947,10 +1948,12 @@ async function renderContributionHeatmap(username) {
     ctx.scale(dpr, dpr);
 
     // Calculate rolling start date (52 weeks before today, Sunday aligned)
-    // As days/weeks advance in the future, old weeks auto-drop off the left side
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - (WEEKS * 7 - 1));
     startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    const todayEnd = new Date(today);
+    todayEnd.setHours(23, 59, 59, 999);
 
     // Purple color scale matching GitHub's 5 levels (0-4)
     const colorByLevel = [
@@ -1966,21 +1969,29 @@ async function renderContributionHeatmap(username) {
         return colorByLevel[Math.min(level, 4)];
     }
 
-    // Draw month labels dynamically at the first week column of each month
-    ctx.fillStyle = '#64748b';
-    ctx.font = `${Math.max(8, cellSize)}px JetBrains Mono, monospace`;
+    // Draw month labels dynamically above the column where each month starts
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = `${Math.max(9, cellSize + 1)}px JetBrains Mono, monospace`;
     ctx.textBaseline = 'top';
     let lastMonth = -1;
     let lastLabelX = -100;
+
     for (let w = 0; w < WEEKS; w++) {
-        const weekDate = new Date(startDate);
-        weekDate.setDate(weekDate.getDate() + w * 7);
-        const m = weekDate.getMonth();
-        const x = labelW + w * (cellSize + gap);
-        if (m !== lastMonth && (x - lastLabelX) >= 20) {
-            lastMonth = m;
-            lastLabelX = x;
-            ctx.fillText(monthNames[m], x, 0);
+        // Check if any day in this week is the 1st of a month, or if it's week 0
+        for (let d = 0; d < DAYS; d++) {
+            const cellDate = new Date(startDate);
+            cellDate.setDate(cellDate.getDate() + w * 7 + d);
+            const m = cellDate.getMonth();
+
+            if ((m !== lastMonth && (cellDate.getDate() === 1 || cellDate.getDate() <= 7 || w === 0))) {
+                const x = labelW + w * (cellSize + gap);
+                if (x - lastLabelX >= 22) {
+                    lastMonth = m;
+                    lastLabelX = x;
+                    ctx.fillText(monthNames[m], x, 0);
+                }
+                break;
+            }
         }
     }
 
@@ -2003,7 +2014,7 @@ async function renderContributionHeatmap(username) {
         for (let d = 0; d < DAYS; d++) {
             const cellDate = new Date(startDate);
             cellDate.setDate(cellDate.getDate() + w * 7 + d);
-            if (cellDate > today) continue; // Future days remain undrawn
+            if (cellDate > todayEnd) continue; // Future days remain undrawn
             const dateStr = formatLocalDate(cellDate);
             const x = labelW + w * (cellSize + gap);
             const y = monthHeaderH + d * (cellSize + gap);
