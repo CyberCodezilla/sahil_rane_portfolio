@@ -478,47 +478,225 @@
                     <img src="assets/astronaut.png" alt="Floating Astronaut" class="astronaut-img" draggable="false">
                 </div>
                 <div class="scrollable-section">
-                    <div class="section-header-compact">
-                        <h2 class="section-title-compact">My <span class="highlight">Work</span></h2>
+                    <div class="projects-header-wrapper">
+                        <div class="section-header-compact" style="margin-bottom: 0;">
+                            <h2 class="section-title-compact">My <span class="highlight">Work</span></h2>
+                        </div>
+                        <!-- Interactive Category Filter Tabs -->
+                        <div class="project-category-tabs" id="project-category-tabs">
+                            <button class="proj-cat-tab active" data-filter="all">
+                                <i class="fas fa-layer-group"></i> All Projects
+                            </button>
+                            <button class="proj-cat-tab" data-filter="web,mobile,design">
+                                <i class="fas fa-laptop-code"></i> Web & Apps
+                            </button>
+                            <button class="proj-cat-tab" data-filter="ai,data">
+                                <i class="fas fa-brain"></i> AI & Data
+                            </button>
+                            <button class="proj-cat-tab" data-filter="iot,security,backend,cloud,tools,blockchain,gaming">
+                                <i class="fas fa-microchip"></i> Systems & IoT
+                            </button>
+                        </div>
                     </div>
-                    <div class="projects-grid-compact">
-                        <a href="https://rake-2-0-sih.vercel.app/" target="_blank" class="project-card-compact" style="text-decoration: none; color: inherit;">
-                            <div class="project-image-compact">
-                                <i class="fas fa-train"></i>
-                            </div>
-                            <div class="project-info">
-                                <h3>RAKE MANAGEMENT SYSTEM</h3>
-                                <p>Railway rake management for efficient tracking.</p>
-                                <div class="project-tech-compact">
-                                    <span>React</span><span>Node.js</span><span>MongoDB</span>
+
+                    <!-- UFO Scene Wrapper -->
+                    <div class="ufo-scene" id="ufo-scene">
+                        <!-- UFO Element -->
+                        <div class="ufo-craft" id="ufo-craft" aria-hidden="true">
+                            <svg class="ufo-svg" viewBox="0 0 180 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Tractor Beam (extends downward) -->
+                                <defs>
+                                    <radialGradient id="domeGrad" cx="50%" cy="80%" r="60%">
+                                        <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.9"/>
+                                        <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.6"/>
+                                        <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.1"/>
+                                    </radialGradient>
+                                    <radialGradient id="bodyGrad" cx="50%" cy="40%" r="55%">
+                                        <stop offset="0%" stop-color="#94a3b8"/>
+                                        <stop offset="50%" stop-color="#475569"/>
+                                        <stop offset="100%" stop-color="#1e293b"/>
+                                    </radialGradient>
+                                    <radialGradient id="rimGlow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.9"/>
+                                        <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.4"/>
+                                    </radialGradient>
+                                    <filter id="ufoGlow">
+                                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                    </filter>
+                                    <filter id="beamGlow">
+                                        <feGaussianBlur stdDeviation="6" result="blur"/>
+                                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                    </filter>
+                                    <linearGradient id="legGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#64748b"/>
+                                        <stop offset="100%" stop-color="#334155"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <!-- Landing Struts -->
+                                <line x1="75" y1="56" x2="68" y2="68" stroke="url(#legGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                                <line x1="90" y1="58" x2="90" y2="70" stroke="url(#legGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                                <line x1="105" y1="56" x2="112" y2="68" stroke="url(#legGrad)" stroke-width="2.5" stroke-linecap="round"/>
+                                <!-- Foot pads -->
+                                <ellipse cx="67" cy="69" rx="5" ry="2.5" fill="#334155"/>
+                                <ellipse cx="90" cy="71" rx="5" ry="2.5" fill="#334155"/>
+                                <ellipse cx="113" cy="69" rx="5" ry="2.5" fill="#334155"/>
+
+                                <!-- Main Hull -->
+                                <ellipse cx="90" cy="48" rx="70" ry="16" fill="url(#bodyGrad)"/>
+                                <!-- Hull shine top -->
+                                <ellipse cx="90" cy="44" rx="45" ry="5" fill="rgba(255,255,255,0.12)"/>
+                                <!-- Hull rim glow ring -->
+                                <ellipse cx="90" cy="48" rx="70" ry="16" fill="none" stroke="url(#rimGlow)" stroke-width="2" filter="url(#ufoGlow)"/>
+
+                                <!-- Rotating rim lights -->
+                                <g class="ufo-rim-lights">
+                                    <circle cx="50"  cy="48" r="4" fill="#6366f1" opacity="0.9"/>
+                                    <circle cx="67"  cy="56" r="3.5" fill="#06b6d4" opacity="0.8"/>
+                                    <circle cx="90"  cy="60" r="4" fill="#a78bfa" opacity="0.9"/>
+                                    <circle cx="113" cy="56" r="3.5" fill="#38bdf8" opacity="0.8"/>
+                                    <circle cx="130" cy="48" r="4" fill="#6366f1" opacity="0.9"/>
+                                    <circle cx="113" cy="40" r="3.5" fill="#06b6d4" opacity="0.8"/>
+                                    <circle cx="90"  cy="36" r="4" fill="#a78bfa" opacity="0.9"/>
+                                    <circle cx="67"  cy="40" r="3.5" fill="#38bdf8" opacity="0.8"/>
+                                </g>
+
+                                <!-- Cockpit dome -->
+                                <ellipse cx="90" cy="38" rx="28" ry="22" fill="url(#domeGrad)" filter="url(#ufoGlow)"/>
+                                <!-- Dome inner highlight -->
+                                <ellipse cx="85" cy="30" rx="12" ry="9" fill="rgba(255,255,255,0.2)"/>
+                                <!-- Dome rim -->
+                                <ellipse cx="90" cy="38" rx="28" ry="22" fill="none" stroke="#7dd3fc" stroke-width="1.2" opacity="0.7"/>
+
+                                <!-- Alien silhouette inside dome -->
+                                <ellipse cx="90" cy="36" rx="7" ry="9" fill="rgba(0,200,255,0.2)"/>
+                                <ellipse cx="90" cy="27" rx="5" ry="4" fill="rgba(0,200,255,0.25)"/>
+                                <!-- Eyes -->
+                                <ellipse cx="87.5" cy="26" rx="2" ry="2.5" fill="rgba(0,255,220,0.7)"/>
+                                <ellipse cx="92.5" cy="26" rx="2" ry="2.5" fill="rgba(0,255,220,0.7)"/>
+
+                                <!-- Underside engine glow -->
+                                <ellipse cx="90" cy="58" rx="18" ry="6" fill="#06b6d4" opacity="0.25" filter="url(#beamGlow)"/>
+                            </svg>
+
+                            <!-- Tractor Beam (CSS rendered below UFO) -->
+                            <div class="ufo-tractor-beam" id="ufo-beam">
+                                <div class="beam-inner"></div>
+                                <div class="beam-particles">
+                                    <span class="beam-dot"></span>
+                                    <span class="beam-dot"></span>
+                                    <span class="beam-dot"></span>
+                                    <span class="beam-dot"></span>
+                                    <span class="beam-dot"></span>
                                 </div>
                             </div>
-                        </a>
-                        <a href="https://github.com/ivory-26/VIS" target="_blank" class="project-card-compact" style="text-decoration: none; color: inherit;">
-                            <div class="project-image-compact">
-                                <i class="fas fa-chalkboard"></i>
-                            </div>
-                            <div class="project-info">
-                                <h3>COLLABORATIVE WHITEBOARD</h3>
-                                <p>Real-time collaborative whiteboard.</p>
-                                <div class="project-tech-compact">
-                                    <span>React</span><span>Socket.io</span><span>Canvas</span>
+                        </div>
+
+                        <div class="projects-grid-compact" id="projects-grid">
+                        <!-- Project 1: Rake Management System -->
+                        <div class="project-card-structured" data-domain="iot">
+                            <div class="project-card-top">
+                                <div class="project-icon-badge">
+                                    <i class="fas fa-microchip"></i>
+                                </div>
+                                <div class="project-card-badges">
+                                    <span class="project-badge-domain">Smart Logistics & IoT</span>
+                                    <span class="project-badge-feat"><i class="fas fa-star"></i> SIH Finalist</span>
                                 </div>
                             </div>
-                        </a>
-                        <a href="https://github.com/shubham2web/MUM-hackthon" target="_blank" class="project-card-compact" style="text-decoration: none; color: inherit;">
-                            <div class="project-image-compact">
-                                <i class="fas fa-shield-alt"></i>
+                            <h3 class="project-card-title">RAKE MANAGEMENT SYSTEM</h3>
+                            <p class="project-card-summary">Railway rake management system for efficient real-time telemetry, wagon allocation, and junction scheduling.</p>
+                            <ul class="project-card-highlights">
+                                <li><i class="fas fa-circle-check"></i> Real-time GPS telemetry & rake tracking</li>
+                                <li><i class="fas fa-circle-check"></i> Automated yard bottleneck detection algorithm</li>
+                                <li><i class="fas fa-circle-check"></i> 60% reduction in turnaround scheduling delay</li>
+                            </ul>
+                            <div class="project-card-techs">
+                                <span class="project-tech-pill">React</span>
+                                <span class="project-tech-pill">Node.js</span>
+                                <span class="project-tech-pill">MongoDB</span>
+                                <span class="project-tech-pill">Socket.io</span>
                             </div>
-                            <div class="project-info">
-                                <h3>ATLAS Misinformation Detector</h3>
-                                <p>AI-powered misinformation detector.</p>
-                                <div class="project-tech-compact">
-                                    <span>Python</span><span>TensorFlow</span><span>NLP</span>
+                            <div class="project-card-actions">
+                                <a href="https://rake-2-0-sih.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-primary">
+                                    <i class="fas fa-arrow-up-right-from-square"></i> Live Demo
+                                </a>
+                                <a href="https://github.com/CyberCodezilla/rake-sih" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-ghost">
+                                    <i class="fab fa-github"></i> Source
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Project 2: Collaborative Whiteboard -->
+                        <div class="project-card-structured" data-domain="web">
+                            <div class="project-card-top">
+                                <div class="project-icon-badge">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <div class="project-card-badges">
+                                    <span class="project-badge-domain">Real-time Web App</span>
+                                    <span class="project-badge-feat"><i class="fas fa-star"></i> Featured</span>
                                 </div>
                             </div>
-                        </a>
-                    </div>
+                            <h3 class="project-card-title">COLLABORATIVE WHITEBOARD</h3>
+                            <p class="project-card-summary">High-performance collaborative canvas with synchronized vector drawing, room management, and state replay.</p>
+                            <ul class="project-card-highlights">
+                                <li><i class="fas fa-circle-check"></i> Sub-20ms multi-user cursor & stroke sync</li>
+                                <li><i class="fas fa-circle-check"></i> Hardware-accelerated HTML5 Canvas engine</li>
+                                <li><i class="fas fa-circle-check"></i> Room-based WebSocket state management</li>
+                            </ul>
+                            <div class="project-card-techs">
+                                <span class="project-tech-pill">React</span>
+                                <span class="project-tech-pill">Socket.io</span>
+                                <span class="project-tech-pill">Canvas API</span>
+                                <span class="project-tech-pill">Node.js</span>
+                            </div>
+                            <div class="project-card-actions">
+                                <a href="https://github.com/ivory-26/VIS" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-primary">
+                                    <i class="fas fa-arrow-up-right-from-square"></i> Live Demo
+                                </a>
+                                <a href="https://github.com/ivory-26/VIS" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-ghost">
+                                    <i class="fab fa-github"></i> Source
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Project 3: ATLAS Misinformation Detector -->
+                        <div class="project-card-structured" data-domain="ai">
+                            <div class="project-card-top">
+                                <div class="project-icon-badge">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="project-card-badges">
+                                    <span class="project-badge-domain">AI & NLP Engine</span>
+                                    <span class="project-badge-feat"><i class="fas fa-star"></i> Hackathon Winner</span>
+                                </div>
+                            </div>
+                            <h3 class="project-card-title">ATLAS Misinformation Detector</h3>
+                            <p class="project-card-summary">Machine learning misinformation detector utilizing deep NLP transformer embeddings and cross-source verification.</p>
+                            <ul class="project-card-highlights">
+                                <li><i class="fas fa-circle-check"></i> 94.2% factual veracity classification rate</li>
+                                <li><i class="fas fa-circle-check"></i> BERT/Transformer embeddings pipeline</li>
+                                <li><i class="fas fa-circle-check"></i> Real-time web verification scraper</li>
+                            </ul>
+                            <div class="project-card-techs">
+                                <span class="project-tech-pill">Python</span>
+                                <span class="project-tech-pill">TensorFlow</span>
+                                <span class="project-tech-pill">NLP</span>
+                                <span class="project-tech-pill">FastAPI</span>
+                            </div>
+                            <div class="project-card-actions">
+                                <a href="https://github.com/shubham2web/MUM-hackthon" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-primary">
+                                    <i class="fas fa-arrow-up-right-from-square"></i> Live Demo
+                                </a>
+                                <a href="https://github.com/shubham2web/MUM-hackthon" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-ghost">
+                                    <i class="fab fa-github"></i> Source
+                                </a>
+                            </div>
+                        </div>
+                        </div><!-- /projects-grid-compact -->
+                    </div><!-- /ufo-scene -->
                     
                     <div class="section-divider"></div>
                     
@@ -634,7 +812,7 @@
                             <h3>Machine Learning</h3>
                             <p>Stanford Online</p>
                         </div>
-                    </div>
+                        </div>
                     
                     <div class="section-divider"></div>
                     

@@ -2442,3 +2442,366 @@ function initFloatingAstronaut() {
 
   requestAnimationFrame(animateAstronaut);
 }
+
+/* ============================================
+   DYNAMIC PROJECTS & CONTENT LOADER
+   ============================================ */
+const PORTFOLIO_DOMAIN_PRESETS = [
+  { id: 'web',        name: 'Full Stack Web',    icon: 'fas fa-laptop-code',            bgGradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+  { id: 'security',   name: 'Cyber Security',    icon: 'fas fa-shield-halved',          bgGradient: 'linear-gradient(135deg, #06b6d4, #0891b2)' },
+  { id: 'ai',         name: 'AI & ML',           icon: 'fas fa-brain',                  bgGradient: 'linear-gradient(135deg, #ec4899, #d946ef)' },
+  { id: 'cloud',      name: 'Cloud & DevOps',    icon: 'fas fa-cloud',                  bgGradient: 'linear-gradient(135deg, #38bdf8, #0284c7)' },
+  { id: 'mobile',     name: 'Mobile Apps',       icon: 'fas fa-mobile-screen-button',   bgGradient: 'linear-gradient(135deg, #3b82f6, #6366f1)' },
+  { id: 'data',       name: 'Data Science',      icon: 'fas fa-chart-line',             bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
+  { id: 'blockchain', name: 'Blockchain/Web3',   icon: 'fas fa-cubes',                  bgGradient: 'linear-gradient(135deg, #a855f7, #7c3aed)' },
+  { id: 'iot',        name: 'Smart Systems/IoT', icon: 'fas fa-microchip',              bgGradient: 'linear-gradient(135deg, #14b8a6, #0d9488)' },
+  { id: 'design',     name: 'UI/UX & Design',    icon: 'fas fa-palette',                bgGradient: 'linear-gradient(135deg, #f43f5e, #fb7185)' },
+  { id: 'backend',    name: 'Backend & APIs',    icon: 'fas fa-server',                 bgGradient: 'linear-gradient(135deg, #10b981, #059669)' },
+  { id: 'gaming',     name: '3D & Game Dev',     icon: 'fas fa-gamepad',                bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)' },
+  { id: 'tools',      name: 'Open Source Tools', icon: 'fas fa-screwdriver-wrench',     bgGradient: 'linear-gradient(135deg, #eab308, #ca8a04)' }
+];
+
+function escapeHtmlStr(str) {
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function initDynamicProjects() {
+  initProjectCategoryTabs();
+  attachCardMouseGlow();
+  initUFO();
+}
+
+/* ============================================================
+   UFO CONTROLLER v2
+   IDLE  → teleports instantly to nearest screen edge, parks there
+           with a slow downward scan beam (green tint)
+   HOVER → warps to exact centre above hovered card, emits
+           wide cyan/indigo tractor beam onto that card
+   ============================================================ */
+function initUFO() {
+  const ufo   = document.getElementById('ufo-craft');
+  const beam  = document.getElementById('ufo-beam');
+  const scene = document.getElementById('ufo-scene');
+  if (!ufo || !beam || !scene) return;
+
+  /* ── constants ── */
+  const UFO_HALF_W   = 80;   // half the UFO render width (160/2)
+  const UFO_HOVER    = -72;  // px above card top when abducting
+  const UFO_EDGE_Y   = -50;  // Y above scene top when idling at edge
+  const EDGE_INSET   = 30;   // px inset from scene edge so craft peeks in
+  const WARP_MS      = 65;   // teleport transition duration (ms)
+  const FLY_MS_L     = 450;  // left/horizontal spring (ms)
+  const FLY_MS_T     = 380;  // top spring (ms)
+
+  let tiltTimer   = null;
+  let currentCard = null;
+  let lastMouseX  = 0;       // track cursor X to know which edge is nearest
+  let ufoReady    = false;   // first card hover activates the UFO
+  let idleActive  = false;
+
+  /* ── track cursor globally inside the scene wrapper ── */
+  scene.addEventListener('mousemove', e => { lastMouseX = e.clientX; });
+  document.addEventListener('mousemove', e => { lastMouseX = e.clientX; });
+
+  /* ── CSS transition helpers ── */
+  function setTransition(fast) {
+    const ms = fast ? WARP_MS : null;
+    if (fast) {
+      ufo.style.transition = `left ${WARP_MS}ms linear, top ${WARP_MS * 1.5}ms linear, opacity 0.18s ease`;
+    } else {
+      ufo.style.transition = `left ${FLY_MS_L}ms cubic-bezier(0.34,1.4,0.64,1), top ${FLY_MS_T}ms cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease`;
+    }
+  }
+
+  /* ── place UFO (left = centre of craft) ── */
+  function place(centreX, topY) {
+    ufo.style.left       = `${centreX}px`;
+    ufo.style.top        = `${topY}px`;
+    ufo.style.marginLeft = `-${UFO_HALF_W}px`;
+  }
+
+  /* ── determine nearest screen edge X (in scene coords) ── */
+  function nearestEdge() {
+    const sr = scene.getBoundingClientRect();
+    const midX = sr.left + sr.width / 2;
+    return (lastMouseX < midX)
+      ? EDGE_INSET                      // left edge
+      : sr.width - EDGE_INSET;          // right edge
+  }
+
+  /* ── IDLE: warp to nearest edge → flash → vanish ── */
+  function parkAtEdge() {
+    if (idleActive) return;
+    idleActive = true;
+
+    // kill beam + card glow immediately
+    beam.classList.remove('beam-on', 'beam-idle');
+    beam.style.height = '0px';
+    if (currentCard) {
+      currentCard.classList.remove('ufo-targeted');
+      currentCard = null;
+    }
+
+    const edgeX  = nearestEdge();
+    const curLeft = parseFloat(ufo.style.left) || 0;
+
+    // tilt toward edge
+    ufo.classList.remove('ufo-tilt-left', 'ufo-tilt-right');
+    ufo.classList.add(edgeX < curLeft ? 'ufo-tilt-left' : 'ufo-tilt-right');
+
+    // warp flash
+    ufo.classList.add('ufo-warping');
+    setTransition(true);
+    place(edgeX, UFO_EDGE_Y);
+
+    // after warp arrives → vanish (quick fade)
+    setTimeout(() => {
+      ufo.classList.remove('ufo-warping', 'ufo-tilt-left', 'ufo-tilt-right');
+      // fade-out: override transition to a snappy opacity drop
+      ufo.style.transition = 'opacity 0.12s ease';
+      ufo.classList.remove('ufo-active');   // triggers opacity → 0
+    }, WARP_MS + 10);
+  }
+
+  /* ── HOVER: spring-fly to card centre + abduction beam ── */
+  function flyToCard(card) {
+    if (card === currentCard) return;
+    idleActive = false;
+
+    const sceneRect = scene.getBoundingClientRect();
+    const cardRect  = card.getBoundingClientRect();
+    const cardCX    = cardRect.left - sceneRect.left + cardRect.width / 2;
+    const cardTopY  = cardRect.top  - sceneRect.top;
+    const targetTop = cardTopY + UFO_HOVER;
+
+    // restore spring transition (may have been overridden to opacity-only during vanish)
+    setTransition(false);
+
+    // tilt during travel
+    const prevLeft = parseFloat(ufo.style.left) || sceneRect.width / 2;
+    const dx = cardCX - prevLeft;
+    ufo.classList.remove('ufo-tilt-left', 'ufo-tilt-right', 'ufo-warping');
+    if (Math.abs(dx) > 20) {
+      ufo.classList.add(dx < 0 ? 'ufo-tilt-left' : 'ufo-tilt-right');
+      clearTimeout(tiltTimer);
+      tiltTimer = setTimeout(() => ufo.classList.remove('ufo-tilt-left', 'ufo-tilt-right'), 440);
+    }
+
+    // ensure visible
+    ufo.classList.add('ufo-active');
+    place(cardCX, targetTop);
+
+    // beam: tapered cone from hull bottom to card top surface
+    const beamH = Math.max(0, cardTopY - (targetTop + 72));
+    beam.style.height = `${beamH}px`;
+    beam.classList.remove('beam-idle');
+    beam.classList.add('beam-on');
+
+    // card glow
+    if (currentCard) currentCard.classList.remove('ufo-targeted');
+    currentCard = card;
+    card.classList.add('ufo-targeted');
+  }
+
+  /* ── bind all card events ── */
+  function bindCards() {
+    document.querySelectorAll('.project-card-structured').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        if (!ufoReady) {
+          // very first activation — spawn from nearest edge
+          ufoReady = true;
+          setTransition(false);
+          ufo.classList.add('ufo-active');
+          place(nearestEdge(), UFO_EDGE_Y);
+          setTimeout(() => flyToCard(card), 80);
+        } else {
+          // UFO may be invisible after a warp-vanish — snap to edge then fly
+          if (!ufo.classList.contains('ufo-active')) {
+            ufo.classList.add('ufo-active');
+            place(nearestEdge(), UFO_EDGE_Y);
+            setTimeout(() => flyToCard(card), 60);
+          } else {
+            flyToCard(card);
+          }
+        }
+      });
+
+      card.addEventListener('mouseleave', () => {
+        // brief grace period then teleport to edge
+        setTimeout(() => {
+          // only park if we haven't entered another card
+          if (card === currentCard) {
+            parkAtEdge();
+          }
+        }, 180);
+      });
+    });
+  }
+
+  bindCards();
+  window._ufoRebind = bindCards;
+}
+
+
+function attachCardMouseGlow() {
+  document.querySelectorAll('.project-card-structured').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--x', `${x}px`);
+      card.style.setProperty('--y', `${y}px`);
+    });
+  });
+}
+
+function initProjectCategoryTabs() {
+  const tabs = document.querySelectorAll('.proj-cat-tab');
+  if (!tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filterStr = tab.getAttribute('data-filter') || 'all';
+      const targetDomains = filterStr === 'all' ? null : filterStr.split(',').map(d => d.trim());
+
+      const cards = document.querySelectorAll('.project-card-structured');
+      cards.forEach(card => {
+        const domain = card.getAttribute('data-domain') || 'web';
+        if (!targetDomains || targetDomains.includes(domain)) {
+          card.style.display = 'flex';
+          card.style.opacity = '1';
+        } else {
+          card.style.opacity = '0';
+          setTimeout(() => {
+            if (!tab.classList.contains('active')) return;
+            card.style.display = 'none';
+          }, 150);
+        }
+      });
+    });
+  });
+}
+
+function renderPortfolioProjects(projects) {
+  const grid = document.getElementById('projects-grid');
+  if (!grid || !Array.isArray(projects) || !projects.length) return;
+
+  grid.innerHTML = '';
+  projects.forEach(proj => {
+    const domainPreset = PORTFOLIO_DOMAIN_PRESETS.find(d => d.id === proj.domain) || PORTFOLIO_DOMAIN_PRESETS[0];
+    const card = document.createElement('div');
+    card.className = 'project-card-structured';
+    card.setAttribute('data-domain', proj.domain || 'web');
+
+    const highlightsHtml = (proj.highlights || []).map(hl => `
+      <li><i class="fas fa-circle-check"></i> ${escapeHtmlStr(hl)}</li>
+    `).join('');
+
+    const techHtml = (proj.techStack || []).map(t => `
+      <span class="project-tech-pill">${escapeHtmlStr(t)}</span>
+    `).join('');
+
+    const demoBtnHtml = proj.demoUrl
+      ? `<a href="${escapeHtmlStr(proj.demoUrl)}" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-primary"><i class="fas fa-arrow-up-right-from-square"></i> Live Demo</a>`
+      : '';
+    const githubBtnHtml = proj.githubUrl
+      ? `<a href="${escapeHtmlStr(proj.githubUrl)}" target="_blank" rel="noopener noreferrer" class="project-action-btn project-action-ghost"><i class="fab fa-github"></i> Source</a>`
+      : '';
+
+    card.innerHTML = `
+      <div class="project-card-top">
+        <div class="project-icon-badge">
+          <i class="${domainPreset.icon}"></i>
+        </div>
+        <div class="project-card-badges">
+          <span class="project-badge-domain">${escapeHtmlStr(proj.domainLabel || domainPreset.name)}</span>
+          ${proj.featuredTag ? `<span class="project-badge-feat"><i class="fas fa-star"></i> ${escapeHtmlStr(proj.featuredTag)}</span>` : ''}
+        </div>
+      </div>
+      <h3 class="project-card-title">${escapeHtmlStr(proj.title)}</h3>
+      <p class="project-card-summary">${escapeHtmlStr(proj.summary || '')}</p>
+      ${highlightsHtml ? `<ul class="project-card-highlights">${highlightsHtml}</ul>` : ''}
+      ${techHtml ? `<div class="project-card-techs">${techHtml}</div>` : ''}
+      ${(demoBtnHtml || githubBtnHtml) ? `<div class="project-card-actions">${demoBtnHtml}${githubBtnHtml}</div>` : ''}
+    `;
+
+    grid.appendChild(card);
+  });
+
+  attachCardMouseGlow();
+  if (typeof window._ufoRebind === 'function') window._ufoRebind();
+
+  // Re-apply active category filter if one is selected
+  const activeTab = document.querySelector('.proj-cat-tab.active');
+  if (activeTab) {
+    const filterStr = activeTab.getAttribute('data-filter') || 'all';
+    if (filterStr !== 'all') {
+      const targetDomains = filterStr.split(',').map(d => d.trim());
+      grid.querySelectorAll('.project-card-structured').forEach(card => {
+        const domain = card.getAttribute('data-domain') || 'web';
+        card.style.display = targetDomains.includes(domain) ? 'flex' : 'none';
+      });
+    }
+  }
+}
+
+async function initLiveContent() {
+  initDynamicProjects();
+
+  try {
+    const res = await fetch('/api/content');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.content) return;
+
+    const { hero, about, projects } = data.content;
+
+    // 1. Sync Hero text
+    if (hero) {
+      const heroLine1 = document.querySelector('.hero-title .title-line:nth-child(1)');
+      const heroLine2 = document.querySelector('.hero-title .title-line:nth-child(2)');
+      const heroDesc  = document.querySelector('.hero-description');
+      if (heroLine1 && hero.heading)  heroLine1.textContent = hero.heading;
+      if (heroLine2 && hero.heading2) heroLine2.textContent = hero.heading2;
+      if (heroDesc  && hero.description) heroDesc.textContent = hero.description;
+    }
+
+    // 2. Sync About telemetry terminal text
+    if (about) {
+      const whoP     = document.querySelector('#who-i-am p');
+      const excitesP = document.querySelector('#excites-me p');
+      const careerP  = document.querySelector('#career p');
+      if (whoP && about.who)         whoP.textContent = about.who;
+      if (excitesP && about.excites) excitesP.textContent = about.excites;
+      if (careerP && about.focus)    careerP.textContent = about.focus;
+    }
+
+    // 3. Sync Dynamic Projects
+    if (Array.isArray(projects) && projects.length) {
+      renderPortfolioProjects(projects);
+    }
+  } catch (_) {
+    // Graceful offline fallback
+  }
+}
+
+function injectAdminPortalLink() {
+  const footer = document.querySelector('.copyright-compact');
+  if (footer && !document.getElementById('admin-portal-link')) {
+    const link = document.createElement('a');
+    link.id = 'admin-portal-link';
+    link.href = '/admin.html';
+    link.title = 'Admin Portal';
+    link.style.cssText = 'color:rgba(255,255,255,0.25); text-decoration:none; margin-left:10px; font-size:0.75rem; transition:color 0.2s;';
+    link.innerHTML = '<i class="fas fa-lock"></i>';
+    link.addEventListener('mouseenter', () => link.style.color = 'var(--primary-light)');
+    link.addEventListener('mouseleave', () => link.style.color = 'rgba(255,255,255,0.25)');
+    footer.appendChild(link);
+  }
+}
+

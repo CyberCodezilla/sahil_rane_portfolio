@@ -529,6 +529,498 @@
     .text-sm { font-size: 0.8rem; }
     .mt-1 { margin-top: 0.5rem; }
     .mt-2 { margin-top: 1rem; }
+
+    /* ════════════════════════════════════
+       DASHBOARD TABS NAVIGATION
+    ════════════════════════════════════ */
+    .dash-nav {
+      display: flex;
+      gap: 10px;
+      padding: 1.5rem 2rem 0;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+    }
+    .dash-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.8rem 1.4rem;
+      border-radius: 12px 12px 0 0;
+      background: transparent;
+      border: 1px solid transparent;
+      border-bottom: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      bottom: -1px;
+    }
+    .dash-tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .dash-tab-btn.active {
+      background: var(--bg-glass);
+      border-color: var(--border);
+      border-bottom: 1px solid var(--bg-dark);
+      color: var(--primary-light);
+      box-shadow: 0 -4px 16px rgba(99, 102, 241, 0.12);
+    }
+    .dash-tab-btn.active i {
+      color: var(--accent-light);
+    }
+    .dash-tab-pane {
+      display: none;
+      width: 100%;
+    }
+    .dash-tab-pane.active {
+      display: contents;
+    }
+
+    /* ════════════════════════════════════
+       PROJECTS MANAGER & CARDS (ADMIN)
+    ════════════════════════════════════ */
+    .admin-proj-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+    .admin-proj-card:hover {
+      border-color: var(--border-hover);
+      background: rgba(99, 102, 241, 0.04);
+      transform: translateY(-2px);
+    }
+    .admin-proj-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .admin-proj-info {
+      min-width: 0;
+    }
+    .admin-proj-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .admin-proj-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .admin-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .admin-badge-domain {
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+    .admin-badge-feat {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .admin-proj-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .admin-proj-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .admin-proj-hl-chip {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(6, 182, 212, 0.1);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+    .admin-proj-techs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .admin-tech-pill {
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .admin-proj-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .btn-icon-only {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+
+    /* ════════════════════════════════════
+       ICON PICKER GRID (12 CURATED OPTIONS)
+    ════════════════════════════════════ */
+    .icon-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 6px;
+      margin-bottom: 1.2rem;
+    }
+    @media (max-width: 680px) {
+      .icon-picker-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .icon-picker-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .icon-picker-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      text-align: center;
+    }
+    .icon-picker-item:hover {
+      border-color: var(--border-hover);
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-2px);
+    }
+    .icon-picker-item.selected {
+      border-color: var(--accent-light);
+      background: rgba(6, 182, 212, 0.12);
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.25);
+    }
+    .icon-picker-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+    .icon-picker-item.selected .icon-picker-icon {
+      transform: scale(1.1);
+    }
+    .icon-picker-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+    .icon-picker-item.selected .icon-picker-label {
+      color: #fff;
+    }
+
+    /* ════════════════════════════════════
+       CHARACTER COUNTERS & INPUT HEADERS
+    ════════════════════════════════════ */
+    .field-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    .field-header label {
+      margin-bottom: 0 !important;
+    }
+    .char-count {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .char-count.warning { color: var(--warning); }
+    .char-count.limit   { color: var(--error); font-weight: 700; }
+
+    /* ════════════════════════════════════
+       MODAL DIALOG (PROJECT EDITOR)
+    ════════════════════════════════════ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .modal-backdrop.show {
+      display: flex;
+      animation: fadeIn 0.25s ease;
+    }
+    .modal-dialog {
+      background: #0d0d15;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 1080px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.2);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      overflow: hidden;
+    }
+    @keyframes scaleUp {
+      from { opacity: 0; transform: scale(0.95) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .modal-body {
+      padding: 1.75rem;
+      overflow-y: auto;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.25fr 0.85fr;
+      gap: 2rem;
+    }
+    @media (max-width: 860px) {
+      .modal-body { grid-template-columns: 1fr; }
+    }
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.75rem;
+      border-top: 1px solid var(--border);
+      background: rgba(10, 10, 15, 0.7);
+    }
+
+    /* Highlights dynamic inputs */
+    .highlight-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .highlight-input-row input {
+      flex: 1;
+    }
+
+    /* ════════════════════════════════════
+       LIVE PREVIEW CARD (ADMIN)
+    ════════════════════════════════════ */
+    .preview-box-sticky {
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .preview-box-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .preview-card-render {
+      background: rgba(11, 15, 25, 0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+    .preview-render-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .preview-render-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: var(--accent);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .preview-render-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .preview-render-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-family: inherit;
+      line-height: 1.35;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+    .preview-render-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+    .preview-render-hl-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .preview-render-hl-item {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.45;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+    .preview-render-hl-item i {
+      color: var(--accent);
+      margin-top: 3px;
+      font-size: 0.72rem;
+    }
+    .preview-render-techs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .preview-render-tech-pill {
+      font-size: 0.74rem;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: var(--primary-light);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .preview-render-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .preview-render-btn {
+      flex: 1;
+      padding: 0.65rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .preview-render-btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border: none;
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+    .preview-render-btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      color: var(--text-primary);
+      backdrop-filter: blur(6px);
+    }
   </style>
 </head>
 <body>
@@ -598,170 +1090,214 @@
       </div>
     </header>
 
+    <!-- Navigation Tabs -->
+    <nav class="dash-nav">
+      <button class="dash-tab-btn active" data-tab="tab-projects">
+        <i class="fas fa-diagram-project"></i> My Work (Projects)
+      </button>
+      <button class="dash-tab-btn" data-tab="tab-certificates">
+        <i class="fas fa-certificate"></i> Certificates
+      </button>
+      <button class="dash-tab-btn" data-tab="tab-content">
+        <i class="fas fa-pen-to-square"></i> Site Content
+      </button>
+    </nav>
+
     <!-- Body -->
     <main class="dash-body">
 
-      <!-- ─── LEFT: Certificate Upload ─── -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <i class="fas fa-certificate"></i>
-            Upload Certificate
-          </div>
-        </div>
-
-        <div class="alert alert-error"  id="upload-error"><i class="fas fa-circle-exclamation"></i><span id="upload-error-msg"></span></div>
-        <div class="alert alert-success" id="upload-success"><i class="fas fa-circle-check"></i><span id="upload-success-msg"></span></div>
-
-        <!-- Drop Zone -->
-        <div class="drop-zone" id="drop-zone">
-          <input type="file" id="cert-file" accept="image/png,image/jpeg,image/jpg" aria-label="Upload certificate image">
-          <div class="drop-zone-icon"><i class="fas fa-cloud-arrow-up"></i></div>
-          <p><strong>Drag & drop</strong> or click to browse</p>
-          <p class="drop-zone-meta">PNG, JPG / max 4 MB</p>
-        </div>
-
-        <!-- Preview -->
-        <div class="preview-wrap" id="preview-wrap">
-          <img id="preview-img" src="" alt="Certificate preview">
-          <div class="preview-meta">
-            <span id="preview-filename"></span>
-            <span id="preview-dims"></span>
-          </div>
-          <button class="preview-remove" id="preview-remove" title="Remove image">
-            <i class="fas fa-xmark"></i>
-          </button>
-        </div>
-
-        <!-- Upload Fields -->
-        <div class="fields-row">
-          <div class="field">
-            <label for="cert-title">Title</label>
-            <div class="field-wrap">
-              <input id="cert-title" type="text" placeholder="e.g. Full Stack Developer" style="padding-left:1rem;">
+      <!-- ════════════════════ TAB 1: MY WORK (PROJECTS) ════════════════════ -->
+      <div class="dash-tab-pane active" id="tab-projects">
+        <div class="panel panel-full">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-briefcase"></i>
+              Projects & Showcase Management
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span class="panel-count" id="proj-count">0 Projects</span>
+              <button class="btn btn-primary btn-sm" id="add-proj-btn">
+                <i class="fas fa-plus"></i> Add New Project
+              </button>
             </div>
           </div>
-          <div class="field">
-            <label for="cert-issuer">Issuer</label>
-            <div class="field-wrap">
-              <input id="cert-issuer" type="text" placeholder="e.g. Udemy" style="padding-left:1rem;">
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <label for="cert-date">Date Issued</label>
-          <div class="field-wrap">
-            <input id="cert-date" type="date" style="padding-left:1rem;">
-          </div>
-        </div>
 
-        <!-- Progress -->
-        <div class="progress-bar-wrap" id="upload-progress-wrap">
-          <div class="progress-bar" id="upload-progress-bar"></div>
-        </div>
+          <div class="alert alert-error" id="proj-error"><i class="fas fa-circle-exclamation"></i><span id="proj-error-msg"></span></div>
+          <div class="alert alert-success" id="proj-success"><i class="fas fa-circle-check"></i><span id="proj-success-msg"></span></div>
 
-        <button class="btn btn-accent btn-full" id="upload-btn" disabled>
-          <span class="spinner" id="upload-spinner"></span>
-          <i class="fas fa-certificate" id="upload-icon"></i>
-          <span id="upload-btn-text">Upload Certificate</span>
-        </button>
-      </div>
-
-      <!-- ─── RIGHT: Existing Certificates ─── -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <i class="fas fa-images"></i>
-            Certificates
-          </div>
-          <span class="panel-count" id="cert-count">0</span>
-        </div>
-
-        <div id="cert-list-body">
-          <div class="empty-state" id="cert-empty">
-            <i class="fas fa-inbox"></i>
-            No certificates yet. Upload one to get started.
+          <!-- Project List -->
+          <div id="proj-list-body">
+            <!-- Dynamic cards injected here -->
           </div>
         </div>
       </div>
 
-      <!-- ─── FULL WIDTH: Content Editor ─── -->
-      <div class="panel panel-full">
-        <div class="panel-header">
-          <div class="panel-title">
-            <i class="fas fa-pen-to-square"></i>
-            Site Content Editor
-          </div>
-        </div>
-
-        <div class="alert alert-error"  id="content-error"><i class="fas fa-circle-exclamation"></i><span id="content-error-msg"></span></div>
-        <div class="alert alert-success" id="content-success"><i class="fas fa-circle-check"></i><span id="content-success-msg"></span></div>
-
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
-
-          <!-- Hero Section -->
-          <div>
-            <div class="content-section">
-              <div class="content-section-title">Hero Section</div>
-              <div class="field content-section">
-                <label for="hero-heading">Heading Line 1</label>
-                <div class="field-wrap">
-                  <input id="hero-heading" type="text" placeholder="This is your">
-                </div>
-              </div>
-              <div class="field content-section">
-                <label for="hero-heading2">Heading Line 2</label>
-                <div class="field-wrap">
-                  <input id="hero-heading2" type="text" placeholder="developer">
-                </div>
-              </div>
-              <div class="field content-section">
-                <label for="hero-description">Description</label>
-                <div class="field-wrap">
-                  <textarea id="hero-description" placeholder="Passionate about building scalable applications..."></textarea>
-                </div>
-              </div>
+      <!-- ════════════════════ TAB 2: CERTIFICATES ════════════════════ -->
+      <div class="dash-tab-pane" id="tab-certificates">
+        <!-- Certificate Upload -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-cloud-arrow-up"></i>
+              Upload Certificate
             </div>
           </div>
 
-          <!-- About Section -->
-          <div>
-            <div class="content-section">
-              <div class="content-section-title">About Section</div>
-              <div class="field content-section">
-                <label for="about-who">Who I Am</label>
-                <div class="field-wrap">
-                  <textarea id="about-who" placeholder="A passionate Software Engineer who loves turning complex problems..."></textarea>
-                </div>
+          <div class="alert alert-error"  id="upload-error"><i class="fas fa-circle-exclamation"></i><span id="upload-error-msg"></span></div>
+          <div class="alert alert-success" id="upload-success"><i class="fas fa-circle-check"></i><span id="upload-success-msg"></span></div>
+
+          <!-- Drop Zone -->
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="cert-file" accept="image/png,image/jpeg,image/jpg" aria-label="Upload certificate image">
+            <div class="drop-zone-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+            <p><strong>Drag & drop</strong> or click to browse</p>
+            <p class="drop-zone-meta">PNG, JPG / max 4 MB</p>
+          </div>
+
+          <!-- Preview -->
+          <div class="preview-wrap" id="preview-wrap">
+            <img id="preview-img" src="" alt="Certificate preview">
+            <div class="preview-meta">
+              <span id="preview-filename"></span>
+              <span id="preview-dims"></span>
+            </div>
+            <button class="preview-remove" id="preview-remove" title="Remove image">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Upload Fields -->
+          <div class="fields-row" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="field">
+              <label for="cert-title">Title</label>
+              <div class="field-wrap">
+                <input id="cert-title" type="text" placeholder="e.g. Full Stack Developer" style="padding-left:1rem;">
               </div>
-              <div class="field content-section">
-                <label for="about-excites">What Excites Me</label>
-                <div class="field-wrap">
-                  <textarea id="about-excites" placeholder="The endless possibilities of technology..."></textarea>
-                </div>
-              </div>
-              <div class="field content-section">
-                <label for="about-focus">Career Focus</label>
-                <div class="field-wrap">
-                  <textarea id="about-focus" placeholder="Full-stack development, AI/ML..."></textarea>
-                </div>
+            </div>
+            <div class="field">
+              <label for="cert-issuer">Issuer</label>
+              <div class="field-wrap">
+                <input id="cert-issuer" type="text" placeholder="e.g. Udemy" style="padding-left:1rem;">
               </div>
             </div>
           </div>
+          <div class="field">
+            <label for="cert-date">Date Issued</label>
+            <div class="field-wrap">
+              <input id="cert-date" type="date" style="padding-left:1rem;">
+            </div>
+          </div>
 
+          <!-- Progress -->
+          <div class="progress-bar-wrap" id="upload-progress-wrap" style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin-bottom:1rem; overflow:hidden; display:none;">
+            <div class="progress-bar" id="upload-progress-bar" style="height:100%; width:0%; background:var(--accent); transition:width 0.3s;"></div>
+          </div>
+
+          <button class="btn btn-accent btn-full" id="upload-btn" disabled>
+            <span class="spinner" id="upload-spinner"></span>
+            <i class="fas fa-certificate" id="upload-icon"></i>
+            <span id="upload-btn-text">Upload Certificate</span>
+          </button>
         </div>
 
-        <div class="divider"></div>
+        <!-- Existing Certificates -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-images"></i>
+              Certificates List
+            </div>
+            <span class="panel-count" id="cert-count">0</span>
+          </div>
 
-        <div style="display:flex; gap:12px; justify-content:flex-end;">
-          <button class="btn btn-ghost" id="content-reset-btn">
-            <i class="fas fa-rotate-left"></i> Reset
-          </button>
-          <button class="btn btn-primary" id="content-save-btn">
-            <span class="spinner" id="content-spinner"></span>
-            <i class="fas fa-floppy-disk" id="content-icon"></i>
-            Save Content
-          </button>
+          <div id="cert-list-body">
+            <div class="empty-state" id="cert-empty" style="text-align:center; padding:3rem 1rem; color:var(--text-muted);">
+              <i class="fas fa-inbox" style="font-size:2rem; margin-bottom:10px; display:block;"></i>
+              No certificates yet. Upload one to get started.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════════════════ TAB 3: SITE CONTENT ════════════════════ -->
+      <div class="dash-tab-pane" id="tab-content">
+        <div class="panel panel-full">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-pen-to-square"></i>
+              Site Text Content Editor
+            </div>
+          </div>
+
+          <div class="alert alert-error"  id="content-error"><i class="fas fa-circle-exclamation"></i><span id="content-error-msg"></span></div>
+          <div class="alert alert-success" id="content-success"><i class="fas fa-circle-check"></i><span id="content-success-msg"></span></div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+
+            <!-- Hero Section -->
+            <div>
+              <div class="content-section">
+                <div class="content-section-title" style="font-weight:700; font-size:1.05rem; margin-bottom:1rem; color:var(--primary-light);">Hero Section</div>
+                <div class="field">
+                  <label for="hero-heading">Heading Line 1</label>
+                  <div class="field-wrap">
+                    <input id="hero-heading" type="text" placeholder="This is your" style="padding-left:1rem;">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="hero-heading2">Heading Line 2</label>
+                  <div class="field-wrap">
+                    <input id="hero-heading2" type="text" placeholder="developer" style="padding-left:1rem;">
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="hero-description">Description</label>
+                  <div class="field-wrap">
+                    <textarea id="hero-description" placeholder="Passionate about building scalable applications..."></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- About Section -->
+            <div>
+              <div class="content-section">
+                <div class="content-section-title" style="font-weight:700; font-size:1.05rem; margin-bottom:1rem; color:var(--accent-light);">About Section</div>
+                <div class="field">
+                  <label for="about-who">Who I Am</label>
+                  <div class="field-wrap">
+                    <textarea id="about-who" placeholder="A passionate Software Engineer who loves turning complex problems..."></textarea>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="about-excites">What Excites Me</label>
+                  <div class="field-wrap">
+                    <textarea id="about-excites" placeholder="The endless possibilities of technology..."></textarea>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="about-focus">Career Focus</label>
+                  <div class="field-wrap">
+                    <textarea id="about-focus" placeholder="Full-stack development, AI/ML..."></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="display:flex; gap:12px; justify-content:flex-end;">
+            <button class="btn btn-ghost" id="content-reset-btn">
+              <i class="fas fa-rotate-left"></i> Reset
+            </button>
+            <button class="btn btn-primary" id="content-save-btn">
+              <span class="spinner" id="content-spinner"></span>
+              <i class="fas fa-floppy-disk" id="content-icon"></i>
+              Save Content
+            </button>
+          </div>
         </div>
       </div>
 
@@ -769,6 +1305,168 @@
   </div>
 
 </div><!-- #app -->
+
+<!-- ════════════════════ PROJECT EDITOR MODAL ════════════════════ -->
+<div class="modal-backdrop" id="project-modal" role="dialog" aria-modal="true">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fas fa-layer-group text-cyan" id="modal-icon-header"></i>
+        <span id="modal-project-title-text">Edit Project</span>
+      </div>
+      <button class="modal-close" id="modal-close-btn" title="Close modal">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Left: Inputs Form -->
+      <div class="modal-form-left">
+        
+        <!-- Domain & Icon Selector (12 Curated Options) -->
+        <div class="field">
+          <div class="field-header">
+            <label>Domain Icon & Color Theme (12 Options)</label>
+            <span class="text-sm text-muted" id="selected-domain-text">Full Stack Web</span>
+          </div>
+          <div class="icon-picker-grid" id="domain-icon-picker">
+            <!-- 12 options injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Project Title -->
+        <div class="field">
+          <div class="field-header">
+            <label for="f-proj-title">Project Name</label>
+            <span class="char-count" id="count-proj-title">0/35</span>
+          </div>
+          <div class="field-wrap">
+            <input id="f-proj-title" type="text" maxlength="35" placeholder="e.g. RAKE MANAGEMENT SYSTEM" style="padding-left:1rem;" required>
+          </div>
+        </div>
+
+        <!-- Domain Tag & Featured Badge in row -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="field">
+            <div class="field-header">
+              <label for="f-proj-domain-label">Category Subtitle</label>
+              <span class="char-count" id="count-proj-domain-label">0/25</span>
+            </div>
+            <div class="field-wrap">
+              <input id="f-proj-domain-label" type="text" maxlength="25" placeholder="e.g. Smart Logistics & IoT" style="padding-left:1rem;">
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-header">
+              <label for="f-proj-featured">Featured Badge</label>
+              <span class="char-count" id="count-proj-featured">0/20</span>
+            </div>
+            <div class="field-wrap">
+              <input id="f-proj-featured" type="text" maxlength="20" placeholder="e.g. SIH Finalist, Featured" style="padding-left:1rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Summary -->
+        <div class="field">
+          <div class="field-header">
+            <label for="f-proj-summary">Short Summary</label>
+            <span class="char-count" id="count-proj-summary">0/120</span>
+          </div>
+          <div class="field-wrap">
+            <textarea id="f-proj-summary" maxlength="120" placeholder="Railway rake tracking & scheduling system designed for real-time traffic coordination." style="min-height:75px;"></textarea>
+          </div>
+        </div>
+
+        <!-- Key Highlights (3 Structured Bullets) -->
+        <div class="field">
+          <div class="field-header">
+            <label>Key Highlights / Features (Max 3)</label>
+            <span class="text-sm text-muted">Concise bullet specs</span>
+          </div>
+          <div class="highlight-input-row">
+            <input type="text" class="f-proj-hl" maxlength="55" placeholder="Highlight 1: e.g. Real-time GPS telemetry & rake tracking" style="padding-left:1rem;">
+          </div>
+          <div class="highlight-input-row">
+            <input type="text" class="f-proj-hl" maxlength="55" placeholder="Highlight 2: e.g. Automated yard bottleneck detection" style="padding-left:1rem;">
+          </div>
+          <div class="highlight-input-row">
+            <input type="text" class="f-proj-hl" maxlength="55" placeholder="Highlight 3: e.g. 60% faster turnaround scheduling" style="padding-left:1rem;">
+          </div>
+        </div>
+
+        <!-- Tech Stack Tags -->
+        <div class="field">
+          <div class="field-header">
+            <label for="f-proj-techs">Tech Stack (comma-separated, max 5)</label>
+            <span class="text-sm text-muted">e.g. React, Node.js, MongoDB</span>
+          </div>
+          <div class="field-wrap">
+            <input id="f-proj-techs" type="text" placeholder="React, Node.js, MongoDB, Socket.io" style="padding-left:1rem;">
+          </div>
+        </div>
+
+        <!-- Links in row -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="field">
+            <label for="f-proj-demo">Live Demo URL</label>
+            <div class="field-wrap">
+              <input id="f-proj-demo" type="text" placeholder="https://..." style="padding-left:1rem;">
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-proj-github">GitHub / Source URL</label>
+            <div class="field-wrap">
+              <input id="f-proj-github" type="text" placeholder="https://github.com/..." style="padding-left:1rem;">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Live Portfolio Preview Card -->
+      <div class="preview-box-sticky">
+        <div class="preview-box-title">
+          <i class="fas fa-eye"></i> Live Portfolio Tab Preview
+        </div>
+        <div class="preview-card-render" id="modal-live-preview">
+          <div class="preview-render-header">
+            <div class="preview-render-icon" id="prev-icon-box" style="background:linear-gradient(135deg, #6366f1, #06b6d4); color:#fff;">
+              <i class="fas fa-laptop-code" id="prev-icon-i"></i>
+            </div>
+            <div class="preview-render-badges">
+              <span class="admin-badge admin-badge-domain" id="prev-domain-badge">Full Stack Web</span>
+              <span class="admin-badge admin-badge-feat" id="prev-feat-badge" style="display:none;">Featured</span>
+            </div>
+          </div>
+          <div class="preview-render-title" id="prev-title">Project Name</div>
+          <div class="preview-render-desc" id="prev-summary">Project summary will appear here in real-time as you type.</div>
+          <ul class="preview-render-hl-list" id="prev-highlights">
+            <!-- Dynamic highlights -->
+          </ul>
+          <div class="preview-render-techs" id="prev-techs">
+            <span class="preview-render-tech-pill">React</span>
+            <span class="preview-render-tech-pill">Node.js</span>
+          </div>
+          <div class="preview-render-actions">
+            <span class="preview-render-btn preview-render-btn-primary"><i class="fas fa-arrow-up-right-from-square"></i> Live Demo</span>
+            <span class="preview-render-btn preview-render-btn-ghost"><i class="fab fa-github"></i> Code</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="modal-save-proj-btn">
+        <span class="spinner" id="modal-save-spinner"></span>
+        <i class="fas fa-check" id="modal-save-icon"></i>
+        <span>Save Project</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Toast container -->
 <div id="toast-container" role="status" aria-live="polite"></div>
@@ -797,28 +1495,101 @@ function toast(msg, type = 'info', duration = 3500) {
 
 // ─── Alert helpers ─────────────────────────────────────────
 function showAlert(el, msgEl, message, type = 'error') {
+  if (!el) return;
   el.className = `alert alert-${type} show`;
   if (msgEl) msgEl.textContent = message;
 }
-function hideAlert(el) { el.className = 'alert'; }
+function hideAlert(el) { if (el) el.className = 'alert'; }
 
 // ─── Loading state helpers ──────────────────────────────────
 function setLoading(btn, spinnerEl, iconEl, textEl, text, loading) {
+  if (!btn) return;
   btn.disabled = loading;
-  spinnerEl.style.display = loading ? 'block' : 'none';
+  if (spinnerEl) spinnerEl.style.display = loading ? 'block' : 'none';
   if (iconEl) iconEl.style.display = loading ? 'none' : 'inline';
   if (textEl) textEl.textContent = text;
 }
 
 /* ════════════════════════════════════════════════════════════
-   APP STATE
+   12 CURATED DOMAIN ICONS & COLOR PRESETS
 ════════════════════════════════════════════════════════════ */
-let contentData = { certificates: [], hero: {}, about: {} };
-let selectedFile = null;
-let selectedAspectRatio = null;
+const DOMAIN_OPTIONS = [
+  { id: 'web',        name: 'Full Stack Web',    icon: 'fas fa-laptop-code',            color: '#6366f1', bgGradient: 'linear-gradient(135deg, #6366f1, #8b5cf6)', badgeBg: 'rgba(99, 102, 241, 0.15)' },
+  { id: 'security',   name: 'Cyber Security',    icon: 'fas fa-shield-halved',          color: '#06b6d4', bgGradient: 'linear-gradient(135deg, #06b6d4, #0891b2)', badgeBg: 'rgba(6, 182, 212, 0.15)' },
+  { id: 'ai',         name: 'AI & ML',           icon: 'fas fa-brain',                  color: '#ec4899', bgGradient: 'linear-gradient(135deg, #ec4899, #d946ef)', badgeBg: 'rgba(236, 72, 153, 0.15)' },
+  { id: 'cloud',      name: 'Cloud & DevOps',    icon: 'fas fa-cloud',                  color: '#38bdf8', bgGradient: 'linear-gradient(135deg, #38bdf8, #0284c7)', badgeBg: 'rgba(56, 189, 248, 0.15)' },
+  { id: 'mobile',     name: 'Mobile Apps',       icon: 'fas fa-mobile-screen-button',   color: '#3b82f6', bgGradient: 'linear-gradient(135deg, #3b82f6, #6366f1)', badgeBg: 'rgba(59, 130, 246, 0.15)' },
+  { id: 'data',       name: 'Data Science',      icon: 'fas fa-chart-line',             color: '#f59e0b', bgGradient: 'linear-gradient(135deg, #f59e0b, #d97706)', badgeBg: 'rgba(245, 158, 11, 0.15)' },
+  { id: 'blockchain', name: 'Blockchain/Web3',   icon: 'fas fa-cubes',                  color: '#a855f7', bgGradient: 'linear-gradient(135deg, #a855f7, #7c3aed)', badgeBg: 'rgba(168, 85, 247, 0.15)' },
+  { id: 'iot',        name: 'Smart Systems/IoT', icon: 'fas fa-microchip',              color: '#14b8a6', bgGradient: 'linear-gradient(135deg, #14b8a6, #0d9488)', badgeBg: 'rgba(20, 184, 166, 0.15)' },
+  { id: 'design',     name: 'UI/UX & Design',    icon: 'fas fa-palette',                color: '#f43f5e', bgGradient: 'linear-gradient(135deg, #f43f5e, #fb7185)', badgeBg: 'rgba(244, 63, 94, 0.15)' },
+  { id: 'backend',    name: 'Backend & APIs',    icon: 'fas fa-server',                 color: '#10b981', bgGradient: 'linear-gradient(135deg, #10b981, #059669)', badgeBg: 'rgba(16, 185, 129, 0.15)' },
+  { id: 'gaming',     name: '3D & Game Dev',     icon: 'fas fa-gamepad',                color: '#8b5cf6', bgGradient: 'linear-gradient(135deg, #8b5cf6, #6d28d9)', badgeBg: 'rgba(139, 92, 246, 0.15)' },
+  { id: 'tools',      name: 'Open Source Tools', icon: 'fas fa-screwdriver-wrench',     color: '#eab308', bgGradient: 'linear-gradient(135deg, #eab308, #ca8a04)', badgeBg: 'rgba(234, 179, 8, 0.15)' }
+];
+
+const DEFAULT_PROJECTS = [
+  {
+    id: 'proj-1',
+    title: 'RAKE MANAGEMENT SYSTEM',
+    domain: 'iot',
+    domainLabel: 'Smart Logistics & IoT',
+    featuredTag: 'SIH Finalist',
+    summary: 'Railway rake management system for efficient real-time telemetry, wagon allocation, and junction scheduling.',
+    highlights: [
+      'Real-time GPS telemetry & rake tracking',
+      'Automated yard bottleneck detection algorithm',
+      '60% reduction in turnaround scheduling delay'
+    ],
+    techStack: ['React', 'Node.js', 'MongoDB', 'Socket.io'],
+    demoUrl: 'https://rake-2-0-sih.vercel.app/',
+    githubUrl: 'https://github.com/CyberCodezilla/rake-sih'
+  },
+  {
+    id: 'proj-2',
+    title: 'COLLABORATIVE WHITEBOARD',
+    domain: 'web',
+    domainLabel: 'Real-time Web App',
+    featuredTag: 'Featured',
+    summary: 'High-performance collaborative canvas with synchronized vector drawing, room management, and state replay.',
+    highlights: [
+      'Sub-20ms multi-user cursor & stroke sync',
+      'Hardware-accelerated HTML5 Canvas engine',
+      'Room-based WebSocket state management'
+    ],
+    techStack: ['React', 'Socket.io', 'Canvas API', 'Node.js'],
+    demoUrl: 'https://github.com/ivory-26/VIS',
+    githubUrl: 'https://github.com/ivory-26/VIS'
+  },
+  {
+    id: 'proj-3',
+    title: 'ATLAS MISINFORMATION DETECTOR',
+    domain: 'ai',
+    domainLabel: 'AI & NLP Engine',
+    featuredTag: 'Hackathon Winner',
+    summary: 'Machine learning misinformation detector utilizing deep NLP transformer embeddings and cross-source verification.',
+    highlights: [
+      '94.2% factual veracity classification rate',
+      'BERT/Transformer embeddings pipeline',
+      'Real-time web verification scraper'
+    ],
+    techStack: ['Python', 'TensorFlow', 'NLP', 'FastAPI'],
+    demoUrl: 'https://github.com/shubham2web/MUM-hackthon',
+    githubUrl: 'https://github.com/shubham2web/MUM-hackthon'
+  }
+];
 
 /* ════════════════════════════════════════════════════════════
-   SESSION CHECK — show correct screen on load
+   APP STATE
+════════════════════════════════════════════════════════════ */
+let contentData = { certificates: [], hero: {}, about: {}, projects: [] };
+let selectedFile = null;
+let selectedAspectRatio = null;
+let editingProjectId = null;
+let selectedDomainId = 'web';
+
+/* ════════════════════════════════════════════════════════════
+   SESSION CHECK & DASHBOARD
 ════════════════════════════════════════════════════════════ */
 async function checkSession() {
   try {
@@ -836,11 +1607,25 @@ function showDashboard() {
   const dash = $('#dashboard-screen');
   dash.style.display = 'flex';
   dash.classList.add('active');
+  initIconPickerGrid();
+  setupLivePreviewListeners();
   loadContent();
 }
 
+// Nav Tab Switcher
+$$('.dash-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('.dash-tab-btn').forEach(b => b.classList.remove('active'));
+    $$('.dash-tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const targetId = btn.dataset.tab;
+    const targetPane = document.getElementById(targetId);
+    if (targetPane) targetPane.classList.add('active');
+  });
+});
+
 /* ════════════════════════════════════════════════════════════
-   LOGIN
+   LOGIN & LOGOUT
 ════════════════════════════════════════════════════════════ */
 $('#login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -879,9 +1664,6 @@ $('#login-form').addEventListener('submit', async (e) => {
   }
 });
 
-/* ════════════════════════════════════════════════════════════
-   LOGOUT
-════════════════════════════════════════════════════════════ */
 $('#logout-btn').addEventListener('click', async () => {
   try {
     await fetch('/api/logout', { method: 'POST', credentials: 'include' });
@@ -890,7 +1672,415 @@ $('#logout-btn').addEventListener('click', async () => {
 });
 
 /* ════════════════════════════════════════════════════════════
-   FILE SELECTION & PREVIEW
+   LOAD & SYNC CONTENT
+════════════════════════════════════════════════════════════ */
+async function loadContent() {
+  try {
+    const res  = await fetch('/api/content', { credentials: 'include' });
+    const data = await res.json();
+    if (data.content) {
+      contentData = data.content;
+      if (!Array.isArray(contentData.projects) || !contentData.projects.length) {
+        contentData.projects = [...DEFAULT_PROJECTS];
+      }
+      populateContentEditor(contentData);
+      renderCertList();
+      renderAdminProjects();
+    } else {
+      contentData.projects = [...DEFAULT_PROJECTS];
+      renderAdminProjects();
+    }
+  } catch (_) {
+    contentData.projects = [...DEFAULT_PROJECTS];
+    renderAdminProjects();
+    toast('Loaded local project defaults.', 'info');
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MY WORK / PROJECTS MANAGER (ADMIN CRUD)
+════════════════════════════════════════════════════════════ */
+function initIconPickerGrid() {
+  const container = $('#domain-icon-picker');
+  if (!container) return;
+  container.innerHTML = '';
+
+  DOMAIN_OPTIONS.forEach(opt => {
+    const item = document.createElement('div');
+    item.className = `icon-picker-item ${opt.id === selectedDomainId ? 'selected' : ''}`;
+    item.dataset.domainId = opt.id;
+    item.innerHTML = `
+      <div class="icon-picker-icon" style="background:${opt.bgGradient}; color:#fff;">
+        <i class="${opt.icon}"></i>
+      </div>
+      <div class="icon-picker-label">${escapeHtml(opt.name)}</div>
+    `;
+    item.addEventListener('click', () => {
+      $$('.icon-picker-item', container).forEach(i => i.classList.remove('selected'));
+      item.classList.add('selected');
+      selectedDomainId = opt.id;
+      $('#selected-domain-text').textContent = opt.name;
+      updateLivePreview();
+    });
+    container.appendChild(item);
+  });
+}
+
+function renderAdminProjects() {
+  const projects = contentData.projects || [];
+  const body = $('#proj-list-body');
+  $('#proj-count').textContent = `${projects.length} Project${projects.length === 1 ? '' : 's'}`;
+
+  if (!projects.length) {
+    body.innerHTML = `
+      <div class="empty-state" style="text-align:center; padding:3rem 1rem; color:var(--text-muted);">
+        <i class="fas fa-briefcase" style="font-size:2rem; margin-bottom:10px; display:block;"></i>
+        No projects added yet. Click "+ Add New Project" to get started.
+      </div>
+    `;
+    return;
+  }
+
+  body.innerHTML = '';
+  projects.forEach((proj, idx) => {
+    const domainObj = DOMAIN_OPTIONS.find(d => d.id === proj.domain) || DOMAIN_OPTIONS[0];
+    const item = document.createElement('div');
+    item.className = 'admin-proj-card';
+    
+    const highlightsHtml = (proj.highlights || []).map(hl => `<span class="admin-proj-hl-chip"><i class="fas fa-check-circle"></i> ${escapeHtml(hl)}</span>`).join('');
+    const techHtml = (proj.techStack || []).map(t => `<span class="admin-tech-pill">${escapeHtml(t)}</span>`).join('');
+
+    item.innerHTML = `
+      <div class="admin-proj-icon-box" style="background:${domainObj.bgGradient}; color:#fff;">
+        <i class="${domainObj.icon}"></i>
+      </div>
+      <div class="admin-proj-info">
+        <div class="admin-proj-title-row">
+          <span class="admin-proj-title">${escapeHtml(proj.title)}</span>
+          <span class="admin-badge admin-badge-domain">${escapeHtml(proj.domainLabel || domainObj.name)}</span>
+          ${proj.featuredTag ? `<span class="admin-badge admin-badge-feat"><i class="fas fa-star"></i> ${escapeHtml(proj.featuredTag)}</span>` : ''}
+        </div>
+        <p class="admin-proj-desc">${escapeHtml(proj.summary || '')}</p>
+        ${highlightsHtml ? `<div class="admin-proj-highlights">${highlightsHtml}</div>` : ''}
+        ${techHtml ? `<div class="admin-proj-techs">${techHtml}</div>` : ''}
+      </div>
+      <div class="admin-proj-actions">
+        <button class="btn btn-ghost btn-icon-only btn-reorder-up" data-idx="${idx}" title="Move Up" ${idx === 0 ? 'disabled style="opacity:0.4"' : ''}>
+          <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="btn btn-ghost btn-icon-only btn-reorder-down" data-idx="${idx}" title="Move Down" ${idx === projects.length - 1 ? 'disabled style="opacity:0.4"' : ''}>
+          <i class="fas fa-arrow-down"></i>
+        </button>
+        <button class="btn btn-primary btn-sm btn-edit-proj" data-id="${proj.id}" title="Edit Project">
+          <i class="fas fa-pen"></i> Edit
+        </button>
+        <button class="btn btn-danger btn-icon-only btn-delete-proj" data-id="${proj.id}" title="Delete Project">
+          <i class="fas fa-trash-can"></i>
+        </button>
+      </div>
+    `;
+    body.appendChild(item);
+  });
+
+  // Attach handlers
+  $$('.btn-edit-proj', body).forEach(btn => btn.addEventListener('click', () => openProjectModal(btn.dataset.id)));
+  $$('.btn-delete-proj', body).forEach(btn => btn.addEventListener('click', () => deleteProject(btn.dataset.id)));
+  $$('.btn-reorder-up', body).forEach(btn => btn.addEventListener('click', () => reorderProject(+btn.dataset.idx, -1)));
+  $$('.btn-reorder-down', body).forEach(btn => btn.addEventListener('click', () => reorderProject(+btn.dataset.idx, 1)));
+}
+
+// Open modal for new or editing project
+function openProjectModal(projectId = null) {
+  editingProjectId = projectId;
+  const modal = $('#project-modal');
+
+  if (projectId) {
+    const proj = (contentData.projects || []).find(p => p.id === projectId);
+    if (!proj) return;
+    $('#modal-project-title-text').textContent = 'Edit Project';
+    $('#f-proj-title').value = proj.title || '';
+    $('#f-proj-domain-label').value = proj.domainLabel || '';
+    $('#f-proj-featured').value = proj.featuredTag || '';
+    $('#f-proj-summary').value = proj.summary || '';
+    $('#f-proj-techs').value = (proj.techStack || []).join(', ');
+    $('#f-proj-demo').value = proj.demoUrl || '';
+    $('#f-proj-github').value = proj.githubUrl || '';
+
+    const hlInputs = $$('.f-proj-hl');
+    hlInputs.forEach((input, i) => {
+      input.value = (proj.highlights && proj.highlights[i]) || '';
+    });
+
+    selectedDomainId = proj.domain || 'web';
+  } else {
+    $('#modal-project-title-text').textContent = 'Add New Project';
+    $('#f-proj-title').value = '';
+    $('#f-proj-domain-label').value = '';
+    $('#f-proj-featured').value = '';
+    $('#f-proj-summary').value = '';
+    $('#f-proj-techs').value = '';
+    $('#f-proj-demo').value = '';
+    $('#f-proj-github').value = '';
+    $$('.f-proj-hl').forEach(input => input.value = '');
+    selectedDomainId = 'web';
+  }
+
+  // Update domain picker selection
+  $$('.icon-picker-item').forEach(item => {
+    if (item.dataset.domainId === selectedDomainId) {
+      item.classList.add('selected');
+      const opt = DOMAIN_OPTIONS.find(d => d.id === selectedDomainId);
+      if (opt) $('#selected-domain-text').textContent = opt.name;
+    } else {
+      item.classList.remove('selected');
+    }
+  });
+
+  updateCharCounters();
+  updateLivePreview();
+  modal.classList.add('show');
+}
+
+function closeProjectModal() {
+  $('#project-modal').classList.remove('show');
+  editingProjectId = null;
+}
+
+$('#add-proj-btn').addEventListener('click', () => openProjectModal(null));
+$('#modal-close-btn').addEventListener('click', closeProjectModal);
+$('#modal-cancel-btn').addEventListener('click', closeProjectModal);
+
+// Close on backdrop click
+$('#project-modal').addEventListener('click', (e) => {
+  if (e.target === $('#project-modal')) closeProjectModal();
+});
+
+// Real-time character counters & live preview
+function setupLivePreviewListeners() {
+  const inputs = [
+    '#f-proj-title', '#f-proj-domain-label', '#f-proj-featured',
+    '#f-proj-summary', '#f-proj-techs', '#f-proj-demo', '#f-proj-github'
+  ];
+  inputs.forEach(sel => {
+    const el = $(sel);
+    if (el) {
+      el.addEventListener('input', () => {
+        updateCharCounters();
+        updateLivePreview();
+      });
+    }
+  });
+
+  $$('.f-proj-hl').forEach(input => {
+    input.addEventListener('input', () => {
+      updateLivePreview();
+    });
+  });
+}
+
+function updateCharCounters() {
+  const check = (inputSel, counterSel, max) => {
+    const el = $(inputSel);
+    const counter = $(counterSel);
+    if (!el || !counter) return;
+    const len = el.value.length;
+    counter.textContent = `${len}/${max}`;
+    counter.className = 'char-count';
+    if (len >= max) counter.classList.add('limit');
+    else if (len >= max * 0.85) counter.classList.add('warning');
+  };
+
+  check('#f-proj-title', '#count-proj-title', 35);
+  check('#f-proj-domain-label', '#count-proj-domain-label', 25);
+  check('#f-proj-featured', '#count-proj-featured', 20);
+  check('#f-proj-summary', '#count-proj-summary', 120);
+}
+
+function updateLivePreview() {
+  const title = $('#f-proj-title').value.trim() || 'Project Name';
+  const domainObj = DOMAIN_OPTIONS.find(d => d.id === selectedDomainId) || DOMAIN_OPTIONS[0];
+  const domainLabel = $('#f-proj-domain-label').value.trim() || domainObj.name;
+  const featured = $('#f-proj-featured').value.trim();
+  const summary = $('#f-proj-summary').value.trim() || 'Project description and highlights will appear here.';
+  const techs = $('#f-proj-techs').value.split(',').map(t => t.trim()).filter(Boolean);
+  const highlights = $$('.f-proj-hl').map(i => i.value.trim()).filter(Boolean);
+
+  // Update preview icon & header
+  $('#prev-icon-box').style.background = domainObj.bgGradient;
+  $('#prev-icon-i').className = domainObj.icon;
+  $('#prev-domain-badge').textContent = domainLabel;
+  
+  const featEl = $('#prev-feat-badge');
+  if (featured) {
+    featEl.style.display = 'inline-flex';
+    featEl.innerHTML = `<i class="fas fa-star"></i> ${escapeHtml(featured)}`;
+  } else {
+    featEl.style.display = 'none';
+  }
+
+  $('#prev-title').textContent = title;
+  $('#prev-summary').textContent = summary;
+
+  // Highlights list
+  const hlList = $('#prev-highlights');
+  if (highlights.length) {
+    hlList.style.display = 'flex';
+    hlList.innerHTML = highlights.map(hl => `
+      <li class="preview-render-hl-item">
+        <i class="fas fa-circle-check"></i>
+        <span>${escapeHtml(hl)}</span>
+      </li>
+    `).join('');
+  } else {
+    hlList.style.display = 'none';
+    hlList.innerHTML = '';
+  }
+
+  // Tech tags
+  const techBox = $('#prev-techs');
+  if (techs.length) {
+    techBox.innerHTML = techs.slice(0, 5).map(t => `<span class="preview-render-tech-pill">${escapeHtml(t)}</span>`).join('');
+  } else {
+    techBox.innerHTML = `<span class="preview-render-tech-pill">Tech Stack</span>`;
+  }
+}
+
+// Save Project Handler
+$('#modal-save-proj-btn').addEventListener('click', async () => {
+  const title = $('#f-proj-title').value.trim();
+  const domainLabel = $('#f-proj-domain-label').value.trim();
+  const featuredTag = $('#f-proj-featured').value.trim();
+  const summary = $('#f-proj-summary').value.trim();
+  const rawTechs = $('#f-proj-techs').value.split(',').map(t => t.trim()).filter(Boolean);
+  const highlights = $$('.f-proj-hl').map(i => i.value.trim()).filter(Boolean);
+  const demoUrl = $('#f-proj-demo').value.trim();
+  const githubUrl = $('#f-proj-github').value.trim();
+
+  if (!title) {
+    toast('Please enter a project name.', 'error');
+    $('#f-proj-title').focus();
+    return;
+  }
+  if (!summary) {
+    toast('Please enter a brief summary.', 'error');
+    $('#f-proj-summary').focus();
+    return;
+  }
+
+  const btn = $('#modal-save-proj-btn');
+  const spinner = $('#modal-save-spinner');
+  const icon = $('#modal-save-icon');
+  setLoading(btn, spinner, icon, null, '', true);
+
+  const projects = [...(contentData.projects || [])];
+  const projectObj = {
+    id: editingProjectId || (crypto.randomUUID ? crypto.randomUUID() : 'proj-' + Date.now().toString(36)),
+    title: title.slice(0, 35),
+    domain: selectedDomainId,
+    domainLabel: domainLabel.slice(0, 25) || undefined,
+    featuredTag: featuredTag.slice(0, 20) || undefined,
+    summary: summary.slice(0, 120),
+    highlights: highlights.slice(0, 3).map(h => h.slice(0, 55)),
+    techStack: rawTechs.slice(0, 5).map(t => t.slice(0, 18)),
+    demoUrl: demoUrl || undefined,
+    githubUrl: githubUrl || undefined
+  };
+
+  if (editingProjectId) {
+    const idx = projects.findIndex(p => p.id === editingProjectId);
+    if (idx !== -1) projects[idx] = projectObj;
+    else projects.push(projectObj);
+  } else {
+    projects.push(projectObj);
+  }
+
+  const updated = {
+    ...contentData,
+    projects
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Failed to save project.');
+
+    contentData = updated;
+    renderAdminProjects();
+    closeProjectModal();
+    toast(`"${title}" saved successfully!`, 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading(btn, spinner, icon, null, '', false);
+    btn.innerHTML = `<span class="spinner" id="modal-save-spinner"></span><i class="fas fa-check" id="modal-save-icon"></i> Save Project`;
+  }
+});
+
+// Delete Project Handler
+async function deleteProject(id) {
+  const proj = (contentData.projects || []).find(p => p.id === id);
+  if (!proj) return;
+  if (!confirm(`Delete project "${proj.title}"? This cannot be undone.`)) return;
+
+  const updated = {
+    ...contentData,
+    projects: (contentData.projects || []).filter(p => p.id !== id)
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Failed to delete project.');
+
+    contentData = updated;
+    renderAdminProjects();
+    toast(`"${proj.title}" deleted.`, 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+// Reorder Project Handler (Up/Down)
+async function reorderProject(index, direction) {
+  const targetIndex = index + direction;
+  const projects = [...(contentData.projects || [])];
+  if (targetIndex < 0 || targetIndex >= projects.length) return;
+
+  const [moved] = projects.splice(index, 1);
+  projects.splice(targetIndex, 0, moved);
+
+  const updated = {
+    ...contentData,
+    projects
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Failed to reorder projects.');
+
+    contentData = updated;
+    renderAdminProjects();
+    toast('Project order updated.', 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   FILE SELECTION & UPLOAD (CERTIFICATES)
 ════════════════════════════════════════════════════════════ */
 function handleFileSelect(file) {
   if (!file) return;
@@ -923,7 +2113,6 @@ function handleFileSelect(file) {
 
 $('#cert-file').addEventListener('change', (e) => handleFileSelect(e.target.files[0]));
 
-// Drag and drop
 const dropZone = $('#drop-zone');
 ['dragenter','dragover'].forEach(ev => dropZone.addEventListener(ev, (e) => {
   e.preventDefault(); dropZone.classList.add('drag-over');
@@ -942,9 +2131,6 @@ $('#preview-remove').addEventListener('click', () => {
   $('#preview-img').src = '';
 });
 
-/* ════════════════════════════════════════════════════════════
-   UPLOAD CERTIFICATE
-════════════════════════════════════════════════════════════ */
 $('#upload-btn').addEventListener('click', async () => {
   if (!selectedFile) return;
 
@@ -967,9 +2153,8 @@ $('#upload-btn').addEventListener('click', async () => {
   const progressBar  = $('#upload-progress-bar');
 
   setLoading(btn, spinner, icon, text, 'Uploading…', true);
-  progressWrap.classList.add('show');
+  progressWrap.style.display = 'block';
 
-  // Simulate progress during upload
   let progress = 0;
   const progressInterval = setInterval(() => {
     progress = Math.min(progress + Math.random() * 15, 85);
@@ -977,7 +2162,6 @@ $('#upload-btn').addEventListener('click', async () => {
   }, 200);
 
   try {
-    // Step 1: Upload file to Vercel Blob
     const filename = selectedFile.name;
     const uploadRes = await fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
       method: 'POST',
@@ -994,7 +2178,6 @@ $('#upload-btn').addEventListener('click', async () => {
     const { blob } = await uploadRes.json();
     progressBar.style.width = '70%';
 
-    // Step 2: Fetch current content, append new cert, save back
     const contentRes = await fetch('/api/content', { credentials: 'include' });
     const contentJson = await contentRes.json();
     const existing = contentJson.content || contentData;
@@ -1029,14 +2212,13 @@ $('#upload-btn').addEventListener('click', async () => {
 
     clearInterval(progressInterval);
     setTimeout(() => {
-      progressWrap.classList.remove('show');
+      progressWrap.style.display = 'none';
       progressBar.style.width = '0%';
     }, 600);
 
     toast(`"${title}" uploaded successfully!`, 'success');
     showAlert($('#upload-success'), $('#upload-success-msg'), `Certificate "${title}" uploaded and saved.`, 'success');
 
-    // Reset upload form
     $('#preview-remove').click();
     $('#cert-title').value = '';
     $('#cert-issuer').value = '';
@@ -1046,45 +2228,15 @@ $('#upload-btn').addEventListener('click', async () => {
 
   } catch (err) {
     clearInterval(progressInterval);
-    progressWrap.classList.remove('show');
+    progressWrap.style.display = 'none';
     progressBar.style.width = '0%';
     toast(err.message, 'error');
     showAlert($('#upload-error'), $('#upload-error-msg'), err.message);
   } finally {
     setLoading(btn, spinner, icon, text, 'Upload Certificate', false);
-    btn.disabled = true; // re-disable until new file selected
+    btn.disabled = true;
   }
 });
-
-/* ════════════════════════════════════════════════════════════
-   LOAD & RENDER CONTENT
-════════════════════════════════════════════════════════════ */
-async function loadContent() {
-  try {
-    const res  = await fetch('/api/content', { credentials: 'include' });
-    const data = await res.json();
-    if (data.content) {
-      contentData = data.content;
-      populateContentEditor(contentData);
-      renderCertList();
-    }
-  } catch (_) {
-    toast('Could not load content from API.', 'error');
-  }
-}
-
-function populateContentEditor(data) {
-  if (data.hero) {
-    $('#hero-heading').value     = data.hero.heading  || '';
-    $('#hero-heading2').value    = data.hero.heading2 || '';
-    $('#hero-description').value = data.hero.description || '';
-  }
-  if (data.about) {
-    $('#about-who').value     = data.about.who     || '';
-    $('#about-excites').value = data.about.excites || '';
-    $('#about-focus').value   = data.about.focus   || '';
-  }
-}
 
 function renderCertList() {
   const certs = contentData.certificates || [];
@@ -1103,21 +2255,28 @@ function renderCertList() {
   certs.forEach((cert, idx) => {
     const item = document.createElement('div');
     item.className = 'cert-item';
+    item.style.display = 'flex';
+    item.style.alignItems = 'center';
+    item.style.gap = '14px';
+    item.style.padding = '12px 16px';
+    item.style.background = 'rgba(255,255,255,0.03)';
+    item.style.borderRadius = '12px';
+    item.style.marginBottom = '10px';
+    item.style.border = '1px solid var(--border)';
 
-    // Thumb: use a signed viewUrl if present, otherwise placeholder
     const thumbHtml = cert.viewUrl
-      ? `<img class="cert-thumb" src="${cert.viewUrl}" alt="${cert.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+      ? `<img class="cert-thumb" src="${cert.viewUrl}" alt="${cert.title}" loading="lazy" style="width:48px; height:48px; object-fit:cover; border-radius:8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
       : '';
-    const placeholderHtml = `<div class="cert-thumb-placeholder" ${cert.viewUrl ? 'style="display:none"' : ''}><i class="fas fa-certificate"></i></div>`;
+    const placeholderHtml = `<div class="cert-thumb-placeholder" style="width:48px; height:48px; border-radius:8px; background:rgba(99,102,241,0.15); display:${cert.viewUrl ? 'none' : 'flex'}; align-items:center; justify-content:center; color:var(--primary-light);"><i class="fas fa-certificate"></i></div>`;
 
     item.innerHTML = `
       ${thumbHtml}
       ${placeholderHtml}
-      <div class="cert-item-info">
-        <div class="cert-item-title">${escapeHtml(cert.title)}</div>
-        <div class="cert-item-meta">${escapeHtml(cert.issuer)} · ${cert.date || '—'}</div>
+      <div class="cert-item-info" style="flex:1; min-width:0;">
+        <div class="cert-item-title" style="font-weight:600; font-size:0.92rem; color:var(--text-primary);">${escapeHtml(cert.title)}</div>
+        <div class="cert-item-meta" style="font-size:0.78rem; color:var(--text-muted);">${escapeHtml(cert.issuer)} · ${cert.date || '—'}</div>
       </div>
-      <div class="cert-item-actions">
+      <div class="cert-item-actions" style="display:flex; gap:6px;">
         ${cert.viewUrl ? `<a href="${cert.viewUrl}" target="_blank" class="btn btn-ghost btn-sm" title="Preview"><i class="fas fa-eye"></i></a>` : ''}
         <button class="btn btn-danger btn-sm" data-idx="${idx}" title="Delete">
           <i class="fas fa-trash-can"></i>
@@ -1127,7 +2286,6 @@ function renderCertList() {
     body.appendChild(item);
   });
 
-  // Delete handlers
   $$('.btn-danger[data-idx]', body).forEach(btn => {
     btn.addEventListener('click', () => deleteCert(+btn.dataset.idx));
   });
@@ -1160,8 +2318,21 @@ async function deleteCert(idx) {
 }
 
 /* ════════════════════════════════════════════════════════════
-   CONTENT EDITOR — SAVE
+   SITE CONTENT EDITOR (HERO & ABOUT)
 ════════════════════════════════════════════════════════════ */
+function populateContentEditor(data) {
+  if (data.hero) {
+    $('#hero-heading').value     = data.hero.heading  || '';
+    $('#hero-heading2').value    = data.hero.heading2 || '';
+    $('#hero-description').value = data.hero.description || '';
+  }
+  if (data.about) {
+    $('#about-who').value     = data.about.who     || '';
+    $('#about-excites').value = data.about.excites || '';
+    $('#about-focus').value   = data.about.focus   || '';
+  }
+}
+
 $('#content-save-btn').addEventListener('click', async () => {
   hideAlert($('#content-error'));
   hideAlert($('#content-success'));
@@ -1195,7 +2366,7 @@ $('#content-save-btn').addEventListener('click', async () => {
     });
     if (!res.ok) throw new Error('Save failed.');
     contentData = updated;
-    toast('Content saved successfully!', 'success');
+    toast('Site content saved successfully!', 'success');
     showAlert($('#content-success'), $('#content-success-msg'), 'Content saved. Portfolio will reflect changes on next load.', 'success');
   } catch (err) {
     toast(err.message, 'error');
@@ -1212,17 +2383,14 @@ $('#content-reset-btn').addEventListener('click', () => {
 });
 
 /* ════════════════════════════════════════════════════════════
-   HELPERS
+   HELPERS & INIT
 ════════════════════════════════════════════════════════════ */
 function escapeHtml(str) {
-  return String(str)
+  return String(str || '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-/* ════════════════════════════════════════════════════════════
-   INIT
-════════════════════════════════════════════════════════════ */
 checkSession();
 </script>
 </body>

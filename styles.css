@@ -2412,39 +2412,353 @@ body.light-mode .profile-photo:hover {
     padding: 20px 0;
 }
 
+/* ============================================
+   UFO SCENE — Hovering Craft | Idle & Abduction Beams
+   ============================================ */
+.ufo-scene {
+    position: relative;
+    overflow: visible;
+}
+
+/* ── Craft base ── */
+.ufo-craft {
+    position: absolute;
+    top: -110px;
+    left: 50%;
+    width: 160px;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    /* JS overrides this per-action (warp vs spring) */
+    transition: left 0.45s cubic-bezier(0.34,1.4,0.64,1),
+                top  0.38s cubic-bezier(0.22,1,0.36,1),
+                opacity 0.3s ease;
+    will-change: left, top, opacity;
+}
+
+.ufo-craft.ufo-active { opacity: 1; }
+
+/* ── Idle bob ── */
+@keyframes ufo-bob {
+    0%   { transform: translateY(0px)  rotate(-1deg); }
+    30%  { transform: translateY(-7px) rotate(1deg); }
+    60%  { transform: translateY(-3px) rotate(-0.5deg); }
+    100% { transform: translateY(0px)  rotate(-1deg); }
+}
+.ufo-craft.ufo-active .ufo-svg {
+    animation: ufo-bob 3.2s ease-in-out infinite;
+}
+
+/* ── Warp streak: blazing horizontal motion blur during teleport ── */
+@keyframes ufo-warp-flash {
+    0%   { filter: drop-shadow(0 0 18px rgba(99,102,241,0.5)) drop-shadow(0 0 8px rgba(6,182,212,0.4))
+                   blur(0px) brightness(1); }
+    40%  { filter: drop-shadow(0 0 60px rgba(6,182,212,1))   drop-shadow(0 0 30px rgba(255,255,255,0.9))
+                   blur(5px) brightness(3); }
+    100% { filter: drop-shadow(0 0 18px rgba(99,102,241,0.5)) drop-shadow(0 0 8px rgba(6,182,212,0.4))
+                   blur(0px) brightness(1); }
+}
+.ufo-craft.ufo-warping .ufo-svg {
+    animation: ufo-warp-flash 0.15s ease-out forwards !important;
+}
+
+/* ── Tilt during travel ── */
+.ufo-craft.ufo-tilt-left  .ufo-svg { transform: rotate(-16deg) !important; animation: none !important; }
+.ufo-craft.ufo-tilt-right .ufo-svg { transform: rotate(16deg)  !important; animation: none !important; }
+
+/* ── Base SVG glow ── */
+.ufo-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 0 18px rgba(99,102,241,0.5)) drop-shadow(0 0 8px rgba(6,182,212,0.4));
+    transition: filter 0.2s ease;
+}
+
+/* ── Rim light sequence ── */
+@keyframes rim-spin {
+    0%,100%   { opacity: 1;   }
+    12.5%     { opacity: 0.2; }
+    25%       { opacity: 0.9; }
+    37.5%     { opacity: 0.2; }
+    50%       { opacity: 1;   }
+    62.5%     { opacity: 0.2; }
+    75%       { opacity: 0.9; }
+    87.5%     { opacity: 0.2; }
+}
+.ufo-rim-lights circle:nth-child(1) { animation: rim-spin 1.6s 0.00s linear infinite; }
+.ufo-rim-lights circle:nth-child(2) { animation: rim-spin 1.6s 0.20s linear infinite; }
+.ufo-rim-lights circle:nth-child(3) { animation: rim-spin 1.6s 0.40s linear infinite; }
+.ufo-rim-lights circle:nth-child(4) { animation: rim-spin 1.6s 0.60s linear infinite; }
+.ufo-rim-lights circle:nth-child(5) { animation: rim-spin 1.6s 0.80s linear infinite; }
+.ufo-rim-lights circle:nth-child(6) { animation: rim-spin 1.6s 1.00s linear infinite; }
+.ufo-rim-lights circle:nth-child(7) { animation: rim-spin 1.6s 1.20s linear infinite; }
+.ufo-rim-lights circle:nth-child(8) { animation: rim-spin 1.6s 1.40s linear infinite; }
+
+/* ════════════════════════════════════════
+   TRACTOR BEAM
+   ════════════════════════════════════════ */
+.ufo-tractor-beam {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 0;
+    pointer-events: none;
+    overflow: visible;
+    opacity: 0;
+    transition: opacity 0.3s ease, height 0.38s cubic-bezier(0.22,1,0.36,1), width 0.3s ease;
+}
+.ufo-tractor-beam.beam-on { opacity: 1; }
+
+/* ── ABDUCTION BEAM (hovered card) — wide cyan/indigo cone ── */
+.beam-inner {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(6, 182, 212, 0.65) 0%,
+        rgba(99, 102, 241, 0.4) 30%,
+        rgba(6, 182, 212, 0.22) 60%,
+        rgba(6, 182, 212, 0.04) 100%
+    );
+    clip-path: polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%);
+    filter: blur(3px);
+    transition: background 0.4s ease;
+}
+
+/* outer volumetric glow */
+.beam-inner::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: inherit;
+    filter: blur(16px);
+    opacity: 0.55;
+    clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
+}
+
+/* ── IDLE SCAN BEAM (edge lurk) — narrow lime-green survey beam ── */
+.ufo-tractor-beam.beam-idle {
+    width: 40px;
+}
+.ufo-tractor-beam.beam-idle .beam-inner {
+    background: linear-gradient(
+        to bottom,
+        rgba(74, 222, 128, 0.7)  0%,
+        rgba(16, 185, 129, 0.45) 40%,
+        rgba(74, 222, 128, 0.12) 75%,
+        transparent 100%
+    );
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+}
+.ufo-tractor-beam.beam-idle .beam-inner::after {
+    filter: blur(10px);
+    opacity: 0.7;
+    background: linear-gradient(to bottom, rgba(74,222,128,0.8), transparent);
+    clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+}
+
+/* idle scan sweep animation */
+@keyframes idle-scan {
+    0%   { transform: translateX(-50%) rotate(-4deg); }
+    50%  { transform: translateX(-50%) rotate(4deg);  }
+    100% { transform: translateX(-50%) rotate(-4deg); }
+}
+.ufo-tractor-beam.beam-idle.beam-on .beam-inner {
+    animation: idle-scan 2.4s ease-in-out infinite;
+    transform-origin: top center;
+}
+
+/* ── Rising particles (abduction mode) ── */
+.beam-particles { position: absolute; inset: 0; pointer-events: none; }
+
+@keyframes beam-particle-rise {
+    0%   { transform: translateX(var(--px, 50%)) translateY(92%) scale(0.9); opacity: 0.85; }
+    100% { transform: translateX(var(--px, 50%)) translateY(4%) scale(0.2);  opacity: 0; }
+}
+.beam-dot {
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #7dd3fc;
+    box-shadow: 0 0 8px 2px rgba(125,211,252,0.9);
+    animation: beam-particle-rise 1.8s var(--delay,0s) ease-in infinite;
+}
+.beam-dot:nth-child(1) { --px: 20%; --delay: 0.00s; }
+.beam-dot:nth-child(2) { --px: 38%; --delay: 0.36s; }
+.beam-dot:nth-child(3) { --px: 55%; --delay: 0.72s; }
+.beam-dot:nth-child(4) { --px: 72%; --delay: 1.08s; }
+.beam-dot:nth-child(5) { --px: 88%; --delay: 1.44s; }
+
+/* hide particles in idle mode */
+.ufo-tractor-beam.beam-idle .beam-particles { display: none; }
+
+/* ── Card glow when being abducted ── */
+.project-card-structured.ufo-targeted {
+    box-shadow:
+        0 0 40px rgba(6,182,212,0.45),
+        0 0 90px rgba(99,102,241,0.22),
+        0 4px 20px rgba(0,0,0,0.3) !important;
+    border-color: rgba(6,182,212,0.75) !important;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease !important;
+}
+
+/* ── Warp exit ring flash ── */
+@keyframes warp-ring {
+    0%   { transform: translateX(-50%) scaleX(0.2) scaleY(0.5); opacity: 0.9; }
+    60%  { transform: translateX(-50%) scaleX(1.8) scaleY(0.15); opacity: 0.4; }
+    100% { transform: translateX(-50%) scaleX(2.5) scaleY(0); opacity: 0; }
+}
+.ufo-craft.ufo-warping::after {
+    content: '';
+    position: absolute;
+    bottom: 20px; left: 50%;
+    width: 140px; height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(6,182,212,0.8) 0%, transparent 70%);
+    animation: warp-ring 0.18s ease-out forwards;
+    pointer-events: none;
+}
+
+/* ── Mobile: hide UFO ── */
+@media (max-width: 640px) { .ufo-craft { display: none; } }
+
+/* ============================================
+   STRUCTURED MY WORK / PROJECTS SECTION (THEME MATCHED ULTRA-TRANSPARENT GLASS & FOCUS BLUR)
+   ============================================ */
+.projects-header-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+/* Category Filter Tabs - Theme Matched Frosted Glass */
+.project-category-tabs {
+    display: inline-flex;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 14px;
+    background: rgba(11, 15, 25, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    align-items: center;
+    flex-wrap: wrap;
+    width: fit-content;
+}
+
+.project-category-tabs:hover .proj-cat-tab:not(:hover):not(.active) {
+    opacity: 0.4;
+    filter: blur(1px);
+}
+
+.proj-cat-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 9px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.proj-cat-tab:hover {
+    color: var(--text-primary);
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+    opacity: 1 !important;
+    filter: blur(0) !important;
+    transform: translateY(-1px);
+}
+
+.proj-cat-tab.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(6, 182, 212, 0.25));
+    border-color: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+    opacity: 1 !important;
+    filter: blur(0) !important;
+}
+
+.proj-cat-tab i {
+    font-size: 0.75rem;
+}
+
+/* Grid & Interactive Focus Blur Spotlight */
 .projects-grid-compact {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.5rem;
 }
 
-.project-card-compact {
-    background: rgba(11, 15, 25, 0.20);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+/* When hovering any card, blur and dim sibling cards to focus user attention */
+.projects-grid-compact:hover .project-card-structured:not(:hover) {
+    filter: blur(4px) opacity(0.38);
+    transform: scale(0.975);
+}
+
+@media (max-width: 480px) {
+    .projects-grid-compact {
+        grid-template-columns: 1fr;
+    }
+    .project-category-tabs {
+        width: 100%;
+    }
+    .proj-cat-tab {
+        flex: 1;
+        justify-content: center;
+        padding: 6px 10px;
+        font-size: 0.78rem;
+    }
+}
+
+/* Structured Project Card - Ultra-Transparent Theme Matched Glass */
+.project-card-structured {
+    background: rgba(11, 15, 25, 0.22);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: var(--radius-md);
-    overflow: hidden;
     border: 1px solid rgba(99, 102, 241, 0.25);
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 1.6rem;
     position: relative;
-    contain: layout style paint;
-    will-change: transform;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                border-color 0.3s ease, 
+                box-shadow 0.3s ease, 
+                background 0.3s ease,
+                filter 0.3s ease, 
+                opacity 0.3s ease;
+    will-change: transform, filter, opacity;
     --x: 50%;
     --y: 50%;
 }
 
-/* Simplified gradient hover */
-.project-card-compact::before {
+/* Moving radial cyan light on mouse hover (matches .about-card-compact) */
+.project-card-structured::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: radial-gradient(
-        300px circle at var(--x) var(--y),
-        rgba(6, 182, 212, 0.15) 0%,
-        transparent 60%
+        350px circle at var(--x, 50%) var(--y, 50%),
+        rgba(6, 182, 212, 0.14) 0%,
+        transparent 65%
     );
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -2452,69 +2766,352 @@ body.light-mode .profile-photo:hover {
     z-index: 1;
 }
 
-.project-card-compact:hover::before {
+.project-card-structured:hover::before {
     opacity: 1;
 }
 
-.project-card-compact:hover {
-    border-color: rgba(6, 182, 212, 0.3);
-    transform: translateY(-3px);
+.project-card-structured:hover {
+    border-color: rgba(6, 182, 212, 0.5);
+    background: rgba(11, 15, 25, 0.35);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(6, 182, 212, 0.2);
+    filter: blur(0px) opacity(1) !important;
+    z-index: 10;
 }
 
-.project-card-compact > * {
+.project-card-structured > * {
     position: relative;
     z-index: 2;
 }
 
-.project-image-compact {
-    height: 120px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+/* Card Header */
+.project-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.project-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.project-image-compact i {
-    font-size: 2.5rem;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+    border: 1px solid rgba(99, 102, 241, 0.3);
     color: var(--accent);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
-.project-info {
-    padding: 20px;
+.project-card-structured:hover .project-icon-badge {
+    border-color: var(--accent);
+    color: var(--accent-light);
+    transform: scale(1.08) rotate(3deg);
 }
 
-.project-info h3 {
-    font-size: 1.05rem;
+.project-card-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.project-badge-domain {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-light);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    letter-spacing: 0.02em;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.project-badge-feat {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    letter-spacing: 0.02em;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Card Title & Content - Ultra-High Contrast with Text Shadows */
+.project-card-title {
+    font-size: 1.1rem;
     font-weight: 600;
     font-family: 'Space Grotesk', sans-serif;
-    margin-bottom: 10px;
     color: var(--text-primary);
     letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+    line-height: 1.35;
+    transition: color 0.15s ease;
+    overflow-wrap: break-word;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-.project-info p {
-    font-size: 0.9rem;
+.project-card-structured:hover .project-card-title {
+    color: var(--accent-light);
+}
+
+.project-card-summary {
+    font-size: 0.88rem;
     font-family: 'Outfit', sans-serif;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-.project-tech-compact {
+/* Key Highlights List - Sharp & Distinct */
+.project-card-highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 1.1rem;
+    padding: 0;
+}
+
+.project-card-highlights li {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.45;
+    overflow-wrap: break-word;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.project-card-highlights li i {
+    color: var(--accent);
+    font-size: 0.72rem;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* Tech Stack Tags */
+.project-card-techs {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 15px;
+    margin-top: auto;
+    padding-top: 0.9rem;
+    margin-bottom: 1.1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.project-tech-compact span {
+.project-tech-pill {
     background: rgba(99, 102, 241, 0.15);
     color: var(--primary-light);
-    padding: 4px 10px;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    padding: 3px 9px;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.project-card-structured:hover .project-tech-pill {
+    border-color: rgba(6, 182, 212, 0.4);
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--accent-light);
+}
+
+/* Card Action CTA Buttons */
+.project-card-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.project-action-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.project-action-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.project-action-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(6, 182, 212, 0.4);
+}
+
+.project-action-ghost {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: var(--text-primary) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.project-action-ghost:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--accent);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+/* ============================================
+   LIGHT MODE OVERRIDES - MATCHED PALETTE
+   ============================================ */
+body.light-mode .project-category-tabs {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(99, 102, 241, 0.18);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .proj-cat-tab {
+    color: var(--text-secondary);
+}
+
+body.light-mode .proj-cat-tab:hover {
+    color: var(--text-primary);
+    background: rgba(99, 102, 241, 0.08);
+}
+
+body.light-mode .proj-cat-tab.active {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(6, 182, 212, 0.15));
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.15);
+}
+
+body.light-mode .project-card-structured {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(99, 102, 241, 0.18);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.06);
+}
+
+body.light-mode .project-card-structured:hover {
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.55);
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 16px 36px rgba(99, 102, 241, 0.14);
+}
+
+body.light-mode .project-icon-badge {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(6, 182, 212, 0.12));
+    border-color: rgba(99, 102, 241, 0.2);
+    color: var(--primary);
+}
+
+body.light-mode .project-card-structured:hover .project-icon-badge {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+    border-color: var(--primary);
+}
+
+body.light-mode .project-badge-domain {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+body.light-mode .project-badge-feat {
+    background: rgba(245, 158, 11, 0.1);
+    color: #b45309;
+    border-color: rgba(245, 158, 11, 0.25);
+}
+
+body.light-mode .project-card-title {
+    color: var(--text-primary);
+    text-shadow: none;
+}
+
+body.light-mode .project-card-structured:hover .project-card-title {
+    color: var(--primary);
+}
+
+body.light-mode .project-card-summary {
+    color: var(--text-secondary);
+    text-shadow: none;
+}
+
+body.light-mode .project-card-highlights li {
+    color: var(--text-secondary);
+    text-shadow: none;
+}
+
+body.light-mode .project-card-highlights li i {
+    color: var(--primary);
+}
+
+body.light-mode .project-card-techs {
+    border-top-color: rgba(99, 102, 241, 0.1);
+}
+
+body.light-mode .project-tech-pill {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.15);
+    color: var(--primary-dark);
+}
+
+body.light-mode .project-card-structured:hover .project-tech-pill {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+}
+
+body.light-mode .project-action-primary {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #ffffff !important;
+}
+
+body.light-mode .project-action-ghost {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(99, 102, 241, 0.25);
+    color: var(--text-primary) !important;
+}
+
+body.light-mode .project-action-ghost:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--primary);
+    color: var(--primary) !important;
 }
 
 .project-links {
