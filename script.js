@@ -1699,16 +1699,8 @@ function openCertLightbox(cert) {
     });
 }
 
-/* ─── Admin Portal Link (subtle, bottom-right) ────────────── */
-function injectAdminPortalLink() {
-    // Keyboard shortcut: Ctrl + Shift + CapsLock to open admin portal
-    window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.shiftKey && e.key === 'CapsLock') {
-            e.preventDefault();
-            window.location.href = '/admin.html';
-        }
-    });
-}
+/* ─── Ctrl+Shift+CapsLock → admin portal (registered once here,
+   active definition is the merged one at the bottom of the file)  */
 
 /* ─── HTML escape helpers ───────────────────────────────── */
 function escapeHtml(str) {
@@ -2790,13 +2782,23 @@ async function initLiveContent() {
   }
 }
 
+/* ─── Admin Portal: subtle footer link + Ctrl+Shift+CapsLock shortcut ─── */
 function injectAdminPortalLink() {
+  // ── Keyboard shortcut ──
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'CapsLock') {
+      e.preventDefault();
+      window.location.href = 'admin.html';
+    }
+  });
+
+  // ── Subtle lock icon in the footer ──
   const footer = document.querySelector('.copyright-compact');
   if (footer && !document.getElementById('admin-portal-link')) {
     const link = document.createElement('a');
     link.id = 'admin-portal-link';
-    link.href = '/admin.html';
-    link.title = 'Admin Portal';
+    link.href = 'admin.html';
+    link.title = 'Admin Portal  (Ctrl+Shift+CapsLock)';
     link.style.cssText = 'color:rgba(255,255,255,0.25); text-decoration:none; margin-left:10px; font-size:0.75rem; transition:color 0.2s;';
     link.innerHTML = '<i class="fas fa-lock"></i>';
     link.addEventListener('mouseenter', () => link.style.color = 'var(--primary-light)');
@@ -2804,4 +2806,3 @@ function injectAdminPortalLink() {
     footer.appendChild(link);
   }
 }
-
