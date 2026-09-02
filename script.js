@@ -2751,7 +2751,7 @@ async function initLiveContent() {
     const data = await res.json();
     if (!data || !data.content) return;
 
-    const { hero, about, projects } = data.content;
+    const { hero, about, projects, certificates } = data.content;
 
     // 1. Sync Hero text
     if (hero) {
@@ -2777,6 +2777,12 @@ async function initLiveContent() {
     if (Array.isArray(projects) && projects.length) {
       renderPortfolioProjects(projects);
     }
+
+    // 4. Inject Certificate Cards (restored)
+    if (Array.isArray(certificates) && certificates.length) {
+      injectCertificateCards(certificates);
+    }
+
   } catch (_) {
     // Graceful offline fallback
   }
