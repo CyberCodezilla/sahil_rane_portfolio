@@ -71,15 +71,21 @@ function initLoader() {
 window.goToSection = function(target) {
     const sections = ['#home', '#skills', '#about', '#projects', '#achievements', '#contact'];
     let targetEl = null;
+    let targetId = '';
 
     if (typeof target === 'number') {
         const selector = sections[target] || sections[0];
+        targetId = selector.replace('#', '');
         targetEl = document.querySelector(selector);
     } else if (typeof target === 'string') {
+        targetId = target.replace('#', '');
         targetEl = document.querySelector(target);
     }
 
     if (targetEl) {
+        if (typeof window.setActiveNavTab === 'function') {
+            window.setActiveNavTab(targetId);
+        }
         const offsetTop = targetEl.offsetTop - 75;
         window.scrollTo({
             top: Math.max(0, offsetTop),
@@ -92,11 +98,69 @@ window.goToSection = function(target) {
    NAVBAR & SCROLL SPY ACTIVE TABS SYSTEM
    ============================================ */
 function initNavbar() {
+    const navbar = document.querySelector('.navbar');
     const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
+    const sections = Array.from(document.querySelectorAll('section[id]'));
     if (!sections.length || !navLinks.length) return;
 
-    // Smooth scroll for nav links
+    let isNavClickActive = false;
+    let clickTimer = null;
+
+    function setActiveNav(id) {
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === '#' + id) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+    window.setActiveNavTab = setActiveNav;
+
+    function updateActiveNavLink() {
+        if (isNavClickActive) return;
+
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+
+        // 1. Scrolled near bottom of page (within 80px): always activate the last section (#contact)
+        if (windowHeight + scrollY >= docHeight - 80) {
+            setActiveNav('contact');
+            return;
+        }
+
+        // 2. Specific check for contact section visibility:
+        // If contact top has entered upper/mid viewport (55% or higher), activate contact
+        const contactSec = document.getElementById('contact');
+        if (contactSec) {
+            const cRect = contactSec.getBoundingClientRect();
+            if (cRect.top <= windowHeight * 0.55 && cRect.bottom > 80) {
+                setActiveNav('contact');
+                return;
+            }
+        }
+
+        // 3. Focal point evaluation for all other sections
+        const focalPoint = windowHeight * 0.35;
+        let activeId = sections[0].id;
+
+        for (let i = 0; i < sections.length; i++) {
+            const sec = sections[i];
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= focalPoint && rect.bottom > focalPoint) {
+                activeId = sec.id;
+                break;
+            } else if (rect.top <= focalPoint) {
+                activeId = sec.id;
+            }
+        }
+
+        setActiveNav(activeId);
+    }
+
+    // Smooth scroll and immediate active state for nav links
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             const targetId = link.getAttribute('href');
@@ -104,38 +168,47 @@ function initNavbar() {
                 e.preventDefault();
                 const targetSection = document.querySelector(targetId);
                 if (targetSection) {
+                    const secId = targetId.substring(1);
+                    setActiveNav(secId);
+                    isNavClickActive = true;
+                    clearTimeout(clickTimer);
+                    clickTimer = setTimeout(() => {
+                        isNavClickActive = false;
+                        updateActiveNavLink();
+                    }, 850);
+
                     const offsetTop = targetSection.offsetTop - 75;
                     window.scrollTo({
                         top: Math.max(0, offsetTop),
                         behavior: 'smooth'
                     });
+
+                    // Close mobile menu if open
+                    const hamburger = document.querySelector('.nav-toggle');
+                    const navMenu = document.querySelector('.nav-links');
+                    if (hamburger && navMenu) {
+                        hamburger.classList.remove('active');
+                        navMenu.classList.remove('active');
+                    }
                 }
             }
         });
     });
 
-    // IntersectionObserver to auto-highlight active nav tab on scroll
-    const observerOptions = {
-        root: null,
-        rootMargin: '-20% 0px -60% 0px',
-        threshold: 0
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const activeId = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${activeId}`) {
-                        link.classList.add('active');
-                    }
-                });
+    // Scroll listener for navbar background and scroll spy
+    window.addEventListener('scroll', () => {
+        if (navbar) {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
             }
-        });
-    }, observerOptions);
+        }
+        updateActiveNavLink();
+    }, { passive: true });
 
-    sections.forEach(section => observer.observe(section));
+    // Initial check on load
+    updateActiveNavLink();
 }
 
 /* ============================================
@@ -895,45 +968,6 @@ function initGalaxyBackground() {
     }, { passive: true });
 }
 
-/* ============================================
-   NAVBAR
-   ============================================ */
-function initNavbar() {
-    const navbar = document.querySelector('.navbar');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Scroll effect
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        
-        // Update active nav link based on scroll position
-        updateActiveNavLink();
-    });
-    
-    function updateActiveNavLink() {
-        const sections = document.querySelectorAll('section[id]');
-        const scrollY = window.pageYOffset;
-        
-        sections.forEach(section => {
-            const sectionHeight = section.offsetHeight;
-            const sectionTop = section.offsetTop - 100;
-            const sectionId = section.getAttribute('id');
-            
-            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + sectionId) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    }
-}
 
 /* ============================================
    CARD ENTRANCE ANIMATIONS
@@ -1215,15 +1249,23 @@ function initScrollAnimations() {
    ============================================ */
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        if (anchor.classList.contains('nav-link')) return; // Handled with active state in initNavbar
+
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const href = this.getAttribute('href');
+            const target = document.querySelector(href);
             
             if (target) {
+                const targetId = href.replace('#', '');
+                if (typeof window.setActiveNavTab === 'function') {
+                    window.setActiveNavTab(targetId);
+                }
+
                 const offsetTop = target.offsetTop - 80;
                 
                 window.scrollTo({
-                    top: offsetTop,
+                    top: Math.max(0, offsetTop),
                     behavior: 'smooth'
                 });
                 
