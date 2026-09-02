@@ -5,19 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sahil Suresh Rane | Software Engineer</title>
     <!-- Fonts -->
+    <!-- Optimized Preconnect & Consolidated Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=sat_3d_v8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
-    <!-- GSAP for animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
-    <!-- Three.js CDN for 3D Galaxy Canvas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Non-blocking animation & 3D libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 </head>
 <body>
     <!-- Cursor follower -->
@@ -257,134 +256,13 @@
             <div class="card-content">
                 <div class="section-header-compact">
                     <h2 class="section-title-compact">About <span class="highlight">Me</span></h2>
-                    <p class="section-desc-compact">Receiving live telemetry data transmission...</p>
                 </div>
 
-                <!-- ANIME SATELLITE CONTAINER -->
+                <!-- 3D PHOTOREALISTIC SATELLITE TELEMETRY CONTAINER -->
                 <div class="satellite-orbit-wrapper">
                     <div id="anime-satellite" class="satellite-unit">
-                        <!-- High-Detail Photorealistic 3D Vector Space Satellite SVG -->
-                        <svg viewBox="0 0 320 200" class="satellite-svg">
-                            <defs>
-                                <!-- Gold Thermal Foil MLI Gradient -->
-                                <linearGradient id="gold-foil" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#fef08a"/>
-                                    <stop offset="25%" stop-color="#fbbf24"/>
-                                    <stop offset="60%" stop-color="#d97706"/>
-                                    <stop offset="85%" stop-color="#92400e"/>
-                                    <stop offset="100%" stop-color="#451a03"/>
-                                </linearGradient>
-
-                                <!-- Metallic Titanium Chassis Front -->
-                                <linearGradient id="titanium-front" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#334155"/>
-                                    <stop offset="50%" stop-color="#1e293b"/>
-                                    <stop offset="100%" stop-color="#0f172a"/>
-                                </linearGradient>
-
-                                <!-- Metallic Titanium Chassis Side (Dark shadow side) -->
-                                <linearGradient id="titanium-side" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#1e293b"/>
-                                    <stop offset="60%" stop-color="#0f172a"/>
-                                    <stop offset="100%" stop-color="#020617"/>
-                                </linearGradient>
-
-                                <!-- Solar Panel Cell Silicon Gradient -->
-                                <linearGradient id="solar-cell" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#1e1b4b"/>
-                                    <stop offset="40%" stop-color="#0f172a"/>
-                                    <stop offset="70%" stop-color="#0284c7"/>
-                                    <stop offset="100%" stop-color="#06b6d4"/>
-                                </linearGradient>
-
-                                <!-- Chrome Metallic Highlight -->
-                                <linearGradient id="chrome-shine" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#64748b"/>
-                                    <stop offset="40%" stop-color="#f8fafc"/>
-                                    <stop offset="70%" stop-color="#94a3b8"/>
-                                    <stop offset="100%" stop-color="#475569"/>
-                                </linearGradient>
-
-                                <!-- Parabolic Dish Inner Bowl Gradient -->
-                                <radialGradient id="dish-bowl" cx="40%" cy="40%" r="60%">
-                                    <stop offset="0%" stop-color="#f8fafc"/>
-                                    <stop offset="35%" stop-color="#cbd5e1"/>
-                                    <stop offset="70%" stop-color="#64748b"/>
-                                    <stop offset="100%" stop-color="#1e293b"/>
-                                </radialGradient>
-
-                                <!-- Cyan Ion Thruster Exhaust Plasma Glow -->
-                                <radialGradient id="ion-glow" cx="50%" cy="50%" r="50%">
-                                    <stop offset="0%" stop-color="#22d3ee" stop-opacity="1"/>
-                                    <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.6"/>
-                                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
-                                </radialGradient>
-
-                                <!-- Volumetric Sci-Fi Glow Filter -->
-                                <filter id="sci-fi-glow" x="-30%" y="-30%" width="160%" height="160%">
-                                    <feGaussianBlur stdDeviation="4" result="blur"/>
-                                    <feMerge>
-                                        <feMergeNode in="blur"/>
-                                        <feMergeNode in="SourceGraphic"/>
-                                    </feMerge>
-                                </filter>
-                            </defs>
-
-                            <!-- Ion Thruster Exhaust Plume (Bottom left) -->
-                            <polygon points="108,150 116,185 124,150" fill="url(#ion-glow)" filter="url(#sci-fi-glow)"/>
-                            <polygon points="196,150 204,185 212,150" fill="url(#ion-glow)" filter="url(#sci-fi-glow)"/>
-
-                            <!-- Left 3D Solar Array Wing -->
-                            <g class="left-solar-wing">
-                                <polygon points="40,95 110,98 110,104 40,101" fill="url(#chrome-shine)"/>
-                                <polygon points="15,55 105,62 105,138 15,130" fill="#090d16" stroke="#06b6d4" stroke-width="1.5"/>
-                                <polygon points="17,57 103,64 103,136 17,128" fill="url(#solar-cell)" opacity="0.85"/>
-                                <line x1="45" y1="57" x2="45" y2="130" stroke="#06b6d4" stroke-dasharray="3 3" opacity="0.6"/>
-                                <line x1="75" y1="60" x2="75" y2="134" stroke="#06b6d4" stroke-dasharray="3 3" opacity="0.6"/>
-                                <line x1="17" y1="80" x2="103" y2="87" stroke="#38bdf8" stroke-width="1" opacity="0.7"/>
-                                <line x1="17" y1="105" x2="103" y2="112" stroke="#38bdf8" stroke-width="1" opacity="0.7"/>
-                                <polygon points="15,55 105,62 105,138 15,130" fill="none" stroke="#6366f1" stroke-width="1" filter="url(#sci-fi-glow)"/>
-                            </g>
-
-                            <!-- Right 3D Solar Array Wing -->
-                            <g class="right-solar-wing">
-                                <polygon points="210,98 280,95 280,101 210,104" fill="url(#chrome-shine)"/>
-                                <polygon points="215,62 305,55 305,130 215,138" fill="#090d16" stroke="#06b6d4" stroke-width="1.5"/>
-                                <polygon points="217,64 303,57 303,128 217,136" fill="url(#solar-cell)" opacity="0.85"/>
-                                <line x1="245" y1="60" x2="245" y2="134" stroke="#06b6d4" stroke-dasharray="3 3" opacity="0.6"/>
-                                <line x1="275" y1="57" x2="275" y2="130" stroke="#06b6d4" stroke-dasharray="3 3" opacity="0.6"/>
-                                <line x1="217" y1="87" x2="303" y2="80" stroke="#38bdf8" stroke-width="1" opacity="0.7"/>
-                                <line x1="217" y1="112" x2="303" y2="105" stroke="#38bdf8" stroke-width="1" opacity="0.7"/>
-                                <polygon points="215,62 305,55 305,130 215,138" fill="none" stroke="#6366f1" stroke-width="1" filter="url(#sci-fi-glow)"/>
-                            </g>
-
-                            <!-- Main 3D Satellite Bus Body Chassis -->
-                            <polygon points="110,65 155,42 210,65 165,88" fill="url(#titanium-front)"/>
-                            <polygon points="110,65 165,88 165,150 110,127" fill="url(#gold-foil)" stroke="#fbbf24" stroke-width="1"/>
-                            <line x1="124" y1="71" x2="124" y2="133" stroke="#78350f" stroke-width="0.8" opacity="0.6"/>
-                            <line x1="138" y1="77" x2="138" y2="139" stroke="#78350f" stroke-width="0.8" opacity="0.6"/>
-                            <line x1="152" y1="83" x2="152" y2="145" stroke="#78350f" stroke-width="0.8" opacity="0.6"/>
-                            <line x1="110" y1="80" x2="165" y2="103" stroke="#fef08a" stroke-width="0.8" opacity="0.5"/>
-                            <line x1="110" y1="95" x2="165" y2="118" stroke="#fef08a" stroke-width="0.8" opacity="0.5"/>
-
-                            <polygon points="165,88 210,65 210,127 165,150" fill="url(#titanium-side)" stroke="#475569" stroke-width="1"/>
-                            <circle cx="187" cy="108" r="8" fill="#090d16" stroke="#06b6d4" stroke-width="1.5"/>
-
-                            <!-- Optical Camera Payload Lenses -->
-                            <circle cx="137" cy="105" r="11" fill="#020617" stroke="#fbbf24" stroke-width="1.5"/>
-                            <circle cx="137" cy="105" r="7" fill="url(#solar-cell)"/>
-                            <circle cx="135" cy="103" r="3" fill="#38bdf8" class="core-beacon"/>
-
-                            <!-- 3D High-Gain Parabolic Dish Antenna -->
-                            <g class="parabolic-dish-assembly">
-                                <line x1="160" y1="52" x2="160" y2="28" stroke="url(#chrome-shine)" stroke-width="4"/>
-                                <ellipse cx="160" cy="26" rx="35" ry="14" fill="url(#dish-bowl)" stroke="#06b6d4" stroke-width="1.5" filter="url(#sci-fi-glow)"/>
-                                <ellipse cx="160" cy="26" rx="28" ry="10" fill="#0b0f19" stroke="#6366f1" stroke-width="1"/>
-                                <line x1="140" y1="26" x2="160" y2="10" stroke="#38bdf8" stroke-width="1.5"/>
-                                <line x1="180" y1="26" x2="160" y2="10" stroke="#38bdf8" stroke-width="1.5"/>
-                                <circle cx="160" cy="10" r="4" fill="#06b6d4" class="signal-beacon" filter="url(#sci-fi-glow)"/>
-                            </g>
-                        </svg>
+                        <!-- Real-time 3D WebGL Photorealistic Spacecraft Canvas -->
+                        <canvas id="satellite-3d-canvas" class="satellite-3d-canvas"></canvas>
 
                         <!-- Signal Beam Waves (Fires toward terminal) -->
                         <div class="signal-waves" id="signal-waves">
@@ -475,7 +353,7 @@
 
                 <!-- FLOATING PHOTOREALISTIC ASTRONAUT -->
                 <div id="floating-astronaut" class="astronaut-unit">
-                    <img src="assets/astronaut.png" alt="Floating Astronaut" class="astronaut-img" draggable="false">
+                    <img src="assets/astronaut.png" alt="Floating Astronaut" class="astronaut-img" draggable="false" loading="lazy">
                 </div>
                 <div class="scrollable-section">
                     <div class="projects-header-wrapper">
@@ -817,26 +695,35 @@
                     <div class="section-divider"></div>
                     
                     <div class="section-header-compact" style="margin-top: 2rem;">
-                        <h3 class="subsection-title">Hackathon <span class="highlight">Participations</span></h3>
+                        <div class="planets-header-top">
+                            <div>
+                                <h3 class="subsection-title">Hackathon <span class="highlight">Planetary Orbit</span></h3>
+                                <p class="planets-section-sub"><i class="fas fa-planet-ringed text-accent"></i> Cosmic Odyssey · High-Impact Hackathons as Planetary Systems</p>
+                            </div>
+                            <div class="planets-controls-bar">
+                                <span class="planets-drift-status" id="planets-drift-status"><i class="fas fa-satellite"></i> Orbit: Continuous Drift</span>
+                                <div class="planets-nav-group">
+                                    <button class="planet-nav-btn" id="planet-prev-btn" aria-label="Orbit backward">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button class="planet-nav-btn" id="planet-pause-btn" aria-label="Pause or Resume Orbit">
+                                        <i class="fas fa-pause"></i>
+                                    </button>
+                                    <button class="planet-nav-btn" id="planet-next-btn" aria-label="Orbit forward">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="hackathons-grid-compact">
-                        <div class="hackathon-card-compact">
-                            <div class="hackathon-icon-compact"><i class="fas fa-lightbulb"></i></div>
-                            <h3>Smart India Hackathon</h3>
-                            <p>National level problem-solving</p>
-                            <span class="hackathon-badge">National</span>
-                        </div>
-                        <div class="hackathon-card-compact">
-                            <div class="hackathon-icon-compact"><i class="fas fa-code"></i></div>
-                            <h3>Mum Hacks</h3>
-                            <p>Mumbai's premier hackathon</p>
-                            <span class="hackathon-badge">Regional</span>
-                        </div>
-                        <div class="hackathon-card-compact">
-                            <div class="hackathon-icon-compact"><i class="fas fa-robot"></i></div>
-                            <h3>Gen-AI Hackathon</h3>
-                            <p>AI & Machine Learning challenge</p>
-                            <span class="hackathon-badge">Competition</span>
+
+                    <!-- Planetary Orbit Showcase (Continuous Drift Stream for N Planets) -->
+                    <div class="hackathon-planets-viewport" id="hackathon-planets-viewport">
+                        <!-- Cosmic background orbital path line -->
+                        <div class="orbital-path-line" aria-hidden="true"></div>
+
+                        <div class="hackathon-planets-track" id="hackathon-planets-track">
+                            <!-- Injected dynamically by script.js with default curated realistic planets -->
                         </div>
                     </div>
                 </div>
@@ -877,6 +764,6 @@
 
     </main>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=sat_3d_v8" defer></script>
 </body>
 </html>

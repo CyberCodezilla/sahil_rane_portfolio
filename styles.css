@@ -535,20 +535,6 @@ body.light-mode .glass-card {
     background: rgba(255, 255, 255, 0.75);
     border: 1px solid rgba(99, 102, 241, 0.15);
 }
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    overflow: hidden;
-    overflow-x: hidden;
-    cursor: var(--custom-arrow) !important;
-    height: 100vh;
-    width: 100%;
-    max-width: 100vw;
-    margin: 0;
-    padding: 0;
-    /* Performance: Enable GPU acceleration */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
 
 /* Epic transition overlay flash effect */
 .transition-flash {
@@ -3136,488 +3122,489 @@ body.light-mode .project-action-ghost:hover {
 }
 
 /* ============================================
-   HACKATHONS SECTION - 3 Cards in Row
+   HACKATHON PLANETARY ORBIT SHOWCASE
+   (Continuous Orbital Drift Stream with 10+ Realistic Planets,
+    3D Tilted Rings, Revolving Moons, & High-Contrast Horizon Core)
    ============================================ */
 
-.hackathons-content {
-    padding: 20px 0;
+.planets-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
-.hackathons-grid-compact {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(var(--card-min-width), 1fr));
-    gap: 1.5rem;
+.planets-section-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.hackathon-card-compact {
-    background: linear-gradient(145deg, rgba(15, 15, 25, 0.6), rgba(10, 10, 18, 0.7));
-    border-radius: 16px;
-    padding: 35px 30px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    --x: 50%;
-    --y: 50%;
+.planets-controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-/* Subtle animated gradient background */
-.hackathon-card-compact::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        500px circle at var(--x) var(--y),
-        rgba(99, 102, 241, 0.06) 0%,
-        rgba(6, 182, 212, 0.04) 30%,
-        transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-    z-index: 0;
+.planets-drift-status {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.72rem;
+    color: var(--accent-light, #22d3ee);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.04em;
 }
 
-/* Subtle glowing border effect - card-specific colors */
-.hackathon-card-compact:nth-child(1)::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(14, 165, 233, 0.2));
-    border-radius: 16px;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+.planets-nav-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.hackathon-card-compact:nth-child(2)::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(168, 85, 247, 0.2));
-    border-radius: 16px;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.hackathon-card-compact:nth-child(3)::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(79, 70, 229, 0.2));
-    border-radius: 16px;
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.hackathon-card-compact:hover::before {
-    opacity: 1;
-}
-
-.hackathon-card-compact:hover::after {
-    opacity: 1;
-}
-
-.hackathon-card-compact:hover {
-    transform: translateY(-8px) scale(1.01);
-    border-color: transparent;
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.hackathon-card-compact:nth-child(1):hover {
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(6, 182, 212, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.hackathon-card-compact:nth-child(2):hover {
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(139, 92, 246, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.hackathon-card-compact:nth-child(3):hover {
-    box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 30px rgba(99, 102, 241, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.hackathon-card-compact > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Icon styling with subtle animation */
-.hackathon-icon-compact {
-    width: 70px;
-    height: 70px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
+.planet-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(11, 15, 25, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 0.85rem;
 }
 
-.hackathon-icon-compact::before {
+.planet-nav-btn:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(6, 182, 212, 0.4));
+    border-color: rgba(6, 182, 212, 0.6);
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.4);
+    transform: scale(1.08);
+}
+
+/* Viewport & Orbit Track */
+.hackathon-planets-viewport {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 45px 0 55px 0;
+    margin-top: 1rem;
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 1) 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 1) 95%, transparent 100%);
+}
+
+.orbital-path-line {
+    position: absolute;
+    top: 50%;
+    left: -5%;
+    width: 110%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.25) 20%, rgba(6, 182, 212, 0.35) 50%, rgba(99, 102, 241, 0.25) 80%, transparent);
+    pointer-events: none;
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+.orbital-path-line::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease;
+    top: -1px;
+    left: 0;
+    width: 30%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.8), transparent);
+    animation: orbital-pulse-drift 6s linear infinite;
 }
 
-.hackathon-card-compact:hover .hackathon-icon-compact::before {
-    left: 100%;
+@keyframes orbital-pulse-drift {
+    0% { left: -30%; }
+    100% { left: 100%; }
 }
 
-.hackathon-card-compact:hover .hackathon-icon-compact {
-    transform: scale(1.08) rotate(3deg);
+.hackathon-planets-track {
+    display: flex;
+    gap: 4.5rem;
+    width: max-content;
+    align-items: center;
+    cursor: grab;
+    user-select: none;
+    will-change: transform;
+    padding: 20px 20px;
+    transition: transform 0.1s linear;
 }
 
-/* Card-specific subtle icon backgrounds */
-.hackathon-card-compact:nth-child(1) .hackathon-icon-compact {
-    background: rgba(6, 182, 212, 0.08);
-    border-color: rgba(6, 182, 212, 0.15);
+.hackathon-planets-track:active {
+    cursor: grabbing;
 }
 
-.hackathon-card-compact:nth-child(2) .hackathon-icon-compact {
-    background: rgba(139, 92, 246, 0.08);
-    border-color: rgba(139, 92, 246, 0.15);
-}
-
-.hackathon-card-compact:nth-child(3) .hackathon-icon-compact {
-    background: rgba(99, 102, 241, 0.08);
-    border-color: rgba(99, 102, 241, 0.15);
-}
-
-.hackathon-card-compact:nth-child(1):hover .hackathon-icon-compact {
-    background: rgba(6, 182, 212, 0.12);
-    border-color: rgba(6, 182, 212, 0.25);
-    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.15);
-}
-
-.hackathon-card-compact:nth-child(2):hover .hackathon-icon-compact {
-    background: rgba(139, 92, 246, 0.12);
-    border-color: rgba(139, 92, 246, 0.25);
-    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
-}
-
-.hackathon-card-compact:nth-child(3):hover .hackathon-icon-compact {
-    background: rgba(99, 102, 241, 0.12);
-    border-color: rgba(99, 102, 241, 0.25);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
-}
-
-.hackathon-icon-compact i {
-    font-size: 1.8rem;
-    transition: all 0.4s ease;
-}
-
-.hackathon-card-compact:nth-child(1) .hackathon-icon-compact i {
-    color: #22d3ee;
-}
-
-.hackathon-card-compact:nth-child(2) .hackathon-icon-compact i {
-    color: #c084fc;
-}
-
-.hackathon-card-compact:nth-child(3) .hackathon-icon-compact i {
-    color: #818cf8;
-}
-
-.hackathon-card-compact:hover .hackathon-icon-compact i {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 8px currentColor);
-}
-
-.hackathon-card-compact h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-family: 'Space Grotesk', sans-serif;
-    margin-bottom: 10px;
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-    transition: all 0.3s ease;
-}
-
-.hackathon-card-compact:nth-child(1):hover h3 {
-    color: #22d3ee;
-}
-
-.hackathon-card-compact:nth-child(2):hover h3 {
-    color: #c084fc;
-}
-
-.hackathon-card-compact:nth-child(3):hover h3 {
-    color: #818cf8;
-}
-
-.hackathon-card-compact p {
-    font-size: 0.9rem;
-    font-family: 'Outfit', sans-serif;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    transition: color 0.3s ease;
-}
-
-.hackathon-card-compact:hover p {
-    color: var(--text-secondary);
-}
-
-/* Refined badge styles */
-.hackathon-badge {
-    display: inline-block;
+/* Planet Item Container (Holds Planet Sphere + Tilted Rings + Revolving Moons) */
+.hackathon-planet-item {
     position: relative;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
+    flex: 0 0 310px;
+    width: 310px;
+    height: 310px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.4s;
+    z-index: 2;
+}
+
+.hackathon-planet-item:hover {
+    transform: scale(1.09) translateY(-8px);
+    z-index: 20;
+}
+
+/* Realistic 3D Planet Sphere */
+.planet-sphere {
+    width: 250px;
+    height: 250px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 
+        inset -25px -25px 45px rgba(0, 0, 0, 0.85),
+        inset 15px 15px 30px rgba(255, 255, 255, 0.28),
+        0 0 35px var(--planet-glow, rgba(6, 182, 212, 0.35));
+    transition: box-shadow 0.4s ease;
+}
+
+.hackathon-planet-item:hover .planet-sphere {
+    box-shadow: 
+        inset -25px -25px 45px rgba(0, 0, 0, 0.9),
+        inset 18px 18px 36px rgba(255, 255, 255, 0.45),
+        0 0 50px var(--planet-glow-hover, rgba(6, 182, 212, 0.65));
+}
+
+/* Atmospheric Horizon Text Core (Always 100% Readable, Never Distorts Circle) */
+.planet-text-core {
+    width: 78%;
+    height: 78%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(6, 9, 18, 0.88) 0%, rgba(6, 9, 18, 0.95) 75%, rgba(6, 9, 18, 0.65) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 18px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    pointer-events: auto;
+}
+
+.planet-hackathon-badge {
+    font-size: 0.62rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: none;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--accent-light, #38bdf8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+.planet-hackathon-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0 0 5px 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    max-height: 2.6em;
     overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
-.hackathon-badge::before {
-    content: '';
+.planet-hackathon-desc {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.74rem;
+    line-height: 1.4;
+    color: #e2e8f0;
+    margin: 0;
+    max-height: 4.4em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+}
+
+/* ═════════════════════════════════════════════════
+   ATTACHED CELESTIAL EFFECTS (RINGS, MOONS, BELTS)
+   ═════════════════════════════════════════════════ */
+
+/* Realistic 3D SVG Planetary Rings (Continuous, Never Cropped) */
+.planet-ring-svg {
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    width: 440px;
+    height: 220px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    overflow: visible;
+    filter: drop-shadow(0 0 10px var(--ring-glow, rgba(34, 211, 238, 0.5)));
+    transition: filter 0.4s ease;
 }
 
-.hackathon-card-compact:hover .hackathon-badge::before {
-    left: 100%;
+.planet-ring-back {
+    z-index: 1; /* Sits behind planet-sphere */
 }
 
-/* Card-specific subtle badge colors - Dark Mode */
-.hackathon-card-compact:nth-child(1) .hackathon-badge {
-    background: rgba(6, 182, 212, 0.15);
-    color: #22d3ee;
-    border: 1px solid rgba(6, 182, 212, 0.3);
+.planet-ring-front {
+    z-index: 10; /* Sits in front of planet-sphere */
 }
 
-.hackathon-card-compact:nth-child(2) .hackathon-badge {
-    background: rgba(139, 92, 246, 0.15);
-    color: #c084fc;
-    border: 1px solid rgba(139, 92, 246, 0.3);
+.hackathon-planet-item:hover .planet-ring-svg {
+    filter: drop-shadow(0 0 18px var(--ring-glow, rgba(34, 211, 238, 0.85)));
 }
 
-.hackathon-card-compact:nth-child(3) .hackathon-badge {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+/* Orbiting Revolving Moon System */
+.planet-moon-orbit {
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 15;
+    animation: moon-orbit-spin 14s linear infinite;
+    transform-style: preserve-3d;
 }
 
-.hackathon-card-compact:nth-child(1):hover .hackathon-badge {
-    background: rgba(6, 182, 212, 0.25);
-    border-color: rgba(6, 182, 212, 0.5);
-    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
-    transform: translateY(-2px);
+.planet-moon {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff, #94a3b8 65%, #334155);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
 }
 
-.hackathon-card-compact:nth-child(2):hover .hackathon-badge {
-    background: rgba(139, 92, 246, 0.25);
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
-    transform: translateY(-2px);
+/* Twin Moon */
+.planet-moon-twin {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fed7aa, #ea580c 70%, #451a03);
+    box-shadow: 0 0 10px rgba(234, 88, 12, 0.7);
 }
 
-.hackathon-card-compact:nth-child(3):hover .hackathon-badge {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
-    transform: translateY(-2px);
+@keyframes moon-orbit-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-/* ============================================
-   HACKATHON CARDS - LIGHT MODE
-   ============================================ */
-
-body.light-mode .hackathon-card-compact {
-    background: linear-gradient(145deg, #ffffff, #fafbfc);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+/* Asteroid Belt Orbit */
+.planet-asteroid-belt {
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    pointer-events: none;
+    border: 2px dashed rgba(255, 255, 255, 0.22);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+    transform: rotateX(68deg) rotateY(12deg);
+    animation: asteroid-spin 25s linear infinite;
+    z-index: 12;
 }
 
-body.light-mode .hackathon-card-compact::before {
-    background: radial-gradient(
-        500px circle at var(--x) var(--y),
-        rgba(99, 102, 241, 0.04) 0%,
-        rgba(6, 182, 212, 0.03) 30%,
-        transparent 70%
-    );
+@keyframes asteroid-spin {
+    0% { transform: rotateX(68deg) rotateY(12deg) rotate(0deg); }
+    100% { transform: rotateX(68deg) rotateY(12deg) rotate(360deg); }
 }
 
-body.light-mode .hackathon-card-compact:nth-child(1)::after {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(14, 165, 233, 0.15));
+/* ═════════════════════════════════════════════════
+   10 PROCEDURAL REALISTIC PLANET STYLES
+   ═════════════════════════════════════════════════ */
+
+/* 1. Neon Cyan Gas Giant */
+.planet-gas-giant {
+    --planet-glow: rgba(6, 182, 212, 0.4);
+    --planet-glow-hover: rgba(34, 211, 238, 0.75);
+    --ring-color: rgba(6, 182, 212, 0.5);
+    --ring-glow: rgba(34, 211, 238, 0.7);
+    background: 
+        radial-gradient(circle at 30% 25%, rgba(103, 232, 249, 0.95), transparent 55%),
+        repeating-linear-gradient(0deg, #082f49 0px, #0369a1 18px, #0891b2 34px, #0e7490 52px, #0f172a 70px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(2)::after {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.15));
+/* 2. Molten Magma World */
+.planet-magma {
+    --planet-glow: rgba(239, 68, 68, 0.45);
+    --planet-glow-hover: rgba(249, 115, 22, 0.8);
+    --ring-color: rgba(234, 88, 12, 0.5);
+    --ring-glow: rgba(249, 115, 22, 0.75);
+    background: 
+        radial-gradient(circle at 35% 30%, rgba(253, 186, 116, 0.95), transparent 50%),
+        repeating-linear-gradient(45deg, #450a0a 0px, #991b1b 16px, #ea580c 32px, #7c2d12 48px, #292524 64px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(3)::after {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(79, 70, 229, 0.15));
+/* 3. Cyber Amethyst Sphere */
+.planet-amethyst {
+    --planet-glow: rgba(168, 85, 247, 0.45);
+    --planet-glow-hover: rgba(192, 132, 252, 0.75);
+    --ring-color: rgba(168, 85, 247, 0.5);
+    --ring-glow: rgba(216, 180, 254, 0.7);
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(233, 213, 255, 0.95), transparent 50%),
+        repeating-linear-gradient(135deg, #3b0764 0px, #6b21a8 20px, #9333ea 38px, #581c87 56px, #18052e 72px);
 }
 
-body.light-mode .hackathon-card-compact:hover {
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+/* 4. Emerald Biosphere */
+.planet-emerald {
+    --planet-glow: rgba(16, 185, 129, 0.4);
+    --planet-glow-hover: rgba(52, 211, 153, 0.75);
+    --ring-color: rgba(16, 185, 129, 0.5);
+    --ring-glow: rgba(52, 211, 153, 0.7);
+    background: 
+        radial-gradient(circle at 35% 30%, rgba(167, 243, 208, 0.95), transparent 55%),
+        repeating-linear-gradient(30deg, #022c22 0px, #065f46 18px, #10b981 36px, #047857 52px, #064e3b 70px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(1):hover {
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.08),
-        0 0 25px rgba(6, 182, 212, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+/* 5. Golden Solar Titan */
+.planet-golden {
+    --planet-glow: rgba(245, 158, 11, 0.45);
+    --planet-glow-hover: rgba(251, 191, 36, 0.8);
+    --ring-color: rgba(245, 158, 11, 0.5);
+    --ring-glow: rgba(251, 191, 36, 0.75);
+    background: 
+        radial-gradient(circle at 30% 25%, rgba(254, 240, 138, 0.95), transparent 50%),
+        repeating-linear-gradient(90deg, #451a03 0px, #92400e 16px, #f59e0b 32px, #b45309 50px, #78350f 68px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(2):hover {
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.08),
-        0 0 25px rgba(139, 92, 246, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+/* 6. Glacial Ice World */
+.planet-ice {
+    --planet-glow: rgba(56, 189, 248, 0.45);
+    --planet-glow-hover: rgba(186, 230, 253, 0.85);
+    --ring-color: rgba(56, 189, 248, 0.5);
+    --ring-glow: rgba(186, 230, 253, 0.75);
+    background: 
+        radial-gradient(circle at 25% 25%, #ffffff 0%, rgba(186, 230, 253, 0.9) 30%, transparent 60%),
+        repeating-linear-gradient(60deg, #082f49 0px, #0284c7 18px, #38bdf8 34px, #bae6fd 50px, #0c4a6e 68px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(3):hover {
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.08),
-        0 0 25px rgba(99, 102, 241, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+/* 7. Rose Nebula Orb */
+.planet-rose-nebula {
+    --planet-glow: rgba(244, 114, 182, 0.45);
+    --planet-glow-hover: rgba(251, 113, 133, 0.8);
+    --ring-color: rgba(244, 114, 182, 0.5);
+    --ring-glow: rgba(251, 113, 133, 0.75);
+    background: 
+        radial-gradient(circle at 35% 30%, rgba(254, 205, 211, 0.95), transparent 50%),
+        repeating-linear-gradient(-45deg, #4c0519 0px, #9f1239 18px, #f43f5e 36px, #be123c 54px, #1e030a 72px);
 }
 
-/* Light mode icons */
-body.light-mode .hackathon-card-compact:nth-child(1) .hackathon-icon-compact {
-    background: rgba(6, 182, 212, 0.06);
-    border-color: rgba(6, 182, 212, 0.12);
+/* 8. Dark Matter Pulsar */
+.planet-dark-pulsar {
+    --planet-glow: rgba(99, 102, 241, 0.5);
+    --planet-glow-hover: rgba(129, 140, 248, 0.85);
+    --ring-color: rgba(99, 102, 241, 0.55);
+    --ring-glow: rgba(129, 140, 248, 0.8);
+    background: 
+        radial-gradient(circle at 28% 28%, rgba(199, 210, 254, 0.95), transparent 45%),
+        radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.6), transparent 50%),
+        repeating-linear-gradient(110deg, #09090b 0px, #1e1b4b 20px, #312e81 40px, #030712 60px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(2) .hackathon-icon-compact {
-    background: rgba(139, 92, 246, 0.06);
-    border-color: rgba(139, 92, 246, 0.12);
+/* 9. Terraform Earth-like */
+.planet-earth {
+    --planet-glow: rgba(14, 165, 233, 0.45);
+    --planet-glow-hover: rgba(56, 189, 248, 0.8);
+    --ring-color: rgba(14, 165, 233, 0.5);
+    --ring-glow: rgba(56, 189, 248, 0.7);
+    background: 
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95) 0%, rgba(125, 211, 252, 0.8) 25%, transparent 55%),
+        repeating-linear-gradient(20deg, #075985 0px, #0284c7 20px, #059669 36px, #0369a1 54px, #0f172a 72px);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(3) .hackathon-icon-compact {
-    background: rgba(99, 102, 241, 0.06);
-    border-color: rgba(99, 102, 241, 0.12);
+/* 10. Celestial Prism */
+.planet-celestial-prism {
+    --planet-glow: rgba(236, 72, 153, 0.45);
+    --planet-glow-hover: rgba(244, 114, 182, 0.85);
+    --ring-color: rgba(236, 72, 153, 0.5);
+    --ring-glow: rgba(244, 114, 182, 0.75);
+    background: 
+        radial-gradient(circle at 28% 28%, #ffffff 0%, rgba(255, 255, 255, 0.6) 20%, transparent 60%),
+        linear-gradient(135deg, #06b6d4, #8b5cf6 35%, #ec4899 70%, #f59e0b 100%);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(1):hover .hackathon-icon-compact {
-    background: rgba(6, 182, 212, 0.1);
-    border-color: rgba(6, 182, 212, 0.2);
-    box-shadow: 0 6px 18px rgba(6, 182, 212, 0.12);
+/* Light Mode Overrides for Planets Section */
+body.light-mode .planet-nav-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(99, 102, 241, 0.25);
+    color: #1e293b;
 }
 
-body.light-mode .hackathon-card-compact:nth-child(2):hover .hackathon-icon-compact {
-    background: rgba(139, 92, 246, 0.1);
-    border-color: rgba(139, 92, 246, 0.2);
-    box-shadow: 0 6px 18px rgba(139, 92, 246, 0.12);
+body.light-mode .planet-text-core {
+    background: radial-gradient(circle, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.95) 75%, rgba(15, 23, 42, 0.65) 100%);
 }
 
-body.light-mode .hackathon-card-compact:nth-child(3):hover .hackathon-icon-compact {
-    background: rgba(99, 102, 241, 0.1);
-    border-color: rgba(99, 102, 241, 0.2);
-    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.12);
-}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .planets-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
 
-body.light-mode .hackathon-card-compact:nth-child(1) .hackathon-icon-compact i {
-    color: #0891b2;
-}
+    .planets-controls-bar {
+        width: 100%;
+        justify-content: space-between;
+    }
 
-body.light-mode .hackathon-card-compact:nth-child(2) .hackathon-icon-compact i {
-    color: #9333ea;
-}
+    .hackathon-planet-item {
+        flex: 0 0 280px;
+        width: 280px;
+        height: 280px;
+    }
 
-body.light-mode .hackathon-card-compact:nth-child(3) .hackathon-icon-compact i {
-    color: #4f46e5;
-}
+    .planet-sphere {
+        width: 220px;
+        height: 220px;
+    }
 
-body.light-mode .hackathon-card-compact:nth-child(1):hover h3 {
-    color: #0891b2;
+    .planet-ring-svg {
+        width: 380px;
+        height: 190px;
+    }
 }
-
-body.light-mode .hackathon-card-compact:nth-child(2):hover h3 {
-    color: #9333ea;
-}
-
-body.light-mode .hackathon-card-compact:nth-child(3):hover h3 {
-    color: #4f46e5;
-}
-
-/* Light mode badges */
-body.light-mode .hackathon-card-compact:nth-child(1) .hackathon-badge {
-    background: rgba(6, 182, 212, 0.1);
-    color: #0891b2;
-    border: 1px solid rgba(6, 182, 212, 0.25);
-}
-
-body.light-mode .hackathon-card-compact:nth-child(2) .hackathon-badge {
-    background: rgba(139, 92, 246, 0.1);
-    color: #9333ea;
-    border: 1px solid rgba(139, 92, 246, 0.25);
-}
-
-body.light-mode .hackathon-card-compact:nth-child(3) .hackathon-badge {
-    background: rgba(99, 102, 241, 0.1);
-    color: #4f46e5;
-    border: 1px solid rgba(99, 102, 241, 0.25);
-}
-
-body.light-mode .hackathon-card-compact:nth-child(1):hover .hackathon-badge {
-    background: rgba(6, 182, 212, 0.18);
-    border-color: rgba(6, 182, 212, 0.4);
-    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.15);
-}
-
-body.light-mode .hackathon-card-compact:nth-child(2):hover .hackathon-badge {
-    background: rgba(139, 92, 246, 0.18);
-    border-color: rgba(139, 92, 246, 0.4);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
-}
-
-body.light-mode .hackathon-card-compact:nth-child(3):hover .hackathon-badge {
-    background: rgba(99, 102, 241, 0.18);
-    border-color: rgba(99, 102, 241, 0.4);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
-}
-
 /* ============================================
    CONTACT SECTION - Centered Layout
    ============================================ */
@@ -6290,41 +6277,27 @@ body.light-mode .theme-toggle .fa-sun {
   width: 100%;
 }
 
-/* Giant Satellite Container Positioned Behind Content - JS Scroll & Zero-G Drift Driven */
+/* 3D Photorealistic WebGL Satellite Canvas Container (Background Deep-Space Orbit) */
 .satellite-unit {
   position: absolute;
-  top: -60px;
+  top: -95px;
   left: 50%;
-  width: clamp(440px, 55vw, 720px);
-  height: auto;
-  z-index: 0;
+  width: clamp(620px, 76vw, 1060px);
+  height: clamp(270px, 32vw, 420px);
+  z-index: 0; /* Strictly behind all interactive foreground text, tabs, and terminal */
   pointer-events: none;
-  opacity: 0.72;
-  filter: drop-shadow(0 0 35px rgba(6, 182, 212, 0.4));
+  opacity: 0.96;
   will-change: transform;
   transform: translate3d(-50%, 0, 0);
   transition: opacity 0.8s ease;
 }
 
-/* Floating Hover Vibration inside Satellite Body */
-.satellite-svg {
+.satellite-3d-canvas {
   width: 100%;
   height: 100%;
-  animation: floatBob 4s ease-in-out infinite alternate;
-}
-
-@keyframes floatBob {
-  0% { transform: translateY(0px) rotate(0deg); }
-  100% { transform: translateY(-12px) rotate(2deg); }
-}
-
-.core-beacon, .signal-beacon {
-  animation: beaconPulse 1.2s infinite alternate;
-}
-
-@keyframes beaconPulse {
-  0% { opacity: 0.3; fill: #6366f1; }
-  100% { opacity: 1; fill: #06b6d4; }
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 0 35px rgba(6, 182, 212, 0.5));
 }
 
 /* Signal Waves Emitting Downwards */
@@ -6367,7 +6340,7 @@ body.light-mode .theme-toggle .fa-sun {
 /* Telemetry Tabs (Foreground Translucent Glass) */
 .telemetry-tabs {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -6399,10 +6372,10 @@ body.light-mode .theme-toggle .fa-sun {
 /* HUD Terminal Viewport (Foreground Glass Container) */
 .telemetry-terminal {
   position: relative;
-  z-index: 2;
+  z-index: 10;
   width: 100%;
   min-height: 220px;
-  background: rgba(11, 15, 25, 0.48);
+  background: rgba(9, 13, 24, 0.82);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(99, 102, 241, 0.35);

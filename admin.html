@@ -1021,6 +1021,341 @@
       color: var(--text-primary);
       backdrop-filter: blur(6px);
     }
+  
+    /* ═════════════════════════════════════════════════
+       PLANET PRESETS & CUSTOMIZER STYLES (ADMIN)
+       ═════════════════════════════════════════════════ */
+    .planet-presets-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+    @media (max-width: 600px) {
+      .planet-presets-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .planet-preset-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 6px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+    .planet-preset-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(6, 182, 212, 0.5);
+      transform: translateY(-2px);
+    }
+    .planet-preset-card.active {
+      background: rgba(6, 182, 212, 0.18);
+      border-color: #22d3ee;
+      box-shadow: 0 0 16px rgba(34, 211, 238, 0.4);
+    }
+    .preset-mini-orb {
+      width: 40px;
+      height: 40px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      box-shadow: inset -4px -4px 8px rgba(0,0,0,0.8), inset 3px 3px 6px rgba(255,255,255,0.4);
+    }
+    .preset-orb-name {
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* Admin Live Planet Preview Stage */
+    .admin-planet-stage {
+      width: 100%;
+      height: 290px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: radial-gradient(circle, rgba(15, 23, 42, 0.7) 0%, rgba(5, 8, 16, 0.98) 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      overflow: hidden;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+    }
+    .admin-planet-stage .orbital-grid-lines {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, transparent 60px, rgba(6, 182, 212, 0.1) 61px, transparent 62px),
+        radial-gradient(circle at 50% 50%, transparent 110px, rgba(99, 102, 241, 0.1) 111px, transparent 112px);
+      pointer-events: none;
+    }
+
+    /* Preview Planet Sphere in Admin */
+    .admin-preview-planet {
+      width: 180px;
+      height: 180px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 
+        inset -18px -18px 35px rgba(0, 0, 0, 0.9),
+        inset 12px 12px 24px rgba(255, 255, 255, 0.35),
+        0 0 30px var(--planet-glow, rgba(6, 182, 212, 0.4));
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+    .admin-preview-core {
+      width: 80%;
+      height: 80%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 9, 18, 0.92) 0%, rgba(6, 9, 18, 0.96) 75%, rgba(6, 9, 18, 0.75) 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+      z-index: 5;
+    }
+    .admin-preview-badge {
+      font-size: 0.55rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-light, #38bdf8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 4px;
+    }
+    .admin-preview-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin: 0 0 3px 0;
+      max-height: 2.4em;
+      overflow: hidden;
+    }
+    .admin-preview-desc {
+      font-size: 0.62rem;
+      line-height: 1.35;
+      color: #cbd5e1;
+      margin: 0;
+      max-height: 3.6em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Admin Preview Rings & Moons (Continuous SVG, Never Cropped) */
+    .admin-preview-ring-svg {
+      position: absolute;
+      width: 320px;
+      height: 160px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      overflow: visible;
+      filter: drop-shadow(0 0 10px var(--ring-glow, rgba(34, 211, 238, 0.5)));
+      transition: filter 0.3s ease;
+    }
+    .admin-preview-ring-back {
+      z-index: 1;
+    }
+    .admin-preview-ring-front {
+      z-index: 10;
+    }
+    .admin-preview-moon-orbit {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 15;
+      animation: moon-orbit-spin 10s linear infinite;
+    }
+    .admin-preview-moon {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffffff, #94a3b8 65%, #334155);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+    .admin-preview-moon-twin {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fed7aa, #ea580c 70%, #451a03);
+      box-shadow: 0 0 8px rgba(234, 88, 12, 0.7);
+    }
+    .admin-preview-asteroid-belt {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      pointer-events: none;
+      border: 2px dashed rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+      transform: rotateX(68deg) rotateY(12deg);
+      animation: asteroid-spin 20s linear infinite;
+      z-index: 12;
+    }
+
+    /* 10 Procedural Planet Backgrounds for Admin */
+    .planet-gas-giant {
+      --planet-glow: rgba(6, 182, 212, 0.4);
+      --ring-color: rgba(6, 182, 212, 0.5);
+      --ring-glow: rgba(34, 211, 238, 0.7);
+      background: 
+        radial-gradient(circle at 30% 25%, rgba(103, 232, 249, 0.95), transparent 55%),
+        repeating-linear-gradient(0deg, #082f49 0px, #0369a1 18px, #0891b2 34px, #0e7490 52px, #0f172a 70px);
+    }
+    .planet-magma {
+      --planet-glow: rgba(239, 68, 68, 0.45);
+      --ring-color: rgba(234, 88, 12, 0.5);
+      --ring-glow: rgba(249, 115, 22, 0.75);
+      background: 
+        radial-gradient(circle at 35% 30%, rgba(253, 186, 116, 0.95), transparent 50%),
+        repeating-linear-gradient(45deg, #450a0a 0px, #991b1b 16px, #ea580c 32px, #7c2d12 48px, #292524 64px);
+    }
+    .planet-amethyst {
+      --planet-glow: rgba(168, 85, 247, 0.45);
+      --ring-color: rgba(168, 85, 247, 0.5);
+      --ring-glow: rgba(216, 180, 254, 0.7);
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(233, 213, 255, 0.95), transparent 50%),
+        repeating-linear-gradient(135deg, #3b0764 0px, #6b21a8 20px, #9333ea 38px, #581c87 56px, #18052e 72px);
+    }
+    .planet-emerald {
+      --planet-glow: rgba(16, 185, 129, 0.4);
+      --ring-color: rgba(16, 185, 129, 0.5);
+      --ring-glow: rgba(52, 211, 153, 0.7);
+      background: 
+        radial-gradient(circle at 35% 30%, rgba(167, 243, 208, 0.95), transparent 55%),
+        repeating-linear-gradient(30deg, #022c22 0px, #065f46 18px, #10b981 36px, #047857 52px, #064e3b 70px);
+    }
+    .planet-golden {
+      --planet-glow: rgba(245, 158, 11, 0.45);
+      --ring-color: rgba(245, 158, 11, 0.5);
+      --ring-glow: rgba(251, 191, 36, 0.75);
+      background: 
+        radial-gradient(circle at 30% 25%, rgba(254, 240, 138, 0.95), transparent 50%),
+        repeating-linear-gradient(90deg, #451a03 0px, #92400e 16px, #f59e0b 32px, #b45309 50px, #78350f 68px);
+    }
+    .planet-ice {
+      --planet-glow: rgba(56, 189, 248, 0.45);
+      --ring-color: rgba(56, 189, 248, 0.5);
+      --ring-glow: rgba(186, 230, 253, 0.75);
+      background: 
+        radial-gradient(circle at 25% 25%, #ffffff 0%, rgba(186, 230, 253, 0.9) 30%, transparent 60%),
+        repeating-linear-gradient(60deg, #082f49 0px, #0284c7 18px, #38bdf8 34px, #bae6fd 50px, #0c4a6e 68px);
+    }
+    .planet-rose-nebula {
+      --planet-glow: rgba(244, 114, 182, 0.45);
+      --ring-color: rgba(244, 114, 182, 0.5);
+      --ring-glow: rgba(251, 113, 133, 0.75);
+      background: 
+        radial-gradient(circle at 35% 30%, rgba(254, 205, 211, 0.95), transparent 50%),
+        repeating-linear-gradient(-45deg, #4c0519 0px, #9f1239 18px, #f43f5e 36px, #be123c 54px, #1e030a 72px);
+    }
+    .planet-dark-pulsar {
+      --planet-glow: rgba(99, 102, 241, 0.5);
+      --ring-color: rgba(99, 102, 241, 0.55);
+      --ring-glow: rgba(129, 140, 248, 0.8);
+      background: 
+        radial-gradient(circle at 28% 28%, rgba(199, 210, 254, 0.95), transparent 45%),
+        radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.6), transparent 50%),
+        repeating-linear-gradient(110deg, #09090b 0px, #1e1b4b 20px, #312e81 40px, #030712 60px);
+    }
+    .planet-earth {
+      --planet-glow: rgba(14, 165, 233, 0.45);
+      --ring-color: rgba(14, 165, 233, 0.5);
+      --ring-glow: rgba(56, 189, 248, 0.7);
+      background: 
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95) 0%, rgba(125, 211, 252, 0.8) 25%, transparent 55%),
+        repeating-linear-gradient(20deg, #075985 0px, #0284c7 20px, #059669 36px, #0369a1 54px, #0f172a 72px);
+    }
+    .planet-celestial-prism {
+      --planet-glow: rgba(236, 72, 153, 0.45);
+      --ring-color: rgba(236, 72, 153, 0.5);
+      --ring-glow: rgba(244, 114, 182, 0.75);
+      background: 
+        radial-gradient(circle at 28% 28%, #ffffff 0%, rgba(255, 255, 255, 0.6) 20%, transparent 60%),
+        linear-gradient(135deg, #06b6d4, #8b5cf6 35%, #ec4899 70%, #f59e0b 100%);
+    }
+
+    /* Admin Hackathon List Item */
+    .admin-planet-item-card {
+      background: rgba(11, 15, 25, 0.5);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      transition: all 0.25s ease;
+    }
+    .admin-planet-item-card:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      transform: translateY(-2px);
+    }
+    .admin-planet-orb-avatar {
+      width: 54px;
+      height: 54px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset -6px -6px 12px rgba(0,0,0,0.85), inset 4px 4px 8px rgba(255,255,255,0.35);
+    }
+    .admin-planet-orb-avatar .mini-core {
+      width: 70%;
+      height: 70%;
+      border-radius: 50%;
+      background: rgba(6, 9, 18, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #38bdf8;
+    }
+
   </style>
 </head>
 <body>
@@ -1097,6 +1432,9 @@
       </button>
       <button class="dash-tab-btn" data-tab="tab-certificates">
         <i class="fas fa-certificate"></i> Certificates
+      </button>
+      <button class="dash-tab-btn" data-tab="tab-hackathons">
+        <i class="fas fa-planet-ringed"></i> Hackathons (Planets)
       </button>
       <button class="dash-tab-btn" data-tab="tab-content">
         <i class="fas fa-pen-to-square"></i> Site Content
@@ -1301,6 +1639,32 @@
         </div>
       </div>
 
+    
+      <!-- ════════════════════ TAB 4: HACKATHONS (PLANETS) ════════════════════ -->
+      <div class="dash-tab-pane" id="tab-hackathons">
+        <div class="panel panel-full">
+          <div class="panel-header">
+            <div class="panel-title">
+              <i class="fas fa-planet-ringed text-cyan"></i>
+              Hackathon Planetary Orbit Showcase
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span class="panel-count" id="hackathon-count">0 Planets</span>
+              <button class="btn btn-primary btn-sm" id="add-hackathon-btn">
+                <i class="fas fa-plus"></i> Add New Hackathon Planet
+              </button>
+            </div>
+          </div>
+
+          <div class="alert alert-error" id="hackathon-error"><i class="fas fa-circle-exclamation"></i><span id="hackathon-error-msg"></span></div>
+          <div class="alert alert-success" id="hackathon-success"><i class="fas fa-circle-check"></i><span id="hackathon-success-msg"></span></div>
+
+          <!-- Hackathon Planets List -->
+          <div id="hackathon-list-body" style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Dynamic planet cards injected here -->
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -1469,6 +1833,181 @@
 </div>
 
 <!-- Toast container -->
+
+<!-- ════════════════════ HACKATHON PLANET EDITOR MODAL ════════════════════ -->
+<div class="modal-backdrop" id="hackathon-modal" role="dialog" aria-modal="true">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fas fa-planet-ringed text-cyan"></i>
+        <span id="hk-modal-title-text">Create Custom Hackathon Planet</span>
+      </div>
+      <button class="modal-close" id="hk-modal-close-btn" title="Close modal">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Left: Inputs & Planet Customizer -->
+      <div class="modal-form-left">
+        
+        <!-- Hackathon Name -->
+        <div class="field">
+          <label for="hk-name">Hackathon Name <span class="required">*</span></label>
+          <input type="text" id="hk-name" placeholder="e.g. Smart India Hackathon 2024" maxlength="50" required>
+        </div>
+
+        <!-- Standing / Badge -->
+        <div class="field">
+          <label for="hk-badge">Standing / Badge <span class="text-muted">(Optional)</span></label>
+          <input type="text" id="hk-badge" placeholder="e.g. SIH Finalist, 1st Place, Top 10" maxlength="25">
+        </div>
+
+        <!-- Description with Live Char Count -->
+        <div class="field">
+          <div class="field-header">
+            <label for="hk-desc">Description <span class="required">*</span></label>
+            <span class="text-sm text-muted" id="hk-char-count">0 / 160</span>
+          </div>
+          <textarea id="hk-desc" rows="3" placeholder="Describe the hackathon challenge, your role, and what high-impact solution you engineered..." maxlength="160" required></textarea>
+        </div>
+
+        <!-- 10 Planet Style Presets Selector -->
+        <div class="field">
+          <label>Planet Style Preset (10 Procedural Realistic Types)</label>
+          <div class="planet-presets-grid" id="planet-presets-container">
+            <div class="planet-preset-card active" data-style="planet-gas-giant">
+              <div class="preset-mini-orb planet-gas-giant"></div>
+              <span class="preset-orb-name">Gas Giant</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-magma">
+              <div class="preset-mini-orb planet-magma"></div>
+              <span class="preset-orb-name">Magma</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-amethyst">
+              <div class="preset-mini-orb planet-amethyst"></div>
+              <span class="preset-orb-name">Amethyst</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-emerald">
+              <div class="preset-mini-orb planet-emerald"></div>
+              <span class="preset-orb-name">Emerald</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-golden">
+              <div class="preset-mini-orb planet-golden"></div>
+              <span class="preset-orb-name">Golden Titan</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-ice">
+              <div class="preset-mini-orb planet-ice"></div>
+              <span class="preset-orb-name">Ice World</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-rose-nebula">
+              <div class="preset-mini-orb planet-rose-nebula"></div>
+              <span class="preset-orb-name">Rose Nebula</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-dark-pulsar">
+              <div class="preset-mini-orb planet-dark-pulsar"></div>
+              <span class="preset-orb-name">Dark Pulsar</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-earth">
+              <div class="preset-mini-orb planet-earth"></div>
+              <span class="preset-orb-name">Terraform</span>
+            </div>
+            <div class="planet-preset-card" data-style="planet-celestial-prism">
+              <div class="preset-mini-orb planet-celestial-prism"></div>
+              <span class="preset-orb-name">Celestial Prism</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Planet Effects (Rings & Revolving Moons) -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px;">
+          <!-- Planetary Rings Toggle -->
+          <div class="field">
+            <label>Planetary Rings</label>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+              <input type="checkbox" id="hk-rings-toggle" style="width:18px; height:18px; cursor:pointer;" checked>
+              <label for="hk-rings-toggle" style="cursor:pointer; font-size:0.85rem; text-transform:none; margin:0;">Enable 3D Rings</label>
+            </div>
+          </div>
+
+          <!-- Orbiting Moons / Asteroids -->
+          <div class="field">
+            <label for="hk-orbit-type">Orbiting Satellites</label>
+            <select id="hk-orbit-type" style="margin-top:4px;">
+              <option value="none">No Satellites</option>
+              <option value="moon" selected>1 Revolving Moon</option>
+              <option value="twin-moons">Twin Revolving Moons</option>
+              <option value="asteroids">Asteroid Belt</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Real-time Live Planet Preview -->
+      <div class="modal-preview-right">
+        <div class="preview-box-sticky">
+          <div class="preview-box-title">
+            <i class="fas fa-eye text-cyan"></i> Real-time Live Planet Preview
+          </div>
+          
+          <div class="admin-planet-stage">
+            <div class="orbital-grid-lines"></div>
+
+            <!-- Preview Ring Back -->
+            <svg class="admin-preview-ring-svg admin-preview-ring-back" id="hk-prev-ring-back" viewBox="0 0 460 220" aria-hidden="true">
+              <g transform="rotate(-16 230 110)">
+                <path d="M 35 110 A 195 52 0 0 1 425 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="20" stroke-opacity="0.45" stroke-linecap="round" />
+                <path d="M 45 110 A 185 49 0 0 1 415 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="8" stroke-opacity="0.85" stroke-linecap="round" />
+                <path d="M 52 110 A 178 47 0 0 1 408 110" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="2.5" stroke-linecap="round" />
+              </g>
+            </svg>
+
+            <!-- Preview Sphere -->
+            <div class="admin-preview-planet planet-gas-giant" id="hk-prev-sphere">
+              <div class="admin-preview-core">
+                <span class="admin-preview-badge" id="hk-prev-badge">SIH Finalist</span>
+                <h5 class="admin-preview-title" id="hk-prev-title">Smart India Hackathon 2024</h5>
+                <p class="admin-preview-desc" id="hk-prev-desc">Real-time GPS rake telemetry engine.</p>
+              </div>
+            </div>
+
+            <!-- Preview Ring Front -->
+            <svg class="admin-preview-ring-svg admin-preview-ring-front" id="hk-prev-ring-front" viewBox="0 0 460 220" aria-hidden="true">
+              <g transform="rotate(-16 230 110)">
+                <path d="M 425 110 A 195 52 0 0 1 35 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="20" stroke-opacity="0.45" stroke-linecap="round" />
+                <path d="M 415 110 A 185 49 0 0 1 45 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="8" stroke-opacity="0.85" stroke-linecap="round" />
+                <path d="M 408 110 A 178 47 0 0 1 52 110" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="2.5" stroke-linecap="round" />
+              </g>
+            </svg>
+
+            <!-- Preview Moon Orbit -->
+            <div class="admin-preview-moon-orbit" id="hk-prev-moon-orbit">
+              <div class="admin-preview-moon"></div>
+            </div>
+            
+            <!-- Preview Asteroid Belt -->
+            <div class="admin-preview-asteroid-belt" id="hk-prev-asteroid-belt" style="display:none;"></div>
+          </div>
+
+          <p class="text-sm text-muted" style="text-align:center; margin-top:8px;">
+            <i class="fas fa-circle-info"></i> The text is rendered within a high-contrast atmosphere horizon core so it remains 100% legible without distorting the sphere.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="hk-modal-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="hk-modal-save-btn">
+        <span class="spinner" id="hk-save-spinner"></span>
+        <i class="fas fa-check" id="hk-save-icon"></i>
+        <span>Save Hackathon Planet</span>
+      </button>
+    </div>
+  </div>
+</div>
 <div id="toast-container" role="status" aria-live="polite"></div>
 
 <script>
@@ -1686,13 +2225,17 @@ async function loadContent() {
       populateContentEditor(contentData);
       renderCertList();
       renderAdminProjects();
+      hackathonsData = Array.isArray(contentData.hackathons) && contentData.hackathons.length ? [...contentData.hackathons] : [...DEFAULT_HACKATHON_PLANETS];
+      renderAdminHackathons();
     } else {
       contentData.projects = [...DEFAULT_PROJECTS];
       renderAdminProjects();
     }
   } catch (_) {
     contentData.projects = [...DEFAULT_PROJECTS];
+    hackathonsData = [...DEFAULT_HACKATHON_PLANETS];
     renderAdminProjects();
+    renderAdminHackathons();
     toast('Loaded local project defaults.', 'info');
   }
 }
@@ -2392,6 +2935,353 @@ function escapeHtml(str) {
 }
 
 checkSession();
+
+/* ════════════════════════════════════════════════════════════
+   HACKATHON PLANETS CONTROLLER (ADMIN)
+════════════════════════════════════════════════════════════ */
+
+const DEFAULT_HACKATHON_PLANETS = [
+  {
+    name: 'Smart India Hackathon 2024',
+    badge: 'SIH Finalist',
+    description: 'National grand finale finalist building a real-time GPS rake telemetry and train yard scheduling engine for Indian Railways.',
+    style: 'planet-gas-giant',
+    hasRings: true,
+    orbitType: 'moon'
+  },
+  {
+    name: 'Mumbai Hacks (MumHacks)',
+    badge: 'Hackathon Winner',
+    description: 'Winner of regional hackathon developing ATLAS deep learning NLP pipeline achieving 94.2% factual veracity cross-verification.',
+    style: 'planet-magma',
+    hasRings: false,
+    orbitType: 'twin-moons'
+  },
+  {
+    name: 'Gen-AI Developer Hackathon',
+    badge: 'Top AI Project',
+    description: 'Autonomous multi-agent task orchestrator with vector semantic memory, dynamic tool calling, and live markdown streaming.',
+    style: 'planet-dark-pulsar',
+    hasRings: true,
+    orbitType: 'asteroids'
+  },
+  {
+    name: 'VCET OSCILATIONS \'26',
+    badge: '1st Runner Up',
+    description: 'IoT Smart Telemetry Gateway over MQTT with real-time biometric analytics and dynamic failure-prediction algorithms.',
+    style: 'planet-emerald',
+    hasRings: false,
+    orbitType: 'moon'
+  },
+  {
+    name: 'National Codefest Hackathon',
+    badge: 'Top 10 Finalist',
+    description: 'Collaborative vector whiteboard canvas featuring sub-20ms multi-cursor broadcast, room isolation, and snapshot replay.',
+    style: 'planet-celestial-prism',
+    hasRings: true,
+    orbitType: 'none'
+  },
+  {
+    name: 'Cyber Security HackSprint',
+    badge: 'Special Mention',
+    description: 'Real-time network packet anomaly detector using unsupervised isolation forest algorithms to thwart zero-day exploits.',
+    style: 'planet-amethyst',
+    hasRings: false,
+    orbitType: 'moon'
+  },
+  {
+    name: 'Global Climate Innovation Hack',
+    badge: 'Impact Award',
+    description: 'High-resolution satellite image segmentation model measuring deforestation rates and urban heat-island thermal indices.',
+    style: 'planet-earth',
+    hasRings: false,
+    orbitType: 'moon'
+  },
+  {
+    name: 'Web3 DeFi Builders Summit',
+    badge: 'Protocol Grant',
+    description: 'Decentralized automated liquidity balancer featuring cross-chain atomic swaps and micro-arbitrage protection.',
+    style: 'planet-golden',
+    hasRings: true,
+    orbitType: 'moon'
+  },
+  {
+    name: 'Arctic Climate Tech Challenge',
+    badge: 'Top Hardware',
+    description: 'Ultra-low temperature edge vision sensor station transmitting environmental anomaly telemetry over LoRaWAN networks.',
+    style: 'planet-ice',
+    hasRings: true,
+    orbitType: 'none'
+  },
+  {
+    name: 'Cosmic SpaceHack Odyssey',
+    badge: 'Best Visuals',
+    description: 'Orbital debris collision simulation engine tracking low-earth orbit satellites with sub-meter vector precision mathematics.',
+    style: 'planet-rose-nebula',
+    hasRings: false,
+    orbitType: 'twin-moons'
+  }
+];
+
+let hackathonsData = [];
+let editingHackathonIndex = null;
+let selectedPlanetStyle = 'planet-gas-giant';
+
+function renderAdminHackathons() {
+  const container = $('#hackathon-list-body');
+  const countEl = $('#hackathon-count');
+  if (!container) return;
+
+  if (countEl) {
+    countEl.textContent = `${hackathonsData.length} Planet${hackathonsData.length !== 1 ? 's' : ''}`;
+  }
+
+  if (!hackathonsData.length) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:3rem; color:var(--text-muted);">
+        <i class="fas fa-planet-ringed" style="font-size:2.5rem; opacity:0.3; margin-bottom:1rem; display:block;"></i>
+        <p>No hackathon planets found. Click "Add New Hackathon Planet" to create one.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = hackathonsData.map((hk, idx) => {
+    const styleClass = hk.style || 'planet-gas-giant';
+    const hasRings = hk.hasRings;
+    const orbitText = hk.orbitType === 'moon' ? '1 Moon' 
+                    : hk.orbitType === 'twin-moons' ? 'Twin Moons' 
+                    : hk.orbitType === 'asteroids' ? 'Asteroids' : 'No Satellites';
+
+    return `
+      <div class="admin-planet-item-card">
+        <div class="admin-planet-orb-avatar ${styleClass}">
+          <div class="mini-core">
+            <i class="fas ${hasRings ? 'fa-planet-ringed' : 'fa-globe'}"></i>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+            <strong style="color:var(--text-primary); font-size:0.95rem;">${escapeHtml(hk.name)}</strong>
+            ${hk.badge ? `<span class="badge badge-cyan" style="font-size:0.68rem;">${escapeHtml(hk.badge)}</span>` : ''}
+            <span class="badge badge-purple" style="font-size:0.65rem;">${hasRings ? 'Rings Enabled' : 'No Rings'}</span>
+            <span class="badge badge-purple" style="font-size:0.65rem;">${orbitText}</span>
+          </div>
+          <p style="color:var(--text-muted); font-size:0.8rem; margin:0; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+            ${escapeHtml(hk.description)}
+          </p>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="openHackathonModal(${idx})" title="Edit Planet">
+            <i class="fas fa-pen"></i> Edit
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteHackathonPlanet(${idx})" title="Delete Planet">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openHackathonModal(editIndex = null) {
+  editingHackathonIndex = editIndex;
+  const modal = $('#hackathon-modal');
+  const titleText = $('#hk-modal-title-text');
+  
+  if (editIndex !== null && hackathonsData[editIndex]) {
+    const item = hackathonsData[editIndex];
+    titleText.textContent = 'Edit Hackathon Planet';
+    $('#hk-name').value = item.name || '';
+    $('#hk-badge').value = item.badge || '';
+    $('#hk-desc').value = item.description || '';
+    selectedPlanetStyle = item.style || 'planet-gas-giant';
+    $('#hk-rings-toggle').checked = !!item.hasRings;
+    $('#hk-orbit-type').value = item.orbitType || 'none';
+  } else {
+    titleText.textContent = 'Create Custom Hackathon Planet';
+    $('#hk-name').value = '';
+    $('#hk-badge').value = '';
+    $('#hk-desc').value = '';
+    selectedPlanetStyle = 'planet-gas-giant';
+    $('#hk-rings-toggle').checked = true;
+    $('#hk-orbit-type').value = 'moon';
+  }
+
+  // Update preset card active state
+  $('.planet-preset-card').forEach(card => {
+    card.classList.toggle('active', card.getAttribute('data-style') === selectedPlanetStyle);
+  });
+
+  updatePlanetModalPreview();
+  modal.classList.add('show');
+}
+
+function closeHackathonModal() {
+  $('#hackathon-modal').classList.remove('show');
+  editingHackathonIndex = null;
+}
+
+function updatePlanetModalPreview() {
+  const name = $('#hk-name').value.trim() || 'Planet Hackathon';
+  const badge = $('#hk-badge').value.trim() || 'Innovation';
+  const desc = $('#hk-desc').value.trim() || 'Describe your hackathon engineering triumph and features here...';
+  const hasRings = $('#hk-rings-toggle').checked;
+  const orbitType = $('#hk-orbit-type').value;
+
+  $('#hk-char-count').textContent = `${desc.length} / 160`;
+
+  // Update text elements
+  $('#hk-prev-title').textContent = name;
+  $('#hk-prev-badge').textContent = badge;
+  $('#hk-prev-desc').textContent = desc;
+
+  // Update sphere style class
+  const sphere = $('#hk-prev-sphere');
+  sphere.className = `admin-preview-planet ${selectedPlanetStyle}`;
+
+  // Rings toggle
+  $('#hk-prev-ring-back').style.display = hasRings ? 'block' : 'none';
+  $('#hk-prev-ring-front').style.display = hasRings ? 'block' : 'none';
+
+  // Moon orbit toggle
+  const moonOrbit = $('#hk-prev-moon-orbit');
+  const asteroidBelt = $('#hk-prev-asteroid-belt');
+
+  if (orbitType === 'moon') {
+    moonOrbit.style.display = 'block';
+    moonOrbit.innerHTML = '<div class="admin-preview-moon"></div>';
+    asteroidBelt.style.display = 'none';
+  } else if (orbitType === 'twin-moons') {
+    moonOrbit.style.display = 'block';
+    moonOrbit.innerHTML = '<div class="admin-preview-moon"></div><div class="admin-preview-moon-twin"></div>';
+    asteroidBelt.style.display = 'none';
+  } else if (orbitType === 'asteroids') {
+    moonOrbit.style.display = 'none';
+    asteroidBelt.style.display = 'block';
+  } else {
+    moonOrbit.style.display = 'none';
+    asteroidBelt.style.display = 'none';
+  }
+}
+
+async function saveHackathonPlanet() {
+  const name = $('#hk-name').value.trim();
+  const desc = $('#hk-desc').value.trim();
+  if (!name) {
+    toast('Please enter a hackathon name.', 'error');
+    return;
+  }
+  if (!desc) {
+    toast('Please provide a hackathon description.', 'error');
+    return;
+  }
+
+  const newPlanet = {
+    name,
+    badge: $('#hk-badge').value.trim(),
+    description: desc,
+    style: selectedPlanetStyle,
+    hasRings: $('#hk-rings-toggle').checked,
+    orbitType: $('#hk-orbit-type').value
+  };
+
+  if (editingHackathonIndex !== null) {
+    hackathonsData[editingHackathonIndex] = newPlanet;
+  } else {
+    hackathonsData.unshift(newPlanet);
+  }
+
+  const saveBtn = $('#hk-modal-save-btn');
+  const spinner = $('#hk-save-spinner');
+  const icon = $('#hk-save-icon');
+  setLoading(saveBtn, spinner, icon, null, '', true);
+
+  const updatedContent = {
+    ...contentData,
+    hackathons: hackathonsData
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedContent),
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Failed to save hackathon planet.');
+    contentData = updatedContent;
+    renderAdminHackathons();
+    closeHackathonModal();
+    toast('Hackathon planet saved successfully!', 'success');
+  } catch (err) {
+    toast(err.message, 'error');
+  } finally {
+    setLoading(saveBtn, spinner, icon, null, '', false);
+    saveBtn.innerHTML = `<span class="spinner" id="hk-save-spinner"></span><i class="fas fa-check" id="hk-save-icon"></i><span>Save Hackathon Planet</span>`;
+  }
+}
+
+async function deleteHackathonPlanet(index) {
+  const planet = hackathonsData[index];
+  if (!confirm(`Are you sure you want to delete planet "${planet.name}"?`)) return;
+
+  hackathonsData.splice(index, 1);
+  const updatedContent = {
+    ...contentData,
+    hackathons: hackathonsData
+  };
+
+  try {
+    const res = await fetch('/api/content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedContent),
+      credentials: 'include'
+    });
+    if (!res.ok) throw new Error('Failed to delete.');
+    contentData = updatedContent;
+    renderAdminHackathons();
+    toast('Planet deleted successfully.', 'info');
+  } catch (err) {
+    toast(err.message, 'error');
+  }
+}
+
+// Hook up event listeners for Hackathons admin
+document.addEventListener('DOMContentLoaded', () => {
+  const addBtn = $('#add-hackathon-btn');
+  if (addBtn) addBtn.addEventListener('click', () => openHackathonModal());
+
+  const closeBtn = $('#hk-modal-close-btn');
+  if (closeBtn) closeBtn.addEventListener('click', closeHackathonModal);
+
+  const cancelBtn = $('#hk-modal-cancel-btn');
+  if (cancelBtn) cancelBtn.addEventListener('click', closeHackathonModal);
+
+  const saveBtn = $('#hk-modal-save-btn');
+  if (saveBtn) saveBtn.addEventListener('click', saveHackathonPlanet);
+
+  // Real-time live preview update listeners
+  $('#hk-name').addEventListener('input', updatePlanetModalPreview);
+  $('#hk-badge').addEventListener('input', updatePlanetModalPreview);
+  $('#hk-desc').addEventListener('input', updatePlanetModalPreview);
+  $('#hk-rings-toggle').addEventListener('change', updatePlanetModalPreview);
+  $('#hk-orbit-type').addEventListener('change', updatePlanetModalPreview);
+
+  // Preset selector cards
+  $('.planet-preset-card').forEach(card => {
+    card.addEventListener('click', () => {
+      $('.planet-preset-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedPlanetStyle = card.getAttribute('data-style') || 'planet-gas-giant';
+      updatePlanetModalPreview();
+    });
+  });
+});
+
 </script>
 </body>
 </html>

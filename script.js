@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initGalaxyBackground();
     initNavbar();
     initSmoothScroll();
+    initHackathonPlanets();
     initTypingEffect();
     initCardAnimations();
     initScrollAnimations();
@@ -619,7 +620,7 @@ function initGalaxyBackground() {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.position.set(0, 0, 3.6);
 
@@ -2311,70 +2312,483 @@ window.addEventListener("resize", () => {
    ============================================ */
 function initSatelliteTelemetry() {
   const satellite = document.getElementById('anime-satellite');
+  const canvas = document.getElementById('satellite-3d-canvas');
   const aboutSection = document.querySelector('.about-satellite-section');
   const satTabs = document.querySelectorAll('.sat-tab');
   const satContents = document.querySelectorAll('.sat-content');
 
-  if (!satellite || !aboutSection) return;
+  if (!satellite || !canvas || !aboutSection || typeof THREE === 'undefined') return;
 
+  // 1. WebGL Scene, Camera & Precision Renderer
+  const scene = new THREE.Scene();
+  const initWidth = canvas.clientWidth || 800;
+  const initHeight = canvas.clientHeight || 340;
+  const camera = new THREE.PerspectiveCamera(38, initWidth / initHeight, 0.1, 100);
+  camera.position.set(0, 0.2, 8.6);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+    powerPreference: 'high-performance'
+  });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setSize(initWidth, initHeight, false);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.25;
+
+  // 2. High-Visibility Solar Cell & Gold MLI Textures
+  // Brilliant Blue Photovoltaic Silicon Grid Texture
+  const solarCanvas = document.createElement('canvas');
+  solarCanvas.width = 512;
+  solarCanvas.height = 360;
+  const sctx = solarCanvas.getContext('2d');
+  sctx.fillStyle = '#021530';
+  sctx.fillRect(0, 0, 512, 360);
+
+  const cols = 5, rows = 3;
+  const cellW = 512 / cols, cellH = 360 / rows;
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      const cx = c * cellW, cy = r * cellH;
+      const sGrad = sctx.createLinearGradient(cx, cy, cx + cellW, cy + cellH);
+      sGrad.addColorStop(0, '#0284c7');
+      sGrad.addColorStop(0.4, '#0369a1');
+      sGrad.addColorStop(1, '#075985');
+      sctx.fillStyle = sGrad;
+      sctx.fillRect(cx + 3, cy + 3, cellW - 6, cellH - 6);
+
+      // Fine photovoltaic collector fingers
+      sctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      sctx.lineWidth = 1;
+      for (let f = cx + 8; f < cx + cellW - 6; f += 8) {
+        sctx.beginPath();
+        sctx.moveTo(f, cy + 3);
+        sctx.lineTo(f, cy + cellH - 3);
+        sctx.stroke();
+      }
+
+      // Silver conductive busbars
+      sctx.strokeStyle = '#ffffff';
+      sctx.lineWidth = 2.5;
+      sctx.beginPath();
+      sctx.moveTo(cx + 3, cy + cellH * 0.33);
+      sctx.lineTo(cx + cellW - 3, cy + cellH * 0.33);
+      sctx.moveTo(cx + 3, cy + cellH * 0.66);
+      sctx.lineTo(cx + cellW - 3, cy + cellH * 0.66);
+      sctx.stroke();
+    }
+  }
+  // Metallic gold frame
+  sctx.strokeStyle = '#f59e0b';
+  sctx.lineWidth = 4;
+  sctx.strokeRect(2, 2, 508, 356);
+  const solarTex = new THREE.CanvasTexture(solarCanvas);
+
+  // Gold Kapton MLI Thermal Blanket Texture
+  const foilCanvas = document.createElement('canvas');
+  foilCanvas.width = 256;
+  foilCanvas.height = 256;
+  const fctx = foilCanvas.getContext('2d');
+  fctx.fillStyle = '#d97706';
+  fctx.fillRect(0, 0, 256, 256);
+
+  // Quilted thermal blanket seam grid
+  for (let i = 0; i < 256; i += 20) {
+    fctx.strokeStyle = 'rgba(254, 240, 138, 0.65)';
+    fctx.lineWidth = 1.5;
+    fctx.beginPath(); fctx.moveTo(0, i); fctx.lineTo(256, i); fctx.stroke();
+    fctx.beginPath(); fctx.moveTo(i, 0); fctx.lineTo(i, 256); fctx.stroke();
+  }
+  for (let i = 0; i < 350; i++) {
+    const rx = Math.random() * 256, ry = Math.random() * 256, rs = Math.random() * 6 + 3;
+    fctx.fillStyle = Math.random() > 0.5 ? 'rgba(254, 243, 199, 0.35)' : 'rgba(120, 53, 15, 0.35)';
+    fctx.fillRect(rx, ry, rs, rs);
+  }
+  const goldFoilTex = new THREE.CanvasTexture(foilCanvas);
+  goldFoilTex.wrapS = THREE.RepeatWrapping;
+  goldFoilTex.wrapT = THREE.RepeatWrapping;
+  goldFoilTex.repeat.set(2, 2);
+
+  // 3. Materials
+  const goldFoilMat = new THREE.MeshStandardMaterial({
+    map: goldFoilTex,
+    color: 0xf59e0b,
+    metalness: 0.45,
+    roughness: 0.3
+  });
+  const titaniumMat = new THREE.MeshStandardMaterial({
+    color: 0x334155,
+    metalness: 0.55,
+    roughness: 0.25
+  });
+  const chromeMat = new THREE.MeshStandardMaterial({
+    color: 0xf8fafc,
+    metalness: 0.85,
+    roughness: 0.15
+  });
+  const solarMat = new THREE.MeshStandardMaterial({
+    map: solarTex,
+    color: 0xffffff,
+    metalness: 0.3,
+    roughness: 0.25
+  });
+  const darkGlassMat = new THREE.MeshStandardMaterial({
+    color: 0x020617,
+    metalness: 0.8,
+    roughness: 0.1
+  });
+
+  // 4. Construct Authentic Iconic Spacecraft
+  const spacecraft = new THREE.Group();
+  // 25% bigger scale with same iconic design
+  spacecraft.scale.set(1.25, 1.25, 1.25);
+  scene.add(spacecraft);
+
+  // --- Central Satellite Bus Chassis (Gold Foil Core Cube) ---
+  const bus = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.4, 1.25), goldFoilMat);
+  spacecraft.add(bus);
+
+  // Silver/Titanium Thermal Radiator Panels on Sides
+  const radLeft = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.1, 0.95), chromeMat);
+  radLeft.position.x = -0.77;
+  spacecraft.add(radLeft);
+
+  const radRight = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.1, 0.95), chromeMat);
+  radRight.position.x = 0.77;
+  spacecraft.add(radRight);
+
+  // Upper & Lower Equipment Decks
+  const topDeck = new THREE.Mesh(new THREE.BoxGeometry(1.56, 0.18, 1.3), titaniumMat);
+  topDeck.position.y = 0.79;
+  spacecraft.add(topDeck);
+
+  const bottomDeck = new THREE.Mesh(new THREE.BoxGeometry(1.56, 0.18, 1.3), titaniumMat);
+  bottomDeck.position.y = -0.79;
+  spacecraft.add(bottomDeck);
+
+  // Optical Sensor Cluster & Star Trackers
+  const cameraHousing = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, 0.32, 24), titaniumMat);
+  cameraHousing.rotation.x = Math.PI / 2;
+  cameraHousing.position.set(0.32, -0.15, 0.72);
+  spacecraft.add(cameraHousing);
+
+  const cameraLens = new THREE.Mesh(new THREE.CircleGeometry(0.18, 24), darkGlassMat);
+  cameraLens.position.set(0.32, -0.15, 0.89);
+  spacecraft.add(cameraLens);
+
+  // Star tracker sensor cylinders
+  const tracker1 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.28, 12), chromeMat);
+  tracker1.rotation.z = 0.35;
+  tracker1.position.set(0.42, 0.95, 0.2);
+  spacecraft.add(tracker1);
+
+  const tracker2 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.28, 12), chromeMat);
+  tracker2.rotation.z = -0.35;
+  tracker2.position.set(-0.42, 0.95, 0.2);
+  spacecraft.add(tracker2);
+
+  // --- Proper High-Gain Parabolic Communications Dish (Clean Articulated Mast) ---
+  const dishAssembly = new THREE.Group();
+  dishAssembly.position.set(0, 0.45, 0.75);
+  spacecraft.add(dishAssembly);
+
+  // Gantry mounting bracket
+  const gantry = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.32, 12), titaniumMat);
+  gantry.rotation.x = Math.PI / 4;
+  gantry.position.set(0, -0.05, 0.1);
+  dishAssembly.add(gantry);
+
+  // Gimbal head group (dynamic tracking)
+  const dishHead = new THREE.Group();
+  dishHead.position.set(0, 0.12, 0.26);
+  dishAssembly.add(dishHead);
+
+  // Precision Parabolic Concave Reflector Bowl
+  const dishPoints = [];
+  for (let i = 0; i <= 24; i++) {
+    const r = (i / 24) * 0.82;
+    const z = r * r * 0.4;
+    dishPoints.push(new THREE.Vector2(r, -z));
+  }
+  const dishGeo = new THREE.LatheGeometry(dishPoints, 36);
+  const dishMat = new THREE.MeshStandardMaterial({
+    color: 0xf8fafc,
+    metalness: 0.65,
+    roughness: 0.2,
+    side: THREE.DoubleSide
+  });
+  const dishMesh = new THREE.Mesh(dishGeo, dishMat);
+  dishMesh.rotation.x = Math.PI * 0.7; // Angled 36 deg forward toward viewer
+  dishHead.add(dishMesh);
+
+  // Outer precision chrome rim ring
+  const rimGeo = new THREE.TorusGeometry(0.82, 0.026, 16, 48);
+  const rimMesh = new THREE.Mesh(rimGeo, chromeMat);
+  rimMesh.rotation.x = Math.PI * 0.7;
+  const rimZ = 0.82 * 0.82 * 0.4;
+  rimMesh.translateZ(-rimZ);
+  dishHead.add(rimMesh);
+
+  // Central hub
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 0.08, 16), titaniumMat);
+  hub.rotation.x = Math.PI * 0.7;
+  dishHead.add(hub);
+
+  // Sub-reflector tripod struts & focal feed horn
+  const focalGroup = new THREE.Group();
+  focalGroup.rotation.x = Math.PI * 0.7;
+  dishHead.add(focalGroup);
+
+  // 3 Tripod struts connecting rim to focal horn
+  for (let a = 0; a < 3; a++) {
+    const angle = (a * 2 * Math.PI) / 3;
+    const rx = Math.cos(angle) * 0.78;
+    const ry = Math.sin(angle) * 0.78;
+    const strut = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.95, 6), chromeMat);
+    strut.position.set(rx * 0.5, ry * 0.5, 0.22 - rimZ * 0.5);
+    strut.lookAt(new THREE.Vector3(0, 0, 0.45));
+    strut.rotateX(Math.PI / 2);
+    focalGroup.add(strut);
+  }
+
+  // Feed horn cone
+  const feedHorn = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.18, 16), chromeMat);
+  feedHorn.rotation.x = -Math.PI / 2;
+  feedHorn.position.set(0, 0, 0.45);
+  focalGroup.add(feedHorn);
+
+  // Telemetry status strobe beacon
+  const feedBeacon = new THREE.Mesh(
+    new THREE.SphereGeometry(0.065, 12, 12),
+    new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+  );
+  feedBeacon.position.set(0, 0, 0.55);
+  focalGroup.add(feedBeacon);
+
+  // --- Iconic Telemetry Whip Antennas (Extending from 4 corners) ---
+  const antennaGeo = new THREE.CylinderGeometry(0.015, 0.015, 1.8, 8);
+  const whipAngles = [
+    { x: -0.75, y: 0.75, z: 0.6, rotZ: Math.PI / 4, rotX: -Math.PI / 6 },
+    { x: 0.75, y: 0.75, z: 0.6, rotZ: -Math.PI / 4, rotX: -Math.PI / 6 },
+    { x: -0.75, y: -0.75, z: 0.6, rotZ: (3 * Math.PI) / 4, rotX: -Math.PI / 6 },
+    { x: 0.75, y: -0.75, z: 0.6, rotZ: (-3 * Math.PI) / 4, rotX: -Math.PI / 6 }
+  ];
+  whipAngles.forEach(wa => {
+    const whip = new THREE.Mesh(antennaGeo, chromeMat);
+    whip.position.set(wa.x, wa.y, wa.z);
+    whip.rotation.z = wa.rotZ;
+    whip.rotation.x = wa.rotX;
+    spacecraft.add(whip);
+  });
+
+  // --- Massive Photovoltaic Solar Array Wings (Facing Camera with 3D Depth) ---
+  const wingsGroup = new THREE.Group();
+  spacecraft.add(wingsGroup);
+
+  function createSolarWing(isRight) {
+    const wing = new THREE.Group();
+    const sideMult = isRight ? 1 : -1;
+    wing.rotation.x = 0.32;
+
+    // Heavy-duty rotation yoke / boom
+    const yoke = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.75, 12), chromeMat);
+    yoke.rotation.z = Math.PI / 2;
+    yoke.position.x = sideMult * 1.15;
+    wing.add(yoke);
+
+    // 3 Large Segmented Solar Panels
+    for (let p = 0; p < 3; p++) {
+      const panelX = sideMult * (1.85 + p * 1.35);
+
+      // Photovoltaic cell panel facing viewer
+      const panel = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.95, 0.035), solarMat);
+      panel.position.x = panelX;
+      wing.add(panel);
+
+      // Outer protective titanium frame
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(1.28, 0.98, 0.045), titaniumMat);
+      frame.position.x = panelX;
+      frame.scale.set(1.02, 0.8, 1.02);
+      wing.add(frame);
+
+      // Articulation hinge brackets between panels
+      if (p < 2) {
+        const hinge = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 8), chromeMat);
+        hinge.position.x = sideMult * (2.525 + p * 1.35);
+        hinge.position.z = 0.02;
+        wing.add(hinge);
+      }
+    }
+    return wing;
+  }
+
+  const leftWing = createSolarWing(false);
+  const rightWing = createSolarWing(true);
+  wingsGroup.add(leftWing);
+  wingsGroup.add(rightWing);
+
+  // --- Ion Thruster Propulsion Module (Rear) ---
+  const thrusterGroup = new THREE.Group();
+  thrusterGroup.position.set(0, -0.65, -0.65);
+  spacecraft.add(thrusterGroup);
+
+  const nozzleGeo = new THREE.CylinderGeometry(0.12, 0.22, 0.35, 24, 1, true);
+  const nozzleLeft = new THREE.Mesh(nozzleGeo, titaniumMat);
+  nozzleLeft.rotation.x = -Math.PI / 2;
+  nozzleLeft.position.set(-0.35, 0, 0);
+  thrusterGroup.add(nozzleLeft);
+
+  const nozzleRight = new THREE.Mesh(nozzleGeo, titaniumMat);
+  nozzleRight.rotation.x = -Math.PI / 2;
+  nozzleRight.position.set(0.35, 0, 0);
+  thrusterGroup.add(nozzleRight);
+
+  // Glowing Plasma Exhaust Plumes
+  const plumeGeo = new THREE.ConeGeometry(0.15, 0.6, 16);
+  const plumeMat = new THREE.MeshBasicMaterial({
+    color: 0x22d3ee,
+    transparent: true,
+    opacity: 0.9
+  });
+  const plumeLeft = new THREE.Mesh(plumeGeo, plumeMat);
+  plumeLeft.rotation.x = Math.PI / 2;
+  plumeLeft.position.set(-0.35, 0, -0.38);
+  thrusterGroup.add(plumeLeft);
+
+  const plumeRight = new THREE.Mesh(plumeGeo, plumeMat);
+  plumeRight.rotation.x = Math.PI / 2;
+  plumeRight.position.set(0.35, 0, -0.38);
+  thrusterGroup.add(plumeRight);
+
+  // Ion Engine PointLight
+  const thrusterLight = new THREE.PointLight(0x06b6d4, 2.2, 5.5);
+  thrusterLight.position.set(0, 0, -0.45);
+  thrusterGroup.add(thrusterLight);
+
+  // 5. Multi-Point Space Studio Lighting
+  const sunLight = new THREE.DirectionalLight(0xfff8ee, 3.2);
+  sunLight.position.set(7, 8, 8);
+  scene.add(sunLight);
+
+  const earthLight = new THREE.DirectionalLight(0x38bdf8, 1.6);
+  earthLight.position.set(-6, -5, -4);
+  scene.add(earthLight);
+
+  const rimLight = new THREE.DirectionalLight(0x818cf8, 1.2);
+  rimLight.position.set(0, 6, -6);
+  scene.add(rimLight);
+
+  const ambientLight = new THREE.AmbientLight(0x334155, 1.1);
+  scene.add(ambientLight);
+
+  // Responsive Canvas Resize Observer
+  if (window.ResizeObserver) {
+    const resizeObserver = new ResizeObserver(() => {
+      if (!canvas.clientWidth || !canvas.clientHeight) return;
+      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    });
+    resizeObserver.observe(canvas);
+  }
+
+  // 6. 60FPS Trajectory & Spacecraft Attitude Engine
   let currentX = -450;
   let currentY = 0;
-  let currentRot = -10;
-
   let targetX = 0;
   let targetY = 0;
-  let targetRot = 0;
-
   let mouseX = 0;
   let mouseY = 0;
+  let isSatelliteVisible = true;
+  let satAnimId = null;
 
-  // Subtle Mouse Parallax Accent
   window.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth - 0.5) * 35;
-    mouseY = (e.clientY / window.innerHeight - 0.5) * 25;
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 30;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 20;
   }, { passive: true });
 
-  // 60FPS Space Float & Scroll Trajectory Engine (100% Scoped within About Me section)
   function animateSatellite() {
+    satAnimId = null;
+    if (!isSatelliteVisible) return;
+
     const rect = aboutSection.getBoundingClientRect();
     const windowHeight = window.innerHeight;
 
-    // Calculate scroll progress strictly within about section
     let progress = (windowHeight - rect.top) / (windowHeight + rect.height);
     progress = Math.min(Math.max(progress, 0), 1);
 
-    // 1. Outer Margin Trajectory: Passes quickly above top of tabs (-52vw, -130px) -> Glides to Outer Right Margin (+52vw, -40px)
-    const startX = -window.innerWidth * 0.52;
-    const endX = window.innerWidth * 0.52;
+    // 1. Orbital Trajectory (Background Overhead Flight Path - NEVER overlaps with tabs/text)
+    const startX = -window.innerWidth * 0.45;
+    const endX = window.innerWidth * 0.45;
     const scrollX = lerp(startX, endX, progress);
 
-    const startY = -130;
-    const endY = -40;
-    const scrollY = lerp(startY, endY, progress);
+    // Overhead elevation curve: floats higher in the background above the cards
+    const startY = -60;
+    const endY = -30;
+    const arcElevation = Math.sin(progress * Math.PI) * 35;
+    const scrollY = lerp(startY, endY, progress) - arcElevation;
 
-    const scrollRot = -10 + progress * 28;
-
-    // 2. Realistic Zero-G Space Micro-Drift (random sinusoidal space wobble)
+    // Zero-G space micro-drift
     const time = performance.now() * 0.001;
-    const driftX = Math.sin(time * 0.9) * 20 + Math.cos(time * 1.5) * 10;
-    const driftY = Math.cos(time * 1.1) * 15 + Math.sin(time * 1.8) * 8;
-    const driftRot = Math.sin(time * 0.7) * 5;
+    const driftX = Math.sin(time * 0.75) * 14 + Math.cos(time * 1.3) * 6;
+    const driftY = Math.cos(time * 0.95) * 10 + Math.sin(time * 1.6) * 5;
 
     targetX = scrollX + driftX + mouseX;
     targetY = scrollY + driftY + mouseY;
-    targetRot = scrollRot + driftRot;
 
-    // Smooth lerp interpolation for buttery-smooth rendering
     currentX = lerp(currentX, targetX, 0.08);
     currentY = lerp(currentY, targetY, 0.08);
-    currentRot = lerp(currentRot, targetRot, 0.08);
 
-    // 3D Perspective Pitch, Yaw & Roll
-    const rotX = Math.sin(time * 0.6) * 10 + (mouseY / 25) * 8;
-    const rotY = -22 + progress * 44 + (mouseX / 35) * 12;
+    // Translate DOM container along flight trajectory in background
+    satellite.style.transform = `translate3d(calc(-50% + ${currentX.toFixed(2)}px), ${currentY.toFixed(2)}px, 0px)`;
 
-    satellite.style.transform = `perspective(1200px) translate3d(calc(-50% + ${currentX.toFixed(2)}px), ${currentY.toFixed(2)}px, 0px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) rotateZ(${currentRot.toFixed(2)}deg)`;
+    // 2. Spacecraft 3D Attitude Dynamics in Three.js (Natural Orbital Slant)
+    const yawSlant = -0.28 + progress * 0.52;
+    const yawPrecession = Math.sin(time * 0.45) * 0.05;
+    spacecraft.rotation.y = yawSlant + yawPrecession + (mouseX / 30) * 0.08;
 
+    const pitchSlant = 0.18;
+    spacecraft.rotation.x = pitchSlant + Math.sin(time * 0.55) * 0.04 + (mouseY / 20) * 0.04;
+
+    const rollSlant = -0.24;
+    spacecraft.rotation.z = rollSlant + (progress - 0.5) * 0.1 + Math.cos(time * 0.4) * 0.03;
+
+    // 3. Autonomous Earth-Tracking Dish Gimbal
+    dishHead.rotation.y = -spacecraft.rotation.y * 0.45;
+    dishHead.rotation.x = -spacecraft.rotation.x * 0.3;
+
+    // 4. Thruster Plasma Exhaust Flicker & Strobe Beacon
+    const plumeScale = 1 + Math.sin(time * 22) * 0.2;
+    plumeLeft.scale.y = plumeScale;
+    plumeRight.scale.y = plumeScale;
+    thrusterLight.intensity = 1.8 + Math.sin(time * 24) * 0.5;
+
+    // Realistic navigation strobe
+    const strobePhase = (time * 1.8) % 3;
+    const isStrobe = (strobePhase > 2.7 && strobePhase < 2.8) || (strobePhase > 2.88 && strobePhase < 2.98);
+    feedBeacon.material.color.setHex(isStrobe ? 0xffffff : 0x06b6d4);
+
+    // Render 3D Frame
+    renderer.render(scene, camera);
+
+    satAnimId = requestAnimationFrame(animateSatellite);
+  }
+
+  // Smart IntersectionObserver: Pauses WebGL rendering completely when offscreen
+  if ('IntersectionObserver' in window) {
+    const satObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const wasVisible = isSatelliteVisible;
+        isSatelliteVisible = entry.isIntersecting;
+        if (!wasVisible && isSatelliteVisible) {
+          if (!satAnimId) satAnimId = requestAnimationFrame(animateSatellite);
+        }
+      });
+    }, { rootMargin: '200px 0px' });
+    satObserver.observe(aboutSection);
+  } else {
+    isSatelliteVisible = true;
     requestAnimationFrame(animateSatellite);
   }
 
@@ -2402,7 +2816,6 @@ function initSatelliteTelemetry() {
     });
   });
 }
-
 /* ============================================
    FLOATING ASTRONAUT ZERO-G DRIFT ENGINE
    (Right-to-Left across Projects -> GitHub Stats)
@@ -2825,6 +3238,12 @@ async function initLiveContent() {
       injectCertificateCards(certificates);
     }
 
+    // 5. Sync Planetary Hackathons
+    const { hackathons } = data.content;
+    if (Array.isArray(hackathons) && hackathons.length) {
+      renderHackathonPlanets(hackathons);
+    }
+
   } catch (_) {
     // Graceful offline fallback
   }
@@ -2854,3 +3273,334 @@ function injectAdminPortalLink() {
     footer.appendChild(link);
   }
 }
+
+/* ============================================
+   HACKATHON PLANETARY ORBIT CONTROLLER
+   10 Procedural Realistic Planets with Continuous Drift,
+   Attached Rings & Orbiting Moons, and Admin Live Hydration
+   ============================================ */
+
+const DEFAULT_HACKATHON_PLANETS = [
+  {
+    name: 'Smart India Hackathon 2024',
+    badge: 'SIH Finalist',
+    description: 'National grand finale finalist building a real-time GPS rake telemetry and train yard scheduling engine for Indian Railways.',
+    style: 'planet-gas-giant',
+    hasRings: true,
+    ringColor: 'rgba(34, 211, 238, 0.5)',
+    orbitType: 'moon'
+  },
+  {
+    name: 'Mumbai Hacks (MumHacks)',
+    badge: 'Hackathon Winner',
+    description: 'Winner of regional hackathon developing ATLAS deep learning NLP pipeline achieving 94.2% factual veracity cross-verification.',
+    style: 'planet-magma',
+    hasRings: false,
+    orbitType: 'twin-moons'
+  },
+  {
+    name: 'Gen-AI Developer Hackathon',
+    badge: 'Top AI Project',
+    description: 'Autonomous multi-agent task orchestrator with vector semantic memory, dynamic tool calling, and live markdown streaming.',
+    style: 'planet-dark-pulsar',
+    hasRings: true,
+    ringColor: 'rgba(129, 140, 248, 0.55)',
+    orbitType: 'asteroids'
+  },
+  {
+    name: 'VCET OSCILATIONS \'26',
+    badge: '1st Runner Up',
+    description: 'IoT Smart Telemetry Gateway over MQTT with real-time biometric analytics and dynamic failure-prediction algorithms.',
+    style: 'planet-emerald',
+    hasRings: false,
+    orbitType: 'moon'
+  },
+  {
+    name: 'National Codefest Hackathon',
+    badge: 'Top 10 Finalist',
+    description: 'Collaborative vector whiteboard canvas featuring sub-20ms multi-cursor broadcast, room isolation, and snapshot replay.',
+    style: 'planet-celestial-prism',
+    hasRings: true,
+    ringColor: 'rgba(244, 114, 182, 0.5)',
+    orbitType: 'none'
+  },
+  {
+    name: 'Cyber Security HackSprint',
+    badge: 'Special Mention',
+    description: 'Real-time network packet anomaly detector using unsupervised isolation forest algorithms to thwart zero-day exploits.',
+    style: 'planet-amethyst',
+    hasRings: false,
+    orbitType: 'moon'
+  },
+  {
+    name: 'Global Climate Innovation Hack',
+    badge: 'Impact Award',
+    description: 'High-resolution satellite image segmentation model measuring deforestation rates and urban heat-island thermal indices.',
+    style: 'planet-earth',
+    hasRings: false,
+    orbitType: 'moon'
+  },
+  {
+    name: 'Web3 DeFi Builders Summit',
+    badge: 'Protocol Grant',
+    description: 'Decentralized automated liquidity balancer featuring cross-chain atomic swaps and micro-arbitrage protection.',
+    style: 'planet-golden',
+    hasRings: true,
+    ringColor: 'rgba(251, 191, 36, 0.5)',
+    orbitType: 'moon'
+  },
+  {
+    name: 'Arctic Climate Tech Challenge',
+    badge: 'Top Hardware',
+    description: 'Ultra-low temperature edge vision sensor station transmitting environmental anomaly telemetry over LoRaWAN networks.',
+    style: 'planet-ice',
+    hasRings: true,
+    ringColor: 'rgba(186, 230, 253, 0.5)',
+    orbitType: 'none'
+  },
+  {
+    name: 'Cosmic SpaceHack Odyssey',
+    badge: 'Best Visuals',
+    description: 'Orbital debris collision simulation engine tracking low-earth orbit satellites with sub-meter vector precision mathematics.',
+    style: 'planet-rose-nebula',
+    hasRings: false,
+    orbitType: 'twin-moons'
+  }
+];
+
+let activePlanetsData = [...DEFAULT_HACKATHON_PLANETS];
+let planetOrbitAnimId = null;
+
+function renderHackathonPlanets(planetsList) {
+  if (Array.isArray(planetsList) && planetsList.length) {
+    activePlanetsData = planetsList;
+  }
+  const track = document.getElementById('hackathon-planets-track');
+  if (!track) return;
+
+  // Duplicate planets array to create seamless continuous infinite orbital stream
+  const displayPlanets = activePlanetsData.length > 0 
+    ? [...activePlanetsData, ...activePlanetsData]
+    : [...DEFAULT_HACKATHON_PLANETS, ...DEFAULT_HACKATHON_PLANETS];
+
+  track.innerHTML = displayPlanets.map(planet => createPlanetItemHTML(planet)).join('');
+}
+
+function renderPlanetRings(ringColor) {
+  const colorStyle = ringColor ? `style="--ring-color:${ringColor};"` : '';
+  const backRing = `
+    <svg class="planet-ring-svg planet-ring-back" viewBox="0 0 460 220" ${colorStyle} aria-hidden="true">
+      <g transform="rotate(-16 230 110)">
+        <path d="M 35 110 A 195 52 0 0 1 425 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="20" stroke-opacity="0.45" stroke-linecap="round" />
+        <path d="M 45 110 A 185 49 0 0 1 415 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="8" stroke-opacity="0.85" stroke-linecap="round" />
+        <path d="M 52 110 A 178 47 0 0 1 408 110" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="2.5" stroke-linecap="round" />
+      </g>
+    </svg>
+  `;
+  const frontRing = `
+    <svg class="planet-ring-svg planet-ring-front" viewBox="0 0 460 220" ${colorStyle} aria-hidden="true">
+      <g transform="rotate(-16 230 110)">
+        <path d="M 425 110 A 195 52 0 0 1 35 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="20" stroke-opacity="0.45" stroke-linecap="round" />
+        <path d="M 415 110 A 185 49 0 0 1 45 110" fill="none" stroke="var(--ring-color, #22d3ee)" stroke-width="8" stroke-opacity="0.85" stroke-linecap="round" />
+        <path d="M 408 110 A 178 47 0 0 1 52 110" fill="none" stroke="rgba(255, 255, 255, 0.75)" stroke-width="2.5" stroke-linecap="round" />
+      </g>
+    </svg>
+  `;
+  return { backRing, frontRing };
+}
+
+function createPlanetItemHTML(item) {
+  const styleClass = item.style || 'planet-gas-giant';
+  let ringBackHTML = '';
+  let ringFrontHTML = '';
+  if (item.hasRings) {
+    const rings = renderPlanetRings(item.ringColor);
+    ringBackHTML = rings.backRing;
+    ringFrontHTML = rings.frontRing;
+  }
+  
+  let orbitHTML = '';
+  if (item.orbitType === 'moon') {
+    orbitHTML = `<div class="planet-moon-orbit"><div class="planet-moon"></div></div>`;
+  } else if (item.orbitType === 'twin-moons') {
+    orbitHTML = `<div class="planet-moon-orbit"><div class="planet-moon"></div><div class="planet-moon-twin"></div></div>`;
+  } else if (item.orbitType === 'asteroids') {
+    orbitHTML = `<div class="planet-asteroid-belt"></div>`;
+  }
+
+  const customStyleAttr = item.customColor ? `style="background:${item.customColor};"` : '';
+
+  const safeBadge = item.badge ? `<span class="planet-hackathon-badge">${escapeHtml(item.badge)}</span>` : '';
+  const safeName = escapeHtml(item.name || 'Hackathon');
+  const safeDesc = escapeHtml(item.description || '');
+
+  return `
+    <div class="hackathon-planet-item" data-planet-name="${safeName}">
+      ${ringBackHTML}
+      <div class="planet-sphere ${styleClass}" ${customStyleAttr}>
+        <div class="planet-text-core">
+          ${safeBadge}
+          <h4 class="planet-hackathon-title">${safeName}</h4>
+          <p class="planet-hackathon-desc">${safeDesc}</p>
+        </div>
+      </div>
+      ${ringFrontHTML}
+      ${orbitHTML}
+    </div>
+  `;
+}
+
+function initHackathonPlanets() {
+  const viewport = document.getElementById('hackathon-planets-viewport');
+  const track = document.getElementById('hackathon-planets-track');
+  if (!viewport || !track) return;
+
+  // Render initial planets
+  renderHackathonPlanets(activePlanetsData);
+
+  const prevBtn = document.getElementById('planet-prev-btn');
+  const nextBtn = document.getElementById('planet-next-btn');
+  const pauseBtn = document.getElementById('planet-pause-btn');
+  const statusBadge = document.getElementById('planets-drift-status');
+
+  let currentOffset = 0;
+  let baseSpeed = 0.65; // pixels per frame
+  let targetSpeed = 0.65;
+  let currentSpeed = 0.65;
+  let isPaused = false;
+  let isHovered = false;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartOffset = 0;
+
+  function calculateSingleLoopWidth() {
+    const items = track.querySelectorAll('.hackathon-planet-item');
+    if (!items.length) return 3000;
+    const halfCount = Math.floor(items.length / 2);
+    let width = 0;
+    for (let i = 0; i < halfCount; i++) {
+      width += items[i].offsetWidth + 72; // width + gap (4.5rem)
+    }
+    return width || 3000;
+  }
+
+  let singleLoopWidth = calculateSingleLoopWidth();
+  window.addEventListener('resize', () => {
+    singleLoopWidth = calculateSingleLoopWidth();
+  });
+
+  // Continuous Orbital Drift Loop
+  function orbitLoop() {
+    if (!isDragging) {
+      // Smoothly accelerate or decelerate to target speed
+      const desiredSpeed = (isPaused || isHovered) ? 0 : baseSpeed;
+      currentSpeed += (desiredSpeed - currentSpeed) * 0.08;
+
+      currentOffset += currentSpeed;
+
+      // Wrap around seamlessly
+      if (currentOffset >= singleLoopWidth) {
+        currentOffset -= singleLoopWidth;
+      } else if (currentOffset < 0) {
+        currentOffset += singleLoopWidth;
+      }
+
+      track.style.transform = `translateX(-${currentOffset}px)`;
+    }
+
+    planetOrbitAnimId = requestAnimationFrame(orbitLoop);
+  }
+
+  // Start orbit loop
+  if (planetOrbitAnimId) cancelAnimationFrame(planetOrbitAnimId);
+  planetOrbitAnimId = requestAnimationFrame(orbitLoop);
+
+  // Pause / Resume Orbit on Hover over any planet
+  viewport.addEventListener('mouseenter', (e) => {
+    if (e.target.closest('.hackathon-planet-item')) {
+      isHovered = true;
+    }
+  }, true);
+
+  viewport.addEventListener('mouseleave', () => {
+    isHovered = false;
+  });
+
+  // Pause Button Toggle
+  if (pauseBtn) {
+    pauseBtn.addEventListener('click', () => {
+      isPaused = !isPaused;
+      pauseBtn.innerHTML = isPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+      if (statusBadge) {
+        statusBadge.innerHTML = isPaused 
+          ? '<i class="fas fa-circle-pause text-accent"></i> Orbit: Paused' 
+          : '<i class="fas fa-satellite"></i> Orbit: Continuous Drift';
+      }
+    });
+  }
+
+  // Prev / Next Step Buttons
+  const stepAmount = 370; // 1 planet width + gap
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      currentOffset -= stepAmount;
+      if (currentOffset < 0) currentOffset += singleLoopWidth;
+      track.style.transform = `translateX(-${currentOffset}px)`;
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      currentOffset += stepAmount;
+      if (currentOffset >= singleLoopWidth) currentOffset -= singleLoopWidth;
+      track.style.transform = `translateX(-${currentOffset}px)`;
+    });
+  }
+
+  // Mouse Drag-to-Orbit
+  viewport.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    dragStartX = e.pageX;
+    dragStartOffset = currentOffset;
+    viewport.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      viewport.style.cursor = '';
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const diff = e.pageX - dragStartX;
+    currentOffset = dragStartOffset - diff;
+    if (currentOffset >= singleLoopWidth) currentOffset -= singleLoopWidth;
+    if (currentOffset < 0) currentOffset += singleLoopWidth;
+    track.style.transform = `translateX(-${currentOffset}px)`;
+  });
+
+  // Touch Swipe for Mobile
+  let touchStartX = 0;
+  viewport.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].pageX;
+    dragStartOffset = currentOffset;
+    isDragging = true;
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const diff = e.touches[0].pageX - touchStartX;
+    currentOffset = dragStartOffset - diff;
+    if (currentOffset >= singleLoopWidth) currentOffset -= singleLoopWidth;
+    if (currentOffset < 0) currentOffset += singleLoopWidth;
+    track.style.transform = `translateX(-${currentOffset}px)`;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', () => {
+    isDragging = false;
+  });
+}
+
+
