@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=sat_3d_v8">
+    <link rel="stylesheet" href="styles.css?v=gh_live_v9">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
     <!-- Non-blocking animation & 3D libraries -->
@@ -582,18 +582,18 @@
                         <h3 class="subsection-title">GitHub <span class="highlight">Stats</span></h3>
                     </div>
                     <div class="github-stats-compact">
-                        <div class="stat-box" data-stat-value="150">
+                        <div class="stat-box" data-stat="contributions">
                             <div class="stat-orbital-ring"></div>
                             <div class="stat-orbital-ring ring-2"></div>
                             <div class="stat-particles"></div>
                             <div class="stat-hologram"></div>
-                            <i class="fab fa-github"></i>
-                            <div class="stat-num" data-target="150">0</div>
+                            <i class="fas fa-fire"></i>
+                            <div class="stat-num" data-target="900">0</div>
                             <div class="stat-plus">+</div>
-                            <div class="stat-lbl">Repos</div>
+                            <div class="stat-lbl">Contributions (1yr)</div>
                             <div class="stat-glow-pulse"></div>
                         </div>
-                        <div class="stat-box" data-stat-value="500">
+                        <div class="stat-box" data-stat="commits">
                             <div class="stat-orbital-ring"></div>
                             <div class="stat-orbital-ring ring-2"></div>
                             <div class="stat-particles"></div>
@@ -604,26 +604,48 @@
                             <div class="stat-lbl">Commits</div>
                             <div class="stat-glow-pulse"></div>
                         </div>
-                        <div class="stat-box" data-stat-value="75">
+                        <div class="stat-box" data-stat="repos">
                             <div class="stat-orbital-ring"></div>
                             <div class="stat-orbital-ring ring-2"></div>
                             <div class="stat-particles"></div>
                             <div class="stat-hologram"></div>
-                            <i class="fas fa-star"></i>
-                            <div class="stat-num" data-target="75">0</div>
+                            <i class="fab fa-github"></i>
+                            <div class="stat-num" data-target="26">0</div>
                             <div class="stat-plus">+</div>
-                            <div class="stat-lbl">Stars</div>
+                            <div class="stat-lbl">Repos</div>
                             <div class="stat-glow-pulse"></div>
                         </div>
-                        <div class="stat-box" data-stat-value="120">
+                        <div class="stat-box" data-stat="prs">
                             <div class="stat-orbital-ring"></div>
                             <div class="stat-orbital-ring ring-2"></div>
                             <div class="stat-particles"></div>
                             <div class="stat-hologram"></div>
                             <i class="fas fa-code-pull-request"></i>
-                            <div class="stat-num" data-target="120">0</div>
+                            <div class="stat-num" data-target="8">0</div>
                             <div class="stat-plus">+</div>
-                            <div class="stat-lbl">PRs</div>
+                            <div class="stat-lbl">Pull Requests</div>
+                            <div class="stat-glow-pulse"></div>
+                        </div>
+                        <div class="stat-box" data-stat="stars">
+                            <div class="stat-orbital-ring"></div>
+                            <div class="stat-orbital-ring ring-2"></div>
+                            <div class="stat-particles"></div>
+                            <div class="stat-hologram"></div>
+                            <i class="fas fa-star"></i>
+                            <div class="stat-num" data-target="7">0</div>
+                            <div class="stat-plus"></div>
+                            <div class="stat-lbl">Stars Earned</div>
+                            <div class="stat-glow-pulse"></div>
+                        </div>
+                        <div class="stat-box" data-stat="followers">
+                            <div class="stat-orbital-ring"></div>
+                            <div class="stat-orbital-ring ring-2"></div>
+                            <div class="stat-particles"></div>
+                            <div class="stat-hologram"></div>
+                            <i class="fas fa-users"></i>
+                            <div class="stat-num" data-target="2">0</div>
+                            <div class="stat-plus"></div>
+                            <div class="stat-lbl">Followers</div>
                             <div class="stat-glow-pulse"></div>
                         </div>
                     </div>
@@ -637,11 +659,18 @@
                     <div class="github-diagrams-grid">
                         <!-- Compact Contribution Heatmap (Canvas) -->
                         <div class="github-diagram-card calendar-card">
-                            <h4>Contributions <span class="highlight">Heatmap</span></h4>
+                            <div class="heatmap-header">
+                                <h4>Contributions <span class="highlight">Heatmap</span></h4>
+                                <span class="heatmap-total" id="heatmap-total"></span>
+                            </div>
                             <div class="diagram-scroll-wrapper">
                                 <canvas id="contribution-heatmap" height="120"></canvas>
                             </div>
-                            <div class="heatmap-legend" id="heatmap-legend"></div>
+                            <div class="heatmap-footer">
+                                <div class="streak-badges" id="streak-badges"></div>
+                                <div class="heatmap-legend" id="heatmap-legend"></div>
+                            </div>
+                            <div class="heatmap-tooltip" id="heatmap-tooltip"></div>
                         </div>
                         
                         <!-- Top Languages Donut Chart (Canvas) -->
@@ -764,6 +793,6 @@
 
     </main>
 
-    <script src="script.js?v=sat_3d_v8" defer></script>
+    <script src="script.js?v=gh_live_v9" defer></script>
 </body>
 </html>

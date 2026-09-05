@@ -4303,8 +4303,8 @@ body.light-mode .deck-shuffle-shadow {
 
 .github-stats-compact {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
     margin-top: 2rem;
     max-width: 1000px;
     margin-left: auto;
@@ -4317,7 +4317,7 @@ body.light-mode .deck-shuffle-shadow {
     background: rgba(15, 10, 30, 0.18);
     border: 2px solid rgba(168, 85, 247, 0.35);
     border-radius: 20px;
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.25rem;
     text-align: center;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
@@ -5826,6 +5826,7 @@ body.light-mode .cert-lightbox-meta {
 }
 
 .github-diagram-card {
+    position: relative;
     background: rgba(11, 15, 25, 0.18);
     border: 1px solid rgba(99, 102, 241, 0.25);
     border-radius: 16px;
@@ -5837,6 +5838,102 @@ body.light-mode .cert-lightbox-meta {
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
+}
+
+/* Heatmap header: title left, yearly total right */
+.heatmap-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    width: 100%;
+}
+
+.heatmap-header h4 {
+    margin-bottom: 0;
+}
+
+.heatmap-total {
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: #a5b4fc;
+    font-weight: 600;
+}
+
+/* Heatmap footer: streak badges left, legend right */
+.heatmap-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.streak-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: #c7d2fe;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+}
+
+.streak-badge i {
+    font-size: 0.7rem;
+    color: #a78bfa;
+}
+
+.streak-badge.streak-current i {
+    color: #fbbf24;
+}
+
+/* GitHub-style contribution tooltip */
+.heatmap-tooltip {
+    position: absolute;
+    z-index: 30;
+    pointer-events: none;
+    background: #1e1b34;
+    color: #f1f5f9;
+    border: 1px solid rgba(129, 140, 248, 0.45);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    padding: 7px 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.heatmap-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.heatmap-tooltip strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.heatmap-tooltip span {
+    color: #94a3b8;
 }
 
 .github-diagram-card h4 {
@@ -5892,6 +5989,52 @@ body.light-mode .github-diagram-card:hover {
     box-shadow: 0 10px 25px rgba(99, 102, 241, 0.1);
 }
 
+body.light-mode .heatmap-total {
+    color: #4f46e5;
+}
+
+body.light-mode .streak-badge {
+    color: #4338ca;
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.25);
+}
+
+body.light-mode .streak-badge i {
+    color: #7c3aed;
+}
+
+body.light-mode .heatmap-legend {
+    color: #64748b;
+}
+
+body.light-mode .heatmap-tooltip {
+    background: #ffffff;
+    color: #0f172a;
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+}
+
+body.light-mode .heatmap-tooltip strong {
+    color: #0f172a;
+}
+
+body.light-mode .heatmap-tooltip span {
+    color: #64748b;
+}
+
+body.light-mode .lang-legend .lang-item,
+body.light-mode .perf-labels .perf-item {
+    color: #334155;
+}
+
+body.light-mode .lang-legend .lang-pct {
+    color: #64748b;
+}
+
+body.light-mode .perf-labels .perf-val {
+    color: #6d28d9;
+}
+
 /* Canvas Charts Shared */
 #contribution-heatmap {
     display: block;
@@ -5913,7 +6056,7 @@ body.light-mode .github-diagram-card:hover {
     align-items: center;
     gap: 6px;
     justify-content: flex-end;
-    margin-top: 10px;
+    margin-top: 0;
     font-size: 0.72rem;
     color: #94a3b8;
     font-family: 'JetBrains Mono', monospace;

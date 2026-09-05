@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initLiveContent();
         injectAdminPortalLink();
         updateGitHubStatsTheme();
+        initHeatmapTooltip();
         fetchLiveGitHubStats();
         initRevealOnScroll();
         animateHero();
@@ -1800,86 +1801,151 @@ function animateStatCounters() {
 
 /* ============================================
    LIVE GITHUB STATS & REPO HYDRATION
+   Strategy: render cached data instantly (stale-while-revalidate),
+   then fetch every endpoint in parallel — no sequential awaits.
    ============================================ */
+const GH_USERNAME = 'CyberCodezilla';
+const GH_CACHE_KEY = 'gh_portfolio_stats_v2';
+const GH_CACHE_TTL = 30 * 60 * 1000; // refresh from API every 30 min at most
+
+// Shared render state — lets charts redraw on resize/theme change without refetching
+let _githubChartData = { langCounts: {}, repos: 0, commits: 0, stars: 0, prs: 0, followers: 0, contributions: 0 };
+let _contributionDays = [];   // [{ date: "YYYY-MM-DD", count, level }] full last year
+let _heatmapRendered = false; // first render animates, redraws are instant
+
+const fetchJson = (url) => fetch(url).then(r => r.ok ? r.json() : null).catch(() => null);
+
+function statTargetEl(key) {
+    return document.querySelector(`.stat-box[data-stat="${key}"] .stat-num`);
+}
+
+function hydrateStatBoxes(stats) {
+    const map = {
+        contributions: stats.contributions,
+        commits: stats.commits,
+        repos: stats.repos,
+        prs: stats.prs,
+        stars: stats.stars,
+        followers: stats.followers
+    };
+    Object.entries(map).forEach(([key, val]) => {
+        const el = statTargetEl(key);
+        if (el && val > 0) el.setAttribute('data-target', val);
+    });
+    document.querySelectorAll('.stat-num.counted').forEach(el => el.classList.remove('counted'));
+    animateStatCounters();
+}
+
+function cacheGitHubData(stats, contributionDays) {
+    try {
+        localStorage.setItem(GH_CACHE_KEY, JSON.stringify({ t: Date.now(), stats, contributionDays }));
+    } catch (e) { /* private mode / quota — non-fatal */ }
+}
+
+function hydrateFromCache() {
+    try {
+        const raw = localStorage.getItem(GH_CACHE_KEY);
+        if (!raw) return false;
+        const { stats, contributionDays } = JSON.parse(raw);
+        if (!stats) return false;
+        _githubChartData = { ..._githubChartData, ...stats };
+        if (Array.isArray(contributionDays) && contributionDays.length) _contributionDays = contributionDays;
+        hydrateStatBoxes(_githubChartData);
+        renderContributionHeatmap();
+        renderLangDonutChart(_githubChartData.langCounts);
+        renderPerfRadarChart(_githubChartData);
+        _heatmapRendered = true;
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
 async function fetchLiveGitHubStats() {
-    const username = 'CyberCodezilla';
-    const repoNumEl   = document.querySelector('.github-stats-compact .stat-box:nth-child(1) .stat-num');
-    const commitNumEl = document.querySelector('.github-stats-compact .stat-box:nth-child(2) .stat-num');
-    const starNumEl   = document.querySelector('.github-stats-compact .stat-box:nth-child(3) .stat-num');
-    const prNumEl     = document.querySelector('.github-stats-compact .stat-box:nth-child(4) .stat-num');
+    // 1. Instant paint from cache, fresh data still loads behind it
+    hydrateFromCache();
 
     let langCounts = {};
-    let repoCount = 0, commitCount = 0, starCount = 0, prCount = 0;
+    let repoCount = 0, commitCount = 0, starCount = 0, prCount = 0, followerCount = 0, contributionTotal = 0;
+    let contributionDays = [];
 
     try {
-        // 1. Fetch Profile (Public Repos)
-        const profileRes = await fetch(`https://api.github.com/users/${username}`);
-        if (profileRes.ok) {
-            const profile = await profileRes.json();
-            if (profile.public_repos !== undefined) {
-                repoCount = profile.public_repos;
-                if (repoNumEl) repoNumEl.setAttribute('data-target', repoCount);
-            }
+        // 2. All endpoints fire simultaneously
+        const [profile, repoPages, commitsData, prData, contribData, eventPages] = await Promise.all([
+            fetchJson(`https://api.github.com/users/${GH_USERNAME}`),
+            Promise.all([
+                fetchJson(`https://api.github.com/users/${GH_USERNAME}/repos?per_page=100&sort=updated`),
+                fetchJson(`https://api.github.com/users/${GH_USERNAME}/repos?per_page=100&sort=updated&page=2`)
+            ]),
+            fetchJson(`https://api.github.com/search/commits?q=author:${GH_USERNAME}`),
+            fetchJson(`https://api.github.com/search/issues?q=author:${GH_USERNAME}+type:pr`),
+            fetchJson(`https://github-contributions-api.jogruber.de/v4/${GH_USERNAME}?y=last`),
+            Promise.all([1, 2, 3].map(p =>
+                fetchJson(`https://api.github.com/users/${GH_USERNAME}/events?per_page=100&page=${p}`)))
+        ]);
+
+        if (profile) {
+            repoCount = profile.public_repos || 0;
+            followerCount = profile.followers || 0;
         }
 
-        // 2. Fetch Repos List (Total Stars & Languages)
-        const reposRes = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
-        if (reposRes.ok) {
-            const repos = await reposRes.json();
-            if (Array.isArray(repos)) {
-                repos.forEach(repo => {
-                    starCount += (repo.stargazers_count || 0);
-                    if (repo.language) {
-                        langCounts[repo.language] = (langCounts[repo.language] || 0) + 1;
-                    }
-                });
+        repoPages.forEach(list => {
+            if (!Array.isArray(list)) return;
+            list.forEach(repo => {
+                starCount += (repo.stargazers_count || 0);
+                if (repo.language) langCounts[repo.language] = (langCounts[repo.language] || 0) + 1;
+            });
+        });
 
-                if (starNumEl) {
-                    starNumEl.setAttribute('data-target', Math.max(starCount, 1));
-                }
-            }
+        if (commitsData && commitsData.total_count !== undefined) commitCount = commitsData.total_count;
+        if (prData && prData.total_count !== undefined) prCount = prData.total_count;
+
+        if (contribData && Array.isArray(contribData.contributions)) {
+            contributionDays = contribData.contributions.map(c => ({ date: c.date, count: c.count, level: c.level }));
+            contributionTotal = (contribData.total && contribData.total.lastYear) ||
+                contributionDays.reduce((a, c) => a + c.count, 0);
         }
 
-        // 3. Fetch Total Commits Count via GitHub Search API
-        const commitRes = await fetch(`https://api.github.com/search/commits?q=author:${username}`);
-        if (commitRes.ok) {
-            const commitsData = await commitRes.json();
-            if (commitsData.total_count !== undefined) {
-                commitCount = commitsData.total_count;
-                if (commitNumEl) commitNumEl.setAttribute('data-target', commitCount);
+        // Overlay today's live events so brand-new activity shows up before the
+        // contributions API catches up (levels only ever move up, never down)
+        const liveCounts = {};
+        eventPages.flat().filter(Boolean).forEach(evt => {
+            if (evt && evt.created_at) {
+                const day = evt.created_at.slice(0, 10);
+                liveCounts[day] = (liveCounts[day] || 0) + 1;
             }
-        }
-
-        // 4. Fetch Total Pull Requests Count via GitHub Search API
-        const prRes = await fetch(`https://api.github.com/search/issues?q=author:${username}+type:pr`);
-        if (prRes.ok) {
-            const prData = await prRes.json();
-            if (prData.total_count !== undefined) {
-                prCount = prData.total_count;
-                if (prNumEl) prNumEl.setAttribute('data-target', prCount);
-            }
+        });
+        contributionDays = contributionDays.map(day => {
+            const evt = liveCounts[day.date];
+            if (!evt) return day;
+            const evtLevel = evt >= 6 ? 4 : evt >= 4 ? 3 : evt >= 2 ? 2 : 1;
+            return evtLevel > day.level
+                ? { ...day, count: Math.max(day.count, evt), level: evtLevel }
+                : day;
+        });
+        // Keep the stat box and heatmap totals consistent after the live overlay
+        if (contributionDays.length) {
+            contributionTotal = contributionDays.reduce((a, c) => a + c.count, 0);
         }
 
     } catch (err) {
-        console.warn('GitHub API live fetch fallback active:', err);
-    } finally {
-        // Trigger smooth counter animation
-        const countedElements = document.querySelectorAll('.stat-num');
-        countedElements.forEach(el => el.classList.remove('counted'));
-        animateStatCounters();
-
-        // Store data and render all canvas charts
-        _githubChartData = { langCounts, repos: repoCount, commits: commitCount, stars: starCount, prs: prCount };
-
-        // Render contribution heatmap (fetches its own event data)
-        renderContributionHeatmap(username);
-
-        // Render animated donut chart
-        renderLangDonutChart(langCounts);
-
-        // Render performance radar chart
-        renderPerfRadarChart(_githubChartData);
+        console.warn('GitHub live fetch issue (showing cached/static data):', err);
     }
+
+    const stats = {
+        repos: repoCount, commits: commitCount, stars: starCount, prs: prCount,
+        followers: followerCount, contributions: contributionTotal, langCounts
+    };
+    if (contributionDays.length) _contributionDays = contributionDays;
+    _githubChartData = { ..._githubChartData, ...stats };
+    if (stats.repos || stats.commits) cacheGitHubData(stats, _contributionDays);
+
+    hydrateStatBoxes(_githubChartData);
+
+    renderContributionHeatmap();
+    renderLangDonutChart(stats.langCounts);
+    renderPerfRadarChart(_githubChartData);
+    _heatmapRendered = true;
 }
 
 /* ─── Canvas-based Dynamic GitHub Chart Renderers ─── */
@@ -1895,83 +1961,92 @@ const LANG_COLORS = {
 };
 function getLangColor(lang) { return LANG_COLORS[lang] || '#6366f1'; }
 
-// Store fetched data for chart rendering
-let _githubChartData = { langCounts: {}, repos: 0, commits: 0, stars: 0, prs: 0 };
+// ── 1. CONTRIBUTION HEATMAP ─────────────────────────────
+// Accurate GitHub-style calendar: Sunday-aligned fixed weeks, real counts,
+// hover tooltips, streak badges, theme-aware colors.
+
+const HM_COLORS = {
+    dark:  ['rgba(30, 30, 50, 0.45)', '#312e81', '#4f46e5', '#818cf8', '#c4b5fd'],
+    light: ['rgba(15, 23, 42, 0.08)', '#c7d2fe', '#818cf8', '#4f46e5', '#312e81']
+};
+
 
 // ── 1. CONTRIBUTION HEATMAP (Full year, real GitHub data with levels 0-4) ──
-async function renderContributionHeatmap(username) {
-    const canvas = document.getElementById('contribution-heatmap');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+function formatDateKey(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
 
-    // Fetch real contribution data (date + level 0-4) from GitHub
-    let contributions = {}; // { "2025-08-01": level (0-4) }
-    let liveEventCounts = {}; // Real-time fallback/supplement from GitHub Events API
+function computeStreaks(days) {
+    const activeSet = new Set(days.filter(d => d.count > 0).map(d => d.date));
+    if (!activeSet.size) return { longest: 0, current: 0 };
 
-    // 1. Fetch live events for instant real-time data
-    try {
-        const pages = [1, 2, 3, 4, 5];
-        const fetches = pages.map(p =>
-            fetch(`https://api.github.com/users/${username}/events?per_page=30&page=${p}`)
-                .then(r => r.ok ? r.json() : []).catch(() => [])
-        );
-        const allPages = await Promise.all(fetches);
-        allPages.flat().forEach(evt => {
-            if (evt.created_at) {
-                const day = evt.created_at.slice(0, 10);
-                liveEventCounts[day] = (liveEventCounts[day] || 0) + 1;
-            }
-        });
-    } catch(e) { /* silent fallback */ }
-
-    // 2. Fetch full-year level data from Contributions API
-    try {
-        const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
-        if (res.ok) {
-            const data = await res.json();
-            if (data.contributions && Array.isArray(data.contributions)) {
-                data.contributions.forEach(c => {
-                    contributions[c.date] = c.level; // 0-4
-                });
-            }
+    // Longest run of consecutive active dates
+    let longest = 0, run = 0, prev = null;
+    const sorted = [...activeSet].sort();
+    sorted.forEach(dateStr => {
+        if (prev) {
+            const expected = new Date(prev);
+            expected.setDate(expected.getDate() + 1);
+            run = formatDateKey(expected) === dateStr ? run + 1 : 1;
+        } else {
+            run = 1;
         }
-    } catch(e) { /* silent fallback */ }
-
-    // 3. Merge: If contributions API returns level 0 for recent active days, overlay live event levels
-    Object.keys(liveEventCounts).forEach(day => {
-        const evtCount = liveEventCounts[day];
-        let calculatedLevel = 1;
-        if (evtCount >= 6) calculatedLevel = 4;
-        else if (evtCount >= 4) calculatedLevel = 3;
-        else if (evtCount >= 2) calculatedLevel = 2;
-
-        if (!contributions[day] || contributions[day] < calculatedLevel) {
-            contributions[day] = calculatedLevel;
-        }
+        longest = Math.max(longest, run);
+        prev = dateStr;
     });
 
-    // Format YYYY-MM-DD in local time
-    function formatLocalDate(d) {
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const dd = String(d.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
+    // Current streak: walk back from today (or yesterday if today has no activity yet)
+    let current = 0;
+    const cursor = new Date();
+    if (!activeSet.has(formatDateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+    while (activeSet.has(formatDateKey(cursor))) {
+        current++;
+        cursor.setDate(cursor.getDate() - 1);
     }
+    return { longest, current };
+}
 
-    // Rolling 52-week grid (364 days sliding window)
-    const WEEKS = 52;
-    const DAYS = 7;
+function renderContributionHeatmap() {
+    const canvas = document.getElementById('contribution-heatmap');
+    if (!canvas) return;
+    drawHeatmap(canvas, !_heatmapRendered);
+}
+
+function drawHeatmap(canvas, animate) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const light = document.body.classList.contains('light-mode');
+    const colorByLevel = HM_COLORS[light ? 'light' : 'dark'];
+    const monthLabelColor = light ? '#475569' : '#94a3b8';
+    const dayLabelColor = light ? '#64748b' : '#64748b';
+
+    const dayMap = new Map(_contributionDays.map(d => [d.date, d]));
     const today = new Date();
+    const todayEnd = new Date(today);
+    todayEnd.setHours(23, 59, 59, 999);
     const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const dayLabels = ['','Mon','','Wed','','Fri',''];
 
-    // Dynamically size cells to fill card width + right padding for month label overflow
+    // Sunday-aligned rolling window ending with the current week (GitHub-style)
+    const DAY_MS = 86400000;
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - 364);
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+    const WEEKS = Math.ceil(((today - startDate) / DAY_MS + 1) / 7);
+    const DAYS = 7;
+
+    // Dynamic sizing: cells flex to fill the card at any width, capped so the
+    // grid never looks bloated on ultra-wide cards (scroll wrapper handles overflow)
     const dpr = window.devicePixelRatio || 1;
-    const containerW = canvas.parentElement.getBoundingClientRect().width;
-    const labelW = 28;
-    const gap = 2;
-    const rightPadding = 26; // Extra room for month text on rightmost columns (e.g. Aug)
-    const cellSize = Math.max(3, Math.floor((containerW - labelW - rightPadding - 4) / WEEKS - gap));
+    const containerW = canvas.parentElement.getBoundingClientRect().width || 600;
+    const labelW = 30;
+    const gap = Math.max(2, Math.min(3, containerW / 220));
+    const rightPadding = 26;
+    const cellSize = Math.max(4, Math.min(16,
+        Math.floor((containerW - labelW - rightPadding - (WEEKS - 1) * gap) / WEEKS)));
     const monthHeaderH = 16;
     const totalW = labelW + WEEKS * (cellSize + gap) + rightPadding;
     const totalH = monthHeaderH + DAYS * (cellSize + gap) + 4;
@@ -1980,91 +2055,80 @@ async function renderContributionHeatmap(username) {
     canvas.height = totalH * dpr;
     canvas.style.width = totalW + 'px';
     canvas.style.height = totalH + 'px';
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, totalW, totalH);
 
-    // Calculate rolling start date (52 weeks before today, Sunday aligned)
-    const startDate = new Date(today);
-    startDate.setDate(startDate.getDate() - (WEEKS * 7 - 1));
-    startDate.setDate(startDate.getDate() - startDate.getDay());
-
-    const todayEnd = new Date(today);
-    todayEnd.setHours(23, 59, 59, 999);
-
-    // Purple color scale matching GitHub's 5 levels (0-4)
-    const colorByLevel = [
-        'rgba(30, 30, 50, 0.45)',  // Level 0 — no activity
-        '#312e81',                   // Level 1 — light
-        '#4f46e5',                   // Level 2 — medium
-        '#818cf8',                   // Level 3 — active
-        '#c4b5fd',                   // Level 4 — very active
-    ];
-
-    function getCellColor(dateStr) {
-        const level = contributions[dateStr] || 0;
-        return colorByLevel[Math.min(level, 4)];
-    }
-
-    // Draw month labels dynamically above the column where each month starts
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = `${Math.max(9, cellSize + 1)}px JetBrains Mono, monospace`;
+    // Month labels above the week column where each month begins (GitHub rule:
+    // skip when the previous label is too close, or when there's no room at the end)
+    ctx.fillStyle = monthLabelColor;
+    ctx.font = `${Math.max(9, Math.min(11, cellSize + 2))}px JetBrains Mono, monospace`;
     ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
     let lastMonth = -1;
     let lastLabelX = -100;
 
     for (let w = 0; w < WEEKS; w++) {
-        // Check if any day in this week is the 1st of a month, or if it's week 0
-        for (let d = 0; d < DAYS; d++) {
-            const cellDate = new Date(startDate);
-            cellDate.setDate(cellDate.getDate() + w * 7 + d);
-            const m = cellDate.getMonth();
-
-            if ((m !== lastMonth && (cellDate.getDate() === 1 || cellDate.getDate() <= 7 || w === 0))) {
-                const x = labelW + w * (cellSize + gap);
-                if (x - lastLabelX >= 22) {
-                    lastMonth = m;
-                    lastLabelX = x;
-                    ctx.fillText(monthNames[m], x, 0);
-                }
-                break;
+        const weekStart = new Date(startDate);
+        weekStart.setDate(weekStart.getDate() + w * 7);
+        const m = weekStart.getMonth();
+        if (m !== lastMonth) {
+            const x = labelW + w * (cellSize + gap);
+            const fitsRight = x + ctx.measureText(monthNames[m]).width < totalW - 4;
+            if (x - lastLabelX >= cellSize * 2 + gap * 2 && fitsRight) {
+                ctx.fillText(monthNames[m], x, 0);
+                lastLabelX = x;
+                lastMonth = m;
             }
         }
     }
 
-    // Draw day labels (Mon, Wed, Fri)
-    ctx.fillStyle = '#64748b';
-    ctx.font = `${Math.max(7, cellSize - 1)}px JetBrains Mono, monospace`;
+    // Day-of-week labels (Mon / Wed / Fri)
+    ctx.fillStyle = dayLabelColor;
+    ctx.font = `${Math.max(7, Math.min(10, cellSize - 1))}px JetBrains Mono, monospace`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'right';
     for (let d = 0; d < DAYS; d++) {
         if (dayLabels[d]) {
             const y = monthHeaderH + d * (cellSize + gap) + cellSize / 2;
-            ctx.fillText(dayLabels[d], labelW - 4, y);
+            ctx.fillText(dayLabels[d], labelW - 5, y);
         }
     }
     ctx.textAlign = 'left';
 
-    // Draw cells with staggered animation
-    let cellIndex = 0;
+    // Cells — collect geometry for tooltip hit-testing
+    const cells = [];
+    let maxDelay = 0;
     for (let w = 0; w < WEEKS; w++) {
         for (let d = 0; d < DAYS; d++) {
             const cellDate = new Date(startDate);
             cellDate.setDate(cellDate.getDate() + w * 7 + d);
-            if (cellDate > todayEnd) continue; // Future days remain undrawn
-            const dateStr = formatLocalDate(cellDate);
+            if (cellDate > todayEnd) continue; // future days stay empty
+            const dateStr = formatDateKey(cellDate);
+            const dayData = dayMap.get(dateStr);
+            const level = dayData ? dayData.level : 0;
             const x = labelW + w * (cellSize + gap);
             const y = monthHeaderH + d * (cellSize + gap);
+            cells.push({ x, y, dateStr, count: dayData ? dayData.count : 0, level, cellDate });
 
-            const idx = cellIndex++;
-            setTimeout(() => {
+            const paint = () => {
                 ctx.beginPath();
                 ctx.roundRect(x, y, cellSize, cellSize, Math.max(1, cellSize / 5));
-                ctx.fillStyle = getCellColor(dateStr);
+                ctx.fillStyle = colorByLevel[Math.min(level, 4)];
                 ctx.fill();
-            }, idx * 1.5);
+            };
+            if (animate) {
+                const delay = cells.length * 1.2;
+                maxDelay = Math.max(maxDelay, delay);
+                setTimeout(paint, delay);
+            } else {
+                paint();
+            }
         }
     }
+    _hmCells = cells;
+    _hmGeom = { labelW, gap, cellSize, monthHeaderH, colorByLevel };
 
-    // Render legend
+    // Legend
     const legendEl = document.getElementById('heatmap-legend');
     if (legendEl) {
         legendEl.innerHTML = `
@@ -2073,6 +2137,64 @@ async function renderContributionHeatmap(username) {
             <span>More</span>
         `;
     }
+
+    // Summary line + streak badges
+    const totalEl = document.getElementById('heatmap-total');
+    const yearTotal = _contributionDays.reduce((a, c) => a + (c.count || 0), 0);
+    if (totalEl && yearTotal) totalEl.textContent = `${yearTotal.toLocaleString()} contributions in the last year`;
+
+    const streakEl = document.getElementById('streak-badges');
+    if (streakEl && _contributionDays.length) {
+        const { longest, current } = computeStreaks(_contributionDays);
+        streakEl.innerHTML = `
+            <span class="streak-badge"><i class="fas fa-fire"></i> ${longest}-day best streak</span>
+            <span class="streak-badge streak-current"><i class="fas fa-bolt"></i> ${current}-day streak</span>
+        `;
+    }
+}
+
+// Tooltip hit-testing (one listener for the canvas lifetime)
+let _hmCells = [];
+let _hmGeom = null;
+
+function initHeatmapTooltip() {
+    const canvas = document.getElementById('contribution-heatmap');
+    const tooltip = document.getElementById('heatmap-tooltip');
+    if (!canvas || !tooltip) return;
+    const card = canvas.closest('.github-diagram-card');
+
+    const show = (evt) => {
+        if (!_hmGeom) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = evt.clientX - rect.left;
+        const y = evt.clientY - rect.top;
+        const { cellSize, monthHeaderH, gap } = _hmGeom;
+        const col = Math.floor((x - _hmGeom.labelW) / (cellSize + gap));
+        const row = Math.floor((y - monthHeaderH) / (cellSize + gap));
+        const cell = _hmCells.find(c => c.x === _hmGeom.labelW + col * (cellSize + gap) &&
+                                         c.y === monthHeaderH + row * (cellSize + gap));
+        if (!cell) {
+            tooltip.classList.remove('visible');
+            return;
+        }
+        const n = cell.count;
+        tooltip.innerHTML = n > 0
+            ? `<strong>${n} contribution${n === 1 ? '' : 's'}</strong><span>on ${cell.cellDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>`
+            : `<strong>No contributions</strong><span>on ${cell.cellDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>`;
+        tooltip.classList.add('visible');
+
+        // Position near the cursor, flipping left when near the card edge
+        const cardRect = card.getBoundingClientRect();
+        const tipW = tooltip.offsetWidth || 160;
+        let left = evt.clientX - cardRect.left + 12;
+        if (left + tipW > cardRect.width - 8) left = evt.clientX - cardRect.left - tipW - 12;
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = (evt.clientY - cardRect.top - tooltip.offsetHeight - 10) + 'px';
+    };
+
+    canvas.addEventListener('mousemove', show);
+    canvas.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+    canvas.addEventListener('click', show);
 }
 
 // ── 2. ANIMATED DONUT CHART (Languages) ──
@@ -2095,6 +2217,10 @@ function renderLangDonutChart(langCounts) {
 
     const cx = size / 2, cy = size / 2;
     const outerR = 110, innerR = 65;
+    const light = document.body.classList.contains('light-mode');
+    const ringBg = light ? 'rgba(15, 23, 42, 0.06)' : 'rgba(30, 30, 50, 0.4)';
+    const centerColor = light ? '#0f172a' : '#f8fafc';
+    const subColor = light ? '#475569' : '#94a3b8';
 
     // Animate sweep
     let animProgress = 0;
@@ -2106,7 +2232,7 @@ function renderLangDonutChart(langCounts) {
         ctx.beginPath();
         ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
         ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
-        ctx.fillStyle = 'rgba(30, 30, 50, 0.4)';
+        ctx.fillStyle = ringBg;
         ctx.fill();
 
         let startAngle = -Math.PI / 2;
@@ -2133,12 +2259,12 @@ function renderLangDonutChart(langCounts) {
         });
 
         // Center text
-        ctx.fillStyle = '#f8fafc';
+        ctx.fillStyle = centerColor;
         ctx.font = 'bold 22px Outfit, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(sorted.length, cx, cy - 8);
-        ctx.fillStyle = '#94a3b8';
+        ctx.fillStyle = subColor;
         ctx.font = '11px JetBrains Mono, monospace';
         ctx.fillText('languages', cx, cy + 12);
 
@@ -2176,6 +2302,9 @@ function renderPerfRadarChart(data) {
 
     const cx = size / 2, cy = size / 2;
     const maxR = 100;
+    const light = document.body.classList.contains('light-mode');
+    const pointStroke = light ? '#ffffff' : '#f8fafc';
+    const axisLabelColor = light ? '#334155' : '#cbd5e1';
 
     // Metrics: normalize each to 0-1 range with sensible caps
     const metrics = [
@@ -2255,7 +2384,7 @@ function renderPerfRadarChart(data) {
             ctx.arc(x, y, 4, 0, Math.PI * 2);
             ctx.fillStyle = '#a78bfa';
             ctx.fill();
-            ctx.strokeStyle = '#f8fafc';
+            ctx.strokeStyle = pointStroke;
             ctx.lineWidth = 1.5;
             ctx.stroke();
         });
@@ -2268,7 +2397,7 @@ function renderPerfRadarChart(data) {
             const labelR = maxR + 22;
             const x = cx + Math.cos(angle) * labelR;
             const y = cy + Math.sin(angle) * labelR;
-            ctx.fillStyle = '#cbd5e1';
+            ctx.fillStyle = axisLabelColor;
             ctx.font = '11px Outfit, sans-serif';
             ctx.fillText(m.label, x, y);
         });
@@ -2290,9 +2419,18 @@ function renderPerfRadarChart(data) {
     }
 }
 
-// ── Theme updater (no longer needs image src swaps) ──
+// ── Theme updater: redraw canvas charts so text/cells match the active theme ──
 function updateGitHubStatsTheme() {
-    // Charts are canvas-based, no theme image swaps needed
+    if (_contributionDays.length) {
+        const canvas = document.getElementById('contribution-heatmap');
+        if (canvas && _heatmapRendered) drawHeatmap(canvas, false);
+    }
+    if (_githubChartData.langCounts && Object.keys(_githubChartData.langCounts).length) {
+        renderLangDonutChart(_githubChartData.langCounts);
+    }
+    if (_githubChartData.repos || _githubChartData.commits) {
+        renderPerfRadarChart(_githubChartData);
+    }
 }
 
 // Synchronize layout positions dynamically on device resize or shift
@@ -2303,8 +2441,9 @@ window.addEventListener("resize", () => {
         if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.refresh();
         }
-        renderContributionHeatmap('CyberCodezilla');
-    }, 200); 
+        const canvas = document.getElementById('contribution-heatmap');
+        if (canvas && _contributionDays.length) drawHeatmap(canvas, false);
+    }, 200);
 });
 
 /* ============================================
