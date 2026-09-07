@@ -3715,9 +3715,256 @@ body.light-mode .planet-text-core {
 }
 
 .copyright-compact {
-    color: var(--text-muted);
+    color: rgba(224, 242, 254, 0.75);
     font-size: 0.8rem;
+    position: relative;
+    z-index: 10;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
 }
+
+/* ============================================
+   HYPER-REALISTIC EARTH HORIZON ARC (REAL LAND, WATER, CLOUDS & ATMOSPHERE)
+   ============================================ */
+
+.earth-horizon-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    user-select: none;
+    contain: layout style paint;
+}
+
+/* 1. Exosphere Deep Cosmic Backscatter Diffuse Glow */
+.earth-exosphere-glow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140%;
+    height: 380px;
+    background: radial-gradient(
+        ellipse 70% 50% at 50% 100%,
+        rgba(14, 165, 233, 0.28) 0%,
+        rgba(2, 132, 199, 0.14) 30%,
+        rgba(30, 58, 138, 0.08) 55%,
+        rgba(99, 102, 241, 0.03) 75%,
+        transparent 90%
+    );
+    pointer-events: none;
+    z-index: 1;
+    animation: earthExoPulse 10s ease-in-out infinite alternate;
+}
+
+@keyframes earthExoPulse {
+    0% {
+        opacity: 0.85;
+        transform: translateX(-50%) scaleY(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) scaleY(1.03);
+    }
+}
+
+/* 2. Real Earth Globe Arc Container */
+.earth-globe-arc-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 2;
+}
+
+/* 3. Photorealistic Earth Image (Land, Water, Swirling Clouds & Atmospheric Limb) */
+.earth-realistic-img {
+    width: min(1500px, 120vw);
+    min-width: 1000px;
+    height: 250px;
+    object-fit: fill;
+    display: block;
+    filter: drop-shadow(0 -4px 25px rgba(14, 165, 233, 0.7))
+            drop-shadow(0 -1px 8px rgba(56, 189, 248, 0.95));
+    user-select: none;
+    pointer-events: none;
+    animation: earthAtmosphereBreathe 10s ease-in-out infinite alternate;
+}
+
+@keyframes earthAtmosphereBreathe {
+    0% {
+        filter: drop-shadow(0 -4px 22px rgba(14, 165, 233, 0.6))
+                drop-shadow(0 -1px 6px rgba(56, 189, 248, 0.85));
+    }
+    100% {
+        filter: drop-shadow(0 -6px 35px rgba(14, 165, 233, 0.85))
+                drop-shadow(0 -2px 12px rgba(125, 211, 252, 1));
+    }
+}
+
+/* 4. Blurry Volumetric Atmospheric Layer (Rayleigh scattering halo) */
+.earth-atmosphere-blur-aura {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1500px, 120vw);
+    min-width: 1000px;
+    height: 160px;
+    background: radial-gradient(
+        ellipse 55% 45% at 50% 65%,
+        rgba(56, 189, 248, 0.28) 0%,
+        rgba(14, 165, 233, 0.16) 35%,
+        rgba(2, 132, 199, 0.06) 60%,
+        transparent 80%
+    );
+    filter: blur(14px);
+    pointer-events: none;
+    mix-blend-mode: screen;
+    z-index: 3;
+}
+
+/* 5. Orbital Sunrise / Dawn Specular Glint */
+.earth-dawn-glint {
+    position: absolute;
+    left: 36.5%;
+    bottom: 155px;
+    transform: translate(-50%, 50%);
+    z-index: 5;
+    pointer-events: none;
+    animation: dawnGlintShimmer 6s ease-in-out infinite alternate;
+}
+
+@keyframes dawnGlintShimmer {
+    0% {
+        opacity: 0.88;
+        transform: translate(-50%, 50%) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 50%) scale(1.08);
+    }
+}
+
+.dawn-flare-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 7px;
+    height: 7px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow:
+        0 0 14px 4px #ffffff,
+        0 0 32px 10px #67e8f9,
+        0 0 65px 24px rgba(14, 165, 233, 0.9);
+}
+
+.dawn-flare-streak {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(4deg);
+    width: 280px;
+    height: 1.5px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(56, 189, 248, 0.25) 18%,
+        rgba(224, 242, 254, 0.95) 50%,
+        rgba(56, 189, 248, 0.25) 82%,
+        transparent 100%
+    );
+    border-radius: 1px;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+}
+
+.dawn-flare-halo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(
+        circle,
+        rgba(103, 232, 249, 0.35) 0%,
+        rgba(14, 165, 233, 0.15) 40%,
+        transparent 70%
+    );
+    border-radius: 50%;
+}
+
+.dawn-flare-cross {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 36px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+}
+
+.dawn-flare-cross::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(90deg);
+    background: inherit;
+}
+
+/* Ensure Contact UI elements maintain crisp z-index and readability */
+#contact .card-content {
+    position: relative;
+    z-index: 10;
+}
+
+#contact .social-links-compact {
+    position: relative;
+    z-index: 10;
+}
+
+/* Light mode adaptability */
+body.light-mode .earth-horizon-wrapper {
+    opacity: 0.75;
+    filter: saturate(1.1);
+}
+
+/* Responsive Scaling for Small Screens */
+@media (max-width: 768px) {
+    .earth-horizon-wrapper {
+        height: 170px;
+    }
+    .earth-realistic-img {
+        width: 100%;
+        min-width: 750px;
+        height: 170px;
+    }
+    .earth-atmosphere-blur-aura {
+        min-width: 750px;
+        height: 110px;
+    }
+    .earth-dawn-glint {
+        bottom: 105px;
+        left: 36.5%;
+    }
+    .dawn-flare-streak {
+        width: 180px;
+    }
+}
+
 
 /* ============================================
    CURSOR - Glassy Windows Arrow
