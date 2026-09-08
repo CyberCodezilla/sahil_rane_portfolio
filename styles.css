@@ -3856,6 +3856,15 @@ body.light-mode .planet-text-core {
     overflow: hidden;
     user-select: none;
     contain: layout style paint;
+    opacity: 0;
+    transform: translateY(35px);
+    transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.earth-horizon-wrapper.earth-revealed {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* 1. Exosphere Deep Cosmic Backscatter Diffuse Glow */
@@ -3904,7 +3913,38 @@ body.light-mode .planet-text-core {
     z-index: 2;
 }
 
-/* 3. Photorealistic Earth Image (Land, Water, Swirling Clouds & Atmospheric Limb) */
+/* 3. Photorealistic 3D Rotating Earth Horizon Canvas */
+.earth-horizon-canvas {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+    z-index: 2;
+    filter: drop-shadow(0 -4px 25px rgba(14, 165, 233, 0.7))
+            drop-shadow(0 -1px 8px rgba(56, 189, 248, 0.95));
+}
+
+/* Fallback image when 3D texture is loading or on restricted local file protocol */
+.earth-fallback-img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    transition: opacity 1s ease;
+}
+
+.earth-horizon-canvas.loaded + .earth-fallback-img {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Fallback image styling */
 .earth-realistic-img {
     width: min(1500px, 120vw);
     min-width: 1000px;
@@ -4057,8 +4097,13 @@ body.light-mode .planet-text-core {
 
 /* Light mode adaptability */
 body.light-mode .earth-horizon-wrapper {
-    opacity: 0.75;
+    opacity: 0;
     filter: saturate(1.1);
+}
+
+body.light-mode .earth-horizon-wrapper.earth-revealed {
+    opacity: 0.78;
+    transform: translateY(0);
 }
 
 /* Responsive Scaling for Small Screens */

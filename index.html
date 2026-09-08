@@ -800,7 +800,8 @@
 
                 <!-- Photorealistic Real Earth Curved Limb (Land, Ocean, Swirling Clouds & Atmospheric Blurry Layer) -->
                 <div class="earth-globe-arc-container">
-                    <img src="assets/earth_horizon_arc.webp" alt="Earth horizon arc showing real continents, oceans, clouds, and glowing atmosphere" class="earth-realistic-img" loading="eager" decoding="async" />
+                    <canvas id="earth-horizon-canvas" class="earth-horizon-canvas"></canvas>
+                    <img src="assets/earth_horizon_arc.webp" alt="Earth horizon arc showing real continents, oceans, clouds, and glowing atmosphere" class="earth-realistic-img earth-fallback-img" loading="lazy" decoding="async" />
                     <!-- Volumetric Atmospheric Blurry Layer (Rayleigh scattering halo) -->
                     <div class="earth-atmosphere-blur-aura"></div>
                 </div>
