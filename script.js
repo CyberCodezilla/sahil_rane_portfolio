@@ -117,6 +117,15 @@ function initNavbar() {
                 link.classList.remove('active');
             }
         });
+        const mobileLinks = document.querySelectorAll('.mobile-nav-links a');
+        mobileLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === '#' + id) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
     }
     window.setActiveNavTab = setActiveNav;
 
@@ -1095,9 +1104,11 @@ function animateHero() {
     });
     
     // Animate hero image
+    const isMobileHero = window.innerWidth < 900;
     gsap.from('.hero-image', {
         opacity: 0,
-        x: 100,
+        y: isMobileHero ? 35 : 0,
+        x: isMobileHero ? 0 : 100,
         duration: 1,
         delay: 0.5
     });
@@ -1264,10 +1275,10 @@ function initSmoothScroll() {
                 // Close mobile menu if open
                 const hamburger = document.querySelector('.nav-toggle');
                 const navLinks = document.querySelector('.nav-links');
-                if (hamburger && navLinks) {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('active');
-                }
+                const mobileMenu = document.querySelector('.mobile-menu');
+                if (hamburger) hamburger.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+                if (mobileMenu) mobileMenu.classList.remove('active');
             }
         });
     });
@@ -1278,107 +1289,76 @@ function initSmoothScroll() {
    ============================================ */
 function initMobileMenu() {
     const hamburger = document.querySelector('.nav-toggle');
-    const navLinks = document.querySelector('.nav-links');
-    const navRight = document.querySelector('.nav-right');
+    const navbar = document.querySelector('.navbar');
     
-    if (!hamburger) return;
+    if (!hamburger || !navbar) return;
     
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        
-        // Create mobile menu if doesn't exist
-        let mobileMenu = document.querySelector('.mobile-menu');
-        
-        if (!mobileMenu) {
-            mobileMenu = document.createElement('div');
-            mobileMenu.className = 'mobile-menu';
-            mobileMenu.innerHTML = `
-                <ul class="mobile-nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#skills">Skills</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-                <div class="mobile-contact">
-                    <a href="tel:+919326786943"><i class="fas fa-phone"></i> +91 9326786943</a>
-                    <a href="mailto:sahilrane132007@gmail.com"><i class="fas fa-envelope"></i> sahilrane132007@gmail.com</a>
-                </div>
-            `;
-            document.querySelector('.navbar').appendChild(mobileMenu);
-            
-            // Add styles dynamically
-            const style = document.createElement('style');
-            style.textContent = `
-                .mobile-menu {
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    right: 0;
-                    background: rgba(10, 10, 15, 0.98);
-                    backdrop-filter: blur(20px);
-                    padding: 30px;
-                    transform: translateY(-20px);
-                    opacity: 0;
-                    visibility: hidden;
-                    transition: all 0.3s ease;
-                }
-                .mobile-menu.active {
-                    transform: translateY(0);
-                    opacity: 1;
-                    visibility: visible;
-                }
-                .mobile-nav-links {
-                    list-style: none;
-                    margin-bottom: 30px;
-                }
-                .mobile-nav-links li {
-                    margin-bottom: 15px;
-                }
-                .mobile-nav-links a {
-                    font-size: 1.2rem;
-                    color: var(--text-secondary);
-                    transition: color 0.3s;
-                }
-                .mobile-nav-links a:hover {
-                    color: var(--primary);
-                }
-                .mobile-contact {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 15px;
-                }
-                .mobile-contact a {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    color: var(--text-secondary);
-                }
-                .mobile-contact i {
-                    color: var(--primary);
-                }
-                .nav-toggle.active span:nth-child(1) {
-                    transform: rotate(45deg) translate(5px, 5px);
-                }
-                .nav-toggle.active span:nth-child(2) {
-                    opacity: 0;
-                }
-                .nav-toggle.active span:nth-child(3) {
-                    transform: rotate(-45deg) translate(7px, -7px);
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        mobileMenu.classList.toggle('active');
-        
-        // Close menu when clicking links
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
+    // Create mobile menu once if not already present
+    let mobileMenu = document.querySelector('.mobile-menu');
+    if (!mobileMenu) {
+        mobileMenu = document.createElement('div');
+        mobileMenu.className = 'mobile-menu';
+        mobileMenu.innerHTML = `
+            <ul class="mobile-nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-contact">
+                <a href="mailto:sahilrane132007@gmail.com"><i class="fas fa-envelope"></i> sahilrane132007@gmail.com</a>
+                <a href="tel:+919326786943"><i class="fas fa-phone"></i> +91 9326786943</a>
+            </div>
+        `;
+        navbar.appendChild(mobileMenu);
+
+        // Smooth scroll & close on link click
+        mobileMenu.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const target = document.querySelector(targetId);
+
                 hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+
+                if (typeof window.setActiveNavTab === 'function') {
+                    window.setActiveNavTab(targetId.replace('#', ''));
+                }
+
+                if (target) {
+                    const offsetTop = target.offsetTop - 70;
+                    window.scrollTo({
+                        top: Math.max(0, offsetTop),
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
+
+        // Close on clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navbar.contains(e.target) && mobileMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            }
+        });
+    }
+
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        hamburger.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
     });
 }
 
@@ -1386,6 +1366,8 @@ function initMobileMenu() {
    PARALLAX EFFECTS
    ============================================ */
 function initParallax() {
+    // Skip parallax on small/touch screens to avoid scroll jank
+    if (window.innerWidth < 768 || ('ontouchstart' in window && window.innerWidth < 1024)) return;
     gsap.registerPlugin(ScrollTrigger);
     
     // Parallax for floating stars

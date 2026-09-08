@@ -726,6 +726,125 @@ body.light-mode .nav-contact-item {
     transition: all var(--transition-normal);
 }
 
+.nav-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile Menu Drawer */
+.mobile-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 24, 0.96);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 20px;
+    padding: 22px 18px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), 0 0 25px rgba(99, 102, 241, 0.15);
+    transform: translateY(-12px) scale(0.98);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1001;
+}
+
+body.light-mode .mobile-menu {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1), 0 0 25px rgba(99, 102, 241, 0.08);
+}
+
+.mobile-menu.active {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.mobile-nav-links {
+    list-style: none;
+    margin: 0 0 18px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mobile-nav-links li {
+    margin: 0;
+}
+
+.mobile-nav-links a {
+    display: flex;
+    align-items: center;
+    padding: 11px 16px;
+    font-size: 1.02rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.mobile-nav-links a:hover,
+.mobile-nav-links a.active {
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.12);
+}
+
+body.light-mode .mobile-nav-links a {
+    color: var(--text-secondary);
+}
+
+body.light-mode .mobile-nav-links a:hover,
+body.light-mode .mobile-nav-links a.active {
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.mobile-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.light-mode .mobile-contact {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.mobile-contact a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.mobile-contact a:hover {
+    color: var(--primary);
+}
+
+.mobile-contact i {
+    color: var(--primary);
+    font-size: 0.9rem;
+    width: 16px;
+}
+
 /* ============================================
    SINGLE-PAGE SCROLL LAYOUT
    ============================================ */
@@ -1406,7 +1525,7 @@ body.light-mode .btn-neon:hover {
     opacity: 0;
     visibility: hidden;
     z-index: 1;
-    transform: translateX(60px);
+    transform: translateX(170px);
     transition: opacity 0.3s ease, filter 0.3s ease, visibility 0s 0.3s;
 }
 
@@ -1422,7 +1541,7 @@ body.light-mode .profile-photo-light {
     opacity: 1;
     visibility: visible;
     z-index: 2;
-    transform: translateX(-200px);
+    transform: translateX(170px);
     transition: opacity 0.3s ease, filter 0.3s ease, visibility 0s;
 }
 
@@ -1615,7 +1734,7 @@ body.light-mode .profile-photo:hover {
     z-index: 2;
 }
 
-.profile-photo {
+.profile-photo-container .profile-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -6939,6 +7058,758 @@ body.light-mode .timeline-step .badge {
 .astronaut-float-section .scrollable-section {
   position: relative;
   z-index: 2;
+}
+
+/* ============================================
+   PROFESSIONAL RESPONSIVE OVERHAUL
+   Unified, cascading breakpoints — mobile-first fixes
+   Placed last for clean specificity override
+   ============================================ */
+
+/* ── 1200px: Large Tablet / Small Desktop ──────── */
+@media (max-width: 1200px) {
+    .hero-container {
+        gap: 30px;
+    }
+    .satellite-unit {
+        width: clamp(480px, 60vw, 800px);
+        height: clamp(210px, 26vw, 340px);
+    }
+}
+
+/* ── 1024px: Tablet Landscape ──────────────────── */
+@media (max-width: 1024px) {
+    /* Keep hero 2-column until 900px */
+    .hero-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding-top: 4vh;
+    }
+
+    /* Theme toggle: shift left so hamburger has room */
+    .theme-toggle {
+        right: 16px;
+        top: 18px;
+        width: 42px;
+        height: 42px;
+    }
+
+    /* Skills: 2-col grid on tablet */
+    .skills-grid-compact {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Projects: safer minmax for tablet */
+    .projects-grid-compact {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+
+    /* About satellite: scale down */
+    .satellite-unit {
+        width: clamp(400px, 55vw, 650px);
+        height: clamp(180px, 22vw, 280px);
+        top: -70px;
+    }
+
+    /* Telemetry tabs: tighter */
+    .sat-tab {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+    }
+}
+
+/* ── 900px: Tablet Portrait / Hamburger Appears ── */
+@media (max-width: 900px) {
+    /* Navbar: hamburger visible, links hidden */
+    .nav-toggle {
+        display: flex;
+        z-index: 1002;
+        position: relative;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .nav-contact {
+        display: none;
+    }
+
+    /* Theme toggle: make room for hamburger */
+    .theme-toggle {
+        right: 72px;
+        top: 18px;
+    }
+
+    /* Hero: stack to single column */
+    .hero-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+        padding-top: 1vh;
+        width: 100%;
+    }
+
+    .hero-content {
+        display: contents;
+    }
+
+    .hero-badge {
+        order: 1;
+        justify-content: center;
+        margin-bottom: 2px;
+    }
+
+    .hero-title {
+        order: 2;
+        margin-bottom: 6px;
+    }
+
+    /* Image placed perfectly in between "This is your developer" and "Code optimize deploy repeat" */
+    .hero-image {
+        order: 3;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 0;
+        margin: 6px auto;
+        position: relative;
+    }
+
+    .value-statement {
+        order: 4;
+        margin: 6px auto 14px;
+        font-size: 0.88rem;
+    }
+
+    .hero-description {
+        order: 5;
+        max-width: 92%;
+        margin: 0 auto 16px;
+        line-height: 1.6;
+    }
+
+    .hero-cta {
+        order: 6;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    /* Centered image wrapper for tablet/mobile */
+    .image-wrapper-simple {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        width: min(65vw, 300px);
+        height: min(80vw, 380px);
+    }
+
+    .image-wrapper-simple .profile-photo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        max-width: 100%;
+        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 0;
+        margin: 0 auto;
+    }
+
+    .image-wrapper-simple .profile-photo-dark,
+    body.light-mode .image-wrapper-simple .profile-photo-light,
+    .image-wrapper-simple .profile-photo-light {
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .image-wrapper-simple .profile-glow-effect {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .rotating-badge {
+        width: 96px;
+        height: 96px;
+        right: max(10px, calc(50% - 150px));
+        bottom: 0;
+    }
+
+    /* Skills: 2 columns */
+    .skills-grid-compact {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    /* About satellite: smaller */
+    .satellite-unit {
+        width: clamp(340px, 50vw, 500px);
+        height: clamp(150px, 20vw, 220px);
+        top: -55px;
+    }
+
+    /* Tabs: scrollable row */
+    .telemetry-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        justify-content: flex-start;
+        padding-bottom: 4px;
+        gap: 8px;
+    }
+    .telemetry-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    .sat-tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* Contact grid: stack */
+    .contact-grid-compact {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .contact-box-compact {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ── 768px: Large Phone / Small Tablet ─────────── */
+@media (max-width: 768px) {
+    /* Navbar: compact */
+    .navbar {
+        height: 56px;
+        padding: 0 16px;
+        border-radius: 40px;
+        top: 10px;
+        width: min(96%, 100vw - 16px);
+    }
+
+    .nav-container {
+        padding: 0 8px;
+    }
+
+    /* Theme toggle: compact & out of hamburger's way */
+    .theme-toggle {
+        width: 38px;
+        height: 38px;
+        right: 62px;
+        top: 16px;
+    }
+
+    .theme-toggle-icon {
+        font-size: 1rem;
+    }
+
+    /* Section padding */
+    .section {
+        padding: 40px var(--fluid-gutter);
+    }
+
+    #main-content {
+        padding-top: 60px;
+    }
+
+    /* Hero: compact mobile layout */
+    .hero-container {
+        gap: 20px;
+        padding-top: 0;
+    }
+
+    .hero-cta {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .magnetic-btn {
+        width: 100%;
+        max-width: 300px;
+        padding: 14px 20px;
+    }
+
+    /* Hero image: prevent clipping */
+    .image-wrapper-simple {
+        width: min(70vw, 280px);
+        height: min(85vw, 360px);
+    }
+
+    .profile-glow-effect {
+        width: min(60vw, 260px);
+        height: min(60vw, 260px);
+    }
+
+    /* Skills: single column */
+    .skills-grid-compact {
+        grid-template-columns: 1fr;
+    }
+
+    /* Projects: single column */
+    .projects-grid-compact {
+        grid-template-columns: 1fr;
+    }
+
+    /* Project category tabs: scrollable */
+    .project-category-tabs {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+    }
+    .project-category-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    .proj-cat-tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* About satellite: much smaller */
+    .satellite-unit {
+        width: clamp(280px, 85vw, 450px);
+        height: clamp(120px, 35vw, 190px);
+        top: -40px;
+    }
+
+    /* About section padding */
+    .about-satellite-section {
+        padding: 40px 0;
+    }
+
+    .satellite-orbit-wrapper {
+        max-width: 100%;
+        gap: 18px;
+    }
+
+    /* Telemetry terminal: compact */
+    .telemetry-terminal {
+        min-height: 180px;
+        padding: 16px;
+        font-size: 0.9rem;
+    }
+
+    /* Achievements: single column */
+    .achievements-grid,
+    .achievements-grid-compact {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Certificate cards: 2 col on tablet, 1 on small */
+    .live-cert-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+
+    /* Earth horizon: scale */
+    .earth-horizon-wrapper {
+        height: 150px;
+    }
+    .earth-realistic-img {
+        min-width: 650px;
+        height: 150px;
+    }
+
+    /* Social links: proper touch targets */
+    .social-link-compact {
+        width: 46px;
+        height: 46px;
+        font-size: 1.1rem;
+    }
+
+    /* Scrollable section: remove max-height for natural flow */
+    .scrollable-section {
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    /* Value statement */
+    .value-statement {
+        font-size: 0.85rem;
+    }
+
+    /* Page indicators: hide on mobile (not useful without card-deck nav) */
+    .page-indicators {
+        display: none;
+    }
+}
+
+/* ── 480px: Standard Phone ─────────────────────── */
+@media (max-width: 480px) {
+    /* Navbar: tighter */
+    .navbar {
+        height: 52px;
+        padding: 0 12px;
+        top: 8px;
+        border-radius: 30px;
+        width: calc(100% - 16px);
+    }
+
+    .nav-container {
+        padding: 0 4px;
+    }
+
+    .nav-logo {
+        font-size: 1.15rem;
+    }
+
+    /* Theme toggle: smaller, out of the way */
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+        right: 56px;
+        top: 14px;
+    }
+
+    .theme-toggle-icon {
+        font-size: 0.9rem;
+    }
+
+    /* Section padding */
+    .section {
+        padding: 30px 16px;
+    }
+
+    #main-content {
+        padding-top: 55px;
+    }
+
+    .card-content {
+        padding: 10px 4px 24px;
+    }
+
+    /* Hero: aggressive scaling */
+    .hero-badge {
+        font-size: 0.72rem;
+        letter-spacing: 1px;
+        margin-top: 8px;
+    }
+
+    .title-line {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .highlight-name {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+    }
+
+    .hero-description {
+        font-size: 0.88rem;
+        line-height: 1.6;
+    }
+
+    .hero-cta {
+        gap: 10px;
+    }
+
+    .magnetic-btn {
+        padding: 12px 18px;
+        font-size: 0.85rem;
+        max-width: 280px;
+    }
+
+    /* Hero image: perfectly centered on mobile */
+    .hero-image {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+    }
+
+    .image-wrapper-simple {
+        width: min(72vw, 240px);
+        height: min(85vw, 310px);
+        margin: 0 auto;
+    }
+
+    .image-wrapper-simple .profile-photo {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .image-wrapper-simple .profile-photo-dark,
+    body.light-mode .image-wrapper-simple .profile-photo-light,
+    .image-wrapper-simple .profile-photo-light {
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .profile-glow-effect {
+        width: min(55vw, 220px);
+        height: min(55vw, 220px);
+    }
+
+    .rotating-badge {
+        width: 80px;
+        height: 80px;
+        right: max(6px, calc(50% - 130px));
+        bottom: 0;
+    }
+
+    /* About satellite: hide on very small screens to prevent overlap */
+    .satellite-unit {
+        width: 260px;
+        height: 110px;
+        top: -30px;
+        opacity: 0.6;
+    }
+
+    /* Sat tabs: smaller */
+    .sat-tab {
+        padding: 7px 11px;
+        font-size: 0.76rem;
+        gap: 4px;
+        border-radius: 16px;
+    }
+
+    .sat-tab i {
+        font-size: 0.7rem;
+    }
+
+    .telemetry-tabs {
+        gap: 6px;
+    }
+
+    /* Telemetry terminal */
+    .telemetry-terminal {
+        min-height: 160px;
+        padding: 14px 12px;
+        border-radius: 10px;
+    }
+
+    .terminal-header {
+        font-size: 0.72rem;
+    }
+
+    /* Project cards */
+    .project-card-structured {
+        padding: 1.2rem;
+    }
+
+    .project-image-compact {
+        height: 100px;
+    }
+
+    /* Achievements */
+    .achievement-card-compact {
+        padding: 16px;
+    }
+
+    /* Certificate grid */
+    .live-cert-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.75rem;
+    }
+
+    /* Contact */
+    .contact-box-compact {
+        padding: 12px 14px;
+        font-size: 0.88rem;
+    }
+
+    .social-link-compact {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Section headers */
+    .section-header-compact {
+        margin-bottom: 16px;
+    }
+
+    .section-title-compact {
+        font-size: clamp(1.4rem, 5vw, 1.8rem);
+    }
+
+    /* Earth horizon */
+    .earth-horizon-wrapper {
+        height: 120px;
+    }
+    .earth-realistic-img {
+        min-width: 550px;
+        height: 120px;
+    }
+    .earth-atmosphere-blur-aura {
+        min-width: 550px;
+        height: 80px;
+    }
+
+    /* Astronaut: smaller on mobile */
+    .astronaut-unit {
+        width: clamp(150px, 40vw, 220px);
+        top: 200px;
+        opacity: 0.65;
+    }
+}
+
+/* ── 360px: Small Phone ────────────────────────── */
+@media (max-width: 360px) {
+    .navbar {
+        height: 48px;
+        padding: 0 8px;
+    }
+
+    .nav-logo {
+        font-size: 1rem;
+    }
+
+    .theme-toggle {
+        width: 32px;
+        height: 32px;
+        right: 48px;
+        top: 14px;
+    }
+
+    .title-line,
+    .highlight-name {
+        font-size: clamp(1.3rem, 5.5vw, 1.6rem);
+    }
+
+    .hero-description {
+        font-size: 0.82rem;
+    }
+
+    .image-wrapper-simple {
+        width: min(70vw, 200px);
+        height: min(80vw, 270px);
+        margin: 0 auto;
+    }
+
+    .rotating-badge {
+        width: 68px;
+        height: 68px;
+        right: max(4px, calc(50% - 110px));
+        bottom: 0;
+    }
+
+    .satellite-unit {
+        display: none;
+    }
+
+    .sat-tab {
+        padding: 6px 9px;
+        font-size: 0.72rem;
+    }
+
+    .earth-horizon-wrapper {
+        height: 90px;
+    }
+    .earth-realistic-img {
+        min-width: 450px;
+        height: 90px;
+    }
+}
+
+/* ── Touch Devices: Performance & UX ───────────── */
+@media (hover: none) and (pointer: coarse) {
+    /* Hide custom cursors on touch — save paint cycles */
+    .cursor-follower,
+    .cursor-dot {
+        display: none !important;
+    }
+
+    html, body {
+        cursor: auto !important;
+    }
+
+    a, button, input, select, textarea, label, [role="button"],
+    .btn, .magnetic-btn, .project-card-compact, .skill-card-compact,
+    .hackathon-card-compact, .about-card-compact, .contact-box-compact,
+    .nav-link, .page-dot, .theme-toggle, .nav-logo, .achievement-card-compact,
+    .social-link-compact, .page-nav-arrow, .nav-toggle, .nav-contact-item,
+    .sat-tab, .cert-card-compact, .timeline-step, .project-card, .skill-card,
+    .hackathon-card, .cert-card, .contact-box, [onclick],
+    [style*="cursor: pointer"], [style*="cursor:pointer"] {
+        cursor: auto !important;
+    }
+
+    /* Disable hover-based blur effects on touch (confusing without mouse) */
+    .projects-grid-compact:hover .project-card-structured:not(:hover) {
+        filter: none;
+        transform: none;
+    }
+
+    .project-category-tabs:hover .proj-cat-tab:not(:hover):not(.active) {
+        opacity: 1;
+        filter: none;
+    }
+
+    /* Ensure minimum 44x44 touch targets */
+    .nav-toggle {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 10px;
+    }
+
+    .theme-toggle {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .social-link-compact {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .sat-tab {
+        min-height: 40px;
+    }
+
+    .magnetic-btn {
+        min-height: 48px;
+    }
+
+    /* Reduce heavy animations on mobile */
+    .profile-particles,
+    .floating-star {
+        display: none;
+    }
+}
+
+/* ── Landscape phones: prevent content overflow ── */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding-top: 0;
+        text-align: left;
+    }
+
+    .hero-content {
+        align-items: flex-start;
+    }
+
+    .hero-cta {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    .image-wrapper-simple {
+        width: min(35vh, 200px);
+        height: min(45vh, 260px);
+    }
+
+    .section {
+        padding: 20px var(--fluid-gutter);
+    }
+
+    #main-content {
+        padding-top: 50px;
+    }
 }
 
 /* ============================================
