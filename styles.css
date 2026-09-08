@@ -3850,12 +3850,14 @@ body.light-mode .planet-text-core {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 250px;
+    height: 360px;
     pointer-events: none;
     z-index: 0;
     overflow: hidden;
     user-select: none;
     contain: layout style paint;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 8%, black 20%, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 8%, black 20%, black 100%);
 }
 
 /* 1. Exosphere Deep Cosmic Backscatter Diffuse Glow */
@@ -3932,20 +3934,20 @@ body.light-mode .planet-text-core {
 /* 4. Blurry Volumetric Atmospheric Layer (Rayleigh scattering halo) */
 .earth-atmosphere-blur-aura {
     position: absolute;
-    top: 0;
+    bottom: 90px;
     left: 50%;
     transform: translateX(-50%);
     width: min(1500px, 120vw);
     min-width: 1000px;
-    height: 160px;
+    height: 180px;
     background: radial-gradient(
-        ellipse 55% 45% at 50% 65%,
-        rgba(56, 189, 248, 0.28) 0%,
-        rgba(14, 165, 233, 0.16) 35%,
+        ellipse 60% 45% at 50% 75%,
+        rgba(56, 189, 248, 0.32) 0%,
+        rgba(14, 165, 233, 0.18) 35%,
         rgba(2, 132, 199, 0.06) 60%,
         transparent 80%
     );
-    filter: blur(14px);
+    filter: blur(16px);
     pointer-events: none;
     mix-blend-mode: screen;
     z-index: 3;
@@ -4064,7 +4066,7 @@ body.light-mode .earth-horizon-wrapper {
 /* Responsive Scaling for Small Screens */
 @media (max-width: 768px) {
     .earth-horizon-wrapper {
-        height: 170px;
+        height: 260px;
     }
     .earth-realistic-img {
         width: 100%;
@@ -4073,7 +4075,8 @@ body.light-mode .earth-horizon-wrapper {
     }
     .earth-atmosphere-blur-aura {
         min-width: 750px;
-        height: 110px;
+        height: 130px;
+        bottom: 60px;
     }
     .earth-dawn-glint {
         bottom: 105px;
@@ -7416,11 +7419,15 @@ body.light-mode .timeline-step .badge {
 
     /* Earth horizon: scale */
     .earth-horizon-wrapper {
-        height: 150px;
+        height: 230px;
     }
     .earth-realistic-img {
         min-width: 650px;
         height: 150px;
+    }
+    .earth-atmosphere-blur-aura {
+        bottom: 50px;
+        height: 120px;
     }
 
     /* Social links: proper touch targets */
@@ -7637,7 +7644,7 @@ body.light-mode .timeline-step .badge {
 
     /* Earth horizon */
     .earth-horizon-wrapper {
-        height: 120px;
+        height: 190px;
     }
     .earth-realistic-img {
         min-width: 550px;
@@ -7645,7 +7652,8 @@ body.light-mode .timeline-step .badge {
     }
     .earth-atmosphere-blur-aura {
         min-width: 550px;
-        height: 80px;
+        height: 100px;
+        bottom: 40px;
     }
 
     /* Astronaut: smaller on mobile */
@@ -7706,11 +7714,15 @@ body.light-mode .timeline-step .badge {
     }
 
     .earth-horizon-wrapper {
-        height: 90px;
+        height: 150px;
     }
     .earth-realistic-img {
         min-width: 450px;
         height: 90px;
+    }
+    .earth-atmosphere-blur-aura {
+        bottom: 30px;
+        height: 80px;
     }
 }
 
