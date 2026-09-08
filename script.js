@@ -1086,7 +1086,7 @@ function animateHero() {
     });
     
     // Animate CTA buttons
-    gsap.from('.hero-cta .btn', {
+    gsap.from('.hero-cta .magnetic-btn', {
         opacity: 0,
         y: 30,
         stagger: 0.15,
@@ -1204,17 +1204,7 @@ function initScrollAnimations() {
         });
     });
     
-    // Animate CTA section
-    gsap.from('.cta-content', {
-        opacity: 0,
-        scale: 0.9,
-        duration: 0.8,
-        scrollTrigger: {
-            trigger: '.cta-section',
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-        }
-    });
+    // CTA section removed from DOM — animation skipped
     
     // Text reveal animation for headings
     gsap.utils.toArray('.section-title').forEach(title => {
@@ -1403,7 +1393,7 @@ function initParallax() {
         gsap.to(star, {
             y: (i + 1) * -50,
             scrollTrigger: {
-                trigger: '.hero',
+                trigger: '#home',
                 start: 'top top',
                 end: 'bottom top',
                 scrub: 1
@@ -1415,7 +1405,7 @@ function initParallax() {
     gsap.to('.hero-image', {
         y: 100,
         scrollTrigger: {
-            trigger: '.hero',
+            trigger: '#home',
             start: 'top top',
             end: 'bottom top',
             scrub: 1
