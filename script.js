@@ -283,7 +283,7 @@ function createCreativeThemeTransition(toLight) {
         height: 100%;
         pointer-events: none;
         z-index: 99999;
-        background: ${toLight ? '#f8fafc' : '#0a0a0f'};
+        background: ${toLight ? '#EAE6F4' : '#0a0a0f'};
         clip-path: circle(0px at ${centerX}px ${centerY}px);
     `;
     document.body.appendChild(mainOverlay);

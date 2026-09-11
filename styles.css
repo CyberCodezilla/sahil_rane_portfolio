@@ -66,44 +66,44 @@
 }
 
 /* ============================================
-   LIGHT MODE THEME - Curated Artist Palette
-   Architectural Warm Cashmere & Velvet Indigo
-   Zero Eye Strain • No Blinding Inversion • Silky 120fps
+   LIGHT MODE THEME - Cosmic Twilight Nebula Palette
+   Calming Celestial Twilight Lavender & Royal Purple-Pink
+   Zero Eye Strain • Authentic Space Theme • Silky 120fps
    ============================================ */
 body.light-mode {
-    /* ── Warm Cashmere Oatmeal Canvas (Soft, Serene, Zero Glare) ── */
-    --bg-dark:        #ECE7DE;
-    --bg-darker:      #E2DBD0;
-    --bg-card:        #FAF8F5;
-    --bg-card-hover:  #FFFFFF;
+    /* ── Calming Cosmic Twilight Lavender Canvas (Soft, Serene, Zero Eye Glare) ── */
+    --bg-dark:        #EAE6F4;
+    --bg-darker:      #DFDAED;
+    --bg-card:        #F3EFF9;
+    --bg-card-hover:  #F8F5FC;
 
-    /* ── Deep Velvet Obsidian-Indigo (Rich Pigment, Not Harsh #000) ── */
-    --text-primary:   #181528;
-    --text-secondary: #474354;
-    --text-muted:     #787285;
+    /* ── Deep Cosmic Obsidian-Violet Typography (Maximum Crisp Contrast, No Harsh Black) ── */
+    --text-primary:   #1A1230;
+    --text-secondary: #4A3F66;
+    --text-muted:     #766C91;
 
-    /* ── Brand Jeweled Accents ── */
-    --primary:        #5542E2;
-    --primary-light:  #6E5DF0;
-    --primary-dark:   #3F2EC7;
-    --accent:         #0284C7;
-    --accent-light:   #0EA5E9;
+    /* ── Cosmic Purple-Pink Jeweled Accents (Harmonized with Dark Mode) ── */
+    --primary:        #7C3AED;
+    --primary-light:  #9333EA;
+    --primary-dark:   #5B21B6;
+    --accent:         #EC4899;
+    --accent-light:   #F472B6;
 
-    /* ── Multi-layered Painterly Shadows ── */
-    --shadow-sm:   0 2px 8px rgba(35, 25, 60, 0.05),   0 1px 3px rgba(0,0,0,0.03);
-    --shadow-md:   0 6px 20px rgba(35, 25, 60, 0.07),  0 2px 6px rgba(0,0,0,0.04);
-    --shadow-lg:   0 12px 36px rgba(35, 25, 60, 0.09), 0 4px 12px rgba(0,0,0,0.04);
-    --shadow-glow: 0 0 35px rgba(85, 66, 226, 0.16);
+    /* ── Cosmic Nebula Layered Shadows ── */
+    --shadow-sm:   0 2px 8px rgba(91, 33, 182, 0.06),   0 1px 3px rgba(0, 0, 0, 0.03);
+    --shadow-md:   0 6px 20px rgba(91, 33, 182, 0.08),  0 2px 6px rgba(0, 0, 0, 0.04);
+    --shadow-lg:   0 12px 36px rgba(91, 33, 182, 0.11), 0 4px 12px rgba(0, 0, 0, 0.04);
+    --shadow-glow: 0 0 35px rgba(124, 58, 237, 0.22);
 
-    /* ── Luminous Ambient Glow ── */
-    --gradient-glow: radial-gradient(circle at center, rgba(85, 66, 226, 0.12) 0%, transparent 70%);
+    /* ── Luminous Ambient Stardust Glow ── */
+    --gradient-glow: radial-gradient(circle at center, rgba(168, 85, 247, 0.18) 0%, transparent 70%);
 
-    /* ── Base Background ── */
+    /* ── Base Calming Twilight Nebula Background ── */
     background: 
-        radial-gradient(ellipse 90% 60% at 15% 20%, rgba(85, 66, 226, 0.07) 0%, transparent 60%),
-        radial-gradient(ellipse 70% 50% at 85% 70%, rgba(217, 70, 239, 0.05) 0%, transparent 55%),
-        radial-gradient(ellipse 100% 80% at 50% 10%, rgba(14, 165, 233, 0.05) 0%, transparent 70%),
-        #ECE7DE !important;
+        radial-gradient(ellipse 90% 60% at 15% 20%, rgba(147, 51, 234, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 75% 55% at 85% 75%, rgba(236, 72, 153, 0.10) 0%, transparent 58%),
+        radial-gradient(ellipse 80% 70% at 50% 10%, rgba(99, 102, 241, 0.09) 0%, transparent 65%),
+        #EAE6F4 !important;
 }
 
 /* ============================================
@@ -133,10 +133,10 @@ body.light-mode .glass-card {
    LIGHT MODE - Navbar Styles
    ============================================ */
 body.light-mode .navbar {
-    background: rgba(236, 231, 222, 0.94);
-    border: 1px solid rgba(85, 66, 226, 0.16);
+    background: rgba(234, 230, 244, 0.92);
+    border: 1px solid rgba(147, 51, 234, 0.20);
     box-shadow:
-        0 8px 30px rgba(35, 25, 60, 0.08),
+        0 8px 30px rgba(76, 29, 149, 0.08),
         0 2px 6px rgba(0, 0, 0, 0.03);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -153,13 +153,13 @@ body.light-mode .nav-link {
 
 body.light-mode .nav-link:hover {
     color: var(--primary);
-    background: rgba(85, 66, 226, 0.08);
+    background: rgba(147, 51, 234, 0.10);
 }
 
 body.light-mode .nav-link.active {
     color: #ffffff !important;
-    background: var(--primary) !important;
-    box-shadow: 0 2px 10px rgba(85, 66, 226, 0.35);
+    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
+    box-shadow: 0 3px 14px rgba(124, 58, 237, 0.35), 0 1px 4px rgba(236, 72, 153, 0.22) !important;
 }
 
 body.light-mode .nav-contact-item {
@@ -172,12 +172,12 @@ body.light-mode .nav-contact-item:hover {
 
 /* Light mode - Page dots */
 body.light-mode .page-dot {
-    background: rgba(85, 66, 226, 0.20);
+    background: rgba(147, 51, 234, 0.24);
 }
 
 body.light-mode .page-dot.active {
-    background: var(--primary);
-    box-shadow: 0 0 10px rgba(85, 66, 226, 0.5);
+    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
 }
 
 /* Light mode - Scroll hint */
@@ -193,27 +193,38 @@ body.light-mode .card-section {
 }
 
 /* ============================================
-   LIGHT MODE - Cards & Porcelain Surfaces
+   LIGHT MODE - Cards & Celestial Amethyst Surfaces
    ============================================ */
 body.light-mode .skill-card-compact,
 body.light-mode .project-card-compact,
 body.light-mode .about-card-compact,
 body.light-mode .hackathon-card-compact,
 body.light-mode .contact-box-compact,
-body.light-mode .project-card-structured {
-    background: #FAF8F5 !important;
-    border: 1px solid rgba(85, 66, 226, 0.12) !important;
-    box-shadow: 0 4px 18px rgba(35, 25, 60, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+body.light-mode .project-card-structured,
+body.light-mode .cert-card-compact,
+body.light-mode .achievement-card-compact,
+body.light-mode .stat-box,
+body.light-mode .telemetry-terminal,
+body.light-mode .github-diagram-card,
+body.light-mode .glass-card {
+    background: #F3EFF9 !important;
+    border: 1px solid rgba(147, 51, 234, 0.18) !important;
+    box-shadow: 0 4px 18px rgba(76, 29, 149, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
 }
 
 body.light-mode .skill-card-compact:hover,
 body.light-mode .project-card-compact:hover,
 body.light-mode .about-card-compact:hover,
 body.light-mode .hackathon-card-compact:hover,
-body.light-mode .project-card-structured:hover {
-    background: #FFFFFF !important;
-    border-color: rgba(85, 66, 226, 0.32) !important;
-    box-shadow: 0 12px 32px rgba(85, 66, 226, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+body.light-mode .contact-box-compact:hover,
+body.light-mode .project-card-structured:hover,
+body.light-mode .cert-card-compact:hover,
+body.light-mode .achievement-card-compact:hover,
+body.light-mode .stat-box:hover,
+body.light-mode .github-diagram-card:hover {
+    background: #F8F5FC !important;
+    border-color: rgba(217, 70, 239, 0.42) !important;
+    box-shadow: 0 12px 32px rgba(124, 58, 237, 0.16), 0 2px 8px rgba(236, 72, 153, 0.10) !important;
 }
 
 /* Interactive Card highlight aura */
@@ -223,9 +234,9 @@ body.light-mode .about-card-compact::before,
 body.light-mode .hackathon-card-compact::before {
     background: radial-gradient(
         350px circle at var(--x, 50%) var(--y, 50%),
-        rgba(85, 66, 226, 0.08) 0%,
-        rgba(2, 132, 199, 0.05) 30%,
-        transparent 60%
+        rgba(147, 51, 234, 0.10) 0%,
+        rgba(236, 72, 153, 0.07) 35%,
+        transparent 65%
     );
 }
 
@@ -233,58 +244,58 @@ body.light-mode .hackathon-card-compact::before {
    LIGHT MODE - Hero Section
    ============================================ */
 body.light-mode .hero-tagline {
-    color: #5542E2;
-    background: rgba(85, 66, 226, 0.08);
-    border: 1px solid rgba(85, 66, 226, 0.20);
+    color: #7C3AED;
+    background: rgba(147, 51, 234, 0.09);
+    border: 1px solid rgba(147, 51, 234, 0.22);
 }
 
 body.light-mode .title-line {
-    color: #181528;
+    color: #1A1230;
 }
 
-/* Majestic Artist Name Gradient: Royal Iris -> Luminous Violet -> Sunset Coral */
+/* Signature Cosmic Purple-Pink Name Gradient */
 body.light-mode .highlight-name {
     background: linear-gradient(
         135deg,
-        #3F2EC7 0%,
-        #5542E2 30%,
-        #9333EA 60%,
-        #EA580C 100%
+        #6D28D9 0%,
+        #9333EA 35%,
+        #C026D3 65%,
+        #DB2777 100%
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 2px 8px rgba(85, 66, 226, 0.18));
+    filter: drop-shadow(0 2px 8px rgba(147, 51, 234, 0.20));
 }
 
 body.light-mode .hero-description {
-    color: #474354;
+    color: #4A3F66;
 }
 
 /* Buttons */
 body.light-mode .btn-primary {
-    background: linear-gradient(135deg, #5542E2 0%, #4338CA 100%) !important;
+    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 6px 20px rgba(85, 66, 226, 0.30) !important;
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.32), 0 2px 8px rgba(236, 72, 153, 0.22) !important;
     border: none !important;
 }
 
 body.light-mode .btn-primary:hover {
-    background: linear-gradient(135deg, #4338CA 0%, #3730A3 100%) !important;
-    box-shadow: 0 10px 28px rgba(85, 66, 226, 0.40) !important;
+    background: linear-gradient(135deg, #6D28D9 0%, #9333EA 50%, #DB2777 100%) !important;
+    box-shadow: 0 10px 28px rgba(124, 58, 237, 0.42), 0 4px 12px rgba(236, 72, 153, 0.28) !important;
     transform: translateY(-2px);
 }
 
 body.light-mode .btn-outline {
-    border: 1.5px solid rgba(85, 66, 226, 0.28) !important;
-    color: #5542E2 !important;
-    background: #FAF8F5 !important;
+    border: 1.5px solid rgba(147, 51, 234, 0.30) !important;
+    color: #7C3AED !important;
+    background: #F3EFF9 !important;
 }
 
 body.light-mode .btn-outline:hover {
-    border-color: #5542E2 !important;
-    background: rgba(85, 66, 226, 0.10) !important;
-    color: #3F2EC7 !important;
+    border-color: #7C3AED !important;
+    background: rgba(147, 51, 234, 0.12) !important;
+    color: #5B21B6 !important;
 }
 
 /* Section Headers */
@@ -301,20 +312,20 @@ body.light-mode .section-header-compact p {
    LIGHT MODE - GitHub Stats Hologram Cards
    ============================================ */
 body.light-mode .stat-box {
-    background: #FAF8F5 !important;
-    border: 1.5px solid rgba(85, 66, 226, 0.16) !important;
-    box-shadow: 0 4px 18px rgba(35, 25, 60, 0.06), 0 1px 3px rgba(0,0,0,0.03) !important;
+    background: #F3EFF9 !important;
+    border: 1.5px solid rgba(147, 51, 234, 0.20) !important;
+    box-shadow: 0 4px 18px rgba(76, 29, 149, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
 }
 
 body.light-mode .stat-box::before {
-    background: linear-gradient(135deg, #5542E2, #EA580C, #0284C7);
+    background: linear-gradient(135deg, #7C3AED, #EC4899, #8B5CF6);
     opacity: 0;
 }
 
 body.light-mode .stat-box:hover {
-    background: #FFFFFF !important;
-    border-color: rgba(85, 66, 226, 0.40) !important;
-    box-shadow: 0 14px 40px rgba(85, 66, 226, 0.14) !important;
+    background: #F8F5FC !important;
+    border-color: rgba(217, 70, 239, 0.45) !important;
+    box-shadow: 0 14px 40px rgba(124, 58, 237, 0.16) !important;
 }
 
 body.light-mode .stat-box:hover::before {
@@ -322,30 +333,30 @@ body.light-mode .stat-box:hover::before {
 }
 
 body.light-mode .stat-orbital-ring {
-    border-top-color: rgba(85, 66, 226, 0.50);
-    border-right-color: rgba(234, 88, 12, 0.35);
+    border-top-color: rgba(147, 51, 234, 0.50);
+    border-right-color: rgba(236, 72, 153, 0.35);
 }
 
 body.light-mode .stat-orbital-ring.ring-2 {
-    border-top-color: rgba(234, 88, 12, 0.50);
-    border-right-color: rgba(2, 132, 199, 0.35);
+    border-top-color: rgba(236, 72, 153, 0.50);
+    border-right-color: rgba(147, 51, 234, 0.35);
 }
 
 body.light-mode .stat-hologram {
     background: linear-gradient(
         45deg,
         transparent 30%,
-        rgba(85, 66, 226, 0.06) 50%,
+        rgba(147, 51, 234, 0.07) 50%,
         transparent 70%
     );
 }
 
 body.light-mode .stat-box i {
-    color: #5542E2;
+    color: #7C3AED;
 }
 
 body.light-mode .stat-num {
-    background: linear-gradient(135deg, #3F2EC7 0%, #EA580C 100%);
+    background: linear-gradient(135deg, #6D28D9 0%, #C026D3 50%, #DB2777 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -354,151 +365,160 @@ body.light-mode .stat-num {
 }
 
 body.light-mode .stat-plus {
-    color: #EA580C;
-    -webkit-text-fill-color: #EA580C;
+    color: #EC4899;
+    -webkit-text-fill-color: #EC4899;
     font-weight: 700;
 }
 
 body.light-mode .stat-lbl {
-    color: #5542E2;
+    color: #7C3AED;
     font-weight: 700;
 }
 
 /* ============================================
-   LIGHT MODE - Skill Cards & Tech Pills (Artist Palette)
+   LIGHT MODE - Skill Cards & Tech Pills
    ============================================ */
 body.light-mode .skill-icon-compact {
-    background: linear-gradient(135deg, rgba(85, 66, 226, 0.12), rgba(2, 132, 199, 0.12));
-    border: 1px solid rgba(85, 66, 226, 0.20);
-    color: #5542E2;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.12), rgba(236, 72, 153, 0.10));
+    border: 1px solid rgba(147, 51, 234, 0.22);
+    color: #7C3AED;
 }
 
 body.light-mode .skill-title-compact {
-    color: #181528;
+    color: #1A1230;
     font-weight: 700;
 }
 
 body.light-mode .skill-techs-compact {
-    color: #474354;
+    color: #4A3F66;
 }
 
-/* Skill tags - Rich contrast, no eye strain */
+/* Skill tags - Purple-pink space contrast */
 body.light-mode .skill-tags-compact span {
-    background: rgba(85, 66, 226, 0.08);
-    border: 1px solid rgba(85, 66, 226, 0.18);
-    color: #4338CA;
+    background: rgba(147, 51, 234, 0.09);
+    border: 1px solid rgba(147, 51, 234, 0.20);
+    color: #6D28D9;
     font-weight: 600;
 }
 
 body.light-mode .skill-tags-compact span:hover {
-    background: rgba(85, 66, 226, 0.16);
-    border-color: #5542E2;
-    color: #312E81;
-    box-shadow: 0 3px 10px rgba(85, 66, 226, 0.18);
+    background: rgba(147, 51, 234, 0.18);
+    border-color: #7C3AED;
+    color: #4C1D95;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.20);
 }
 
 /* ============================================
    LIGHT MODE - Project Cards & Actions
    ============================================ */
 body.light-mode .project-image-compact {
-    background: linear-gradient(135deg, rgba(85, 66, 226, 0.06), rgba(2, 132, 199, 0.06));
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(236, 72, 153, 0.06));
 }
 
 body.light-mode .project-title-compact,
 body.light-mode .project-card-title {
-    color: #181528;
+    color: #1A1230;
     font-weight: 700;
 }
 
 body.light-mode .project-desc-compact,
 body.light-mode .project-card-summary {
-    color: #474354;
+    color: #4A3F66;
 }
 
 body.light-mode .project-tech-compact span,
 body.light-mode .project-tech-pill {
-    background: rgba(85, 66, 226, 0.08);
-    color: #4338CA;
-    border: 1px solid rgba(85, 66, 226, 0.18);
+    background: rgba(147, 51, 234, 0.09);
+    color: #6D28D9;
+    border: 1px solid rgba(147, 51, 234, 0.20);
     font-weight: 600;
 }
 
 body.light-mode .project-link-compact {
-    color: #5542E2;
+    color: #7C3AED;
 }
 
 body.light-mode .project-badge-domain {
-    background: rgba(85, 66, 226, 0.09);
-    color: #4338CA;
-    border: 1px solid rgba(85, 66, 226, 0.22);
+    background: rgba(124, 58, 237, 0.10);
+    color: #6D28D9;
+    border: 1px solid rgba(124, 58, 237, 0.24);
 }
 
 body.light-mode .project-badge-feat {
-    background: rgba(234, 88, 12, 0.10);
-    color: #C2410C;
-    border: 1px solid rgba(234, 88, 12, 0.24);
+    background: rgba(236, 72, 153, 0.12);
+    color: #BE185D;
+    border: 1px solid rgba(236, 72, 153, 0.28);
 }
 
 body.light-mode .project-action-primary {
-    background: linear-gradient(135deg, #5542E2, #4338CA) !important;
+    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 4px 14px rgba(85, 66, 226, 0.28) !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.30) !important;
 }
 
 body.light-mode .project-action-ghost {
-    background: #FAF8F5 !important;
-    border: 1.5px solid rgba(85, 66, 226, 0.24) !important;
-    color: #5542E2 !important;
+    background: #F3EFF9 !important;
+    border: 1.5px solid rgba(147, 51, 234, 0.24) !important;
+    color: #7C3AED !important;
 }
 
 body.light-mode .project-action-ghost:hover {
-    background: rgba(85, 66, 226, 0.10) !important;
-    border-color: #5542E2 !important;
+    background: rgba(147, 51, 234, 0.12) !important;
+    border-color: #7C3AED !important;
+    color: #5B21B6 !important;
 }
 
 /* ============================================
    LIGHT MODE - About Me & Telemetry Terminal
    ============================================ */
 body.light-mode .about-card-compact h3 {
-    color: #181528;
+    color: #1A1230;
 }
 
 body.light-mode .about-card-compact p,
 body.light-mode .about-card-compact li {
-    color: #474354;
+    color: #4A3F66;
 }
 
+/* Telemetry Tabs (About Section) */
 body.light-mode .sat-tab {
-    background: #FAF8F5 !important;
-    border: 1px solid rgba(85, 66, 226, 0.16) !important;
-    color: #474354 !important;
+    background: #EDE8F6 !important;
+    border: 1px solid rgba(147, 51, 234, 0.20) !important;
+    color: #4A3F66 !important;
+    box-shadow: 0 2px 6px rgba(76, 29, 149, 0.04);
 }
 
-body.light-mode .sat-tab:hover,
+body.light-mode .sat-tab:hover {
+    background: #F7F4FC !important;
+    border-color: rgba(217, 70, 239, 0.45) !important;
+    color: #7C3AED !important;
+}
+
 body.light-mode .sat-tab.active {
-    background: linear-gradient(135deg, #5542E2 0%, #0284C7 100%) !important;
+    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
     color: #FFFFFF !important;
-    box-shadow: 0 4px 16px rgba(85, 66, 226, 0.32) !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.36), 0 2px 8px rgba(236, 72, 153, 0.24) !important;
 }
 
 body.light-mode .telemetry-terminal {
-    background: #FAF8F5 !important;
-    border: 1px solid rgba(85, 66, 226, 0.16) !important;
-    box-shadow: 0 8px 28px rgba(35, 25, 60, 0.06) !important;
+    background: #F3EFF9 !important;
+    border: 1px solid rgba(147, 51, 234, 0.18) !important;
+    box-shadow: 0 8px 28px rgba(76, 29, 149, 0.07) !important;
 }
 
 body.light-mode .terminal-header {
-    border-bottom-color: rgba(85, 66, 226, 0.12);
-    color: #474354;
+    border-bottom-color: rgba(147, 51, 234, 0.14);
+    color: #4A3F66;
 }
 
 body.light-mode .timeline-step {
-    background: rgba(85, 66, 226, 0.04);
-    border: 1px solid rgba(85, 66, 226, 0.12);
+    background: rgba(147, 51, 234, 0.05);
+    border: 1px solid rgba(147, 51, 234, 0.14);
 }
 
 body.light-mode .timeline-step .badge {
-    background: linear-gradient(135deg, #5542E2, #0284C7);
+    background: linear-gradient(135deg, #7C3AED, #EC4899);
     color: #ffffff;
 }
 
@@ -506,20 +526,20 @@ body.light-mode .timeline-step .badge {
    LIGHT MODE - Contact Section
    ============================================ */
 body.light-mode .contact-box-compact {
-    background: #FAF8F5 !important;
+    background: #F3EFF9 !important;
 }
 
 body.light-mode .contact-icon-compact {
-    background: linear-gradient(135deg, rgba(85, 66, 226, 0.12), rgba(2, 132, 199, 0.12));
-    color: #5542E2;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.14), rgba(236, 72, 153, 0.12));
+    color: #7C3AED;
 }
 
 body.light-mode .contact-label-compact {
-    color: #787285;
+    color: #766C91;
 }
 
 body.light-mode .contact-value-compact {
-    color: #181528;
+    color: #1A1230;
     font-weight: 600;
 }
 
@@ -527,71 +547,71 @@ body.light-mode .contact-value-compact {
    LIGHT MODE - Hackathons & Achievements
    ============================================ */
 body.light-mode .hackathon-card-compact h3 {
-    color: #181528;
+    color: #1A1230;
 }
 
 body.light-mode .hackathon-card-compact p {
-    color: #474354;
+    color: #4A3F66;
 }
 
 body.light-mode .hackathon-award-compact {
-    background: rgba(234, 88, 12, 0.10);
-    color: #C2410C;
-    border: 1px solid rgba(234, 88, 12, 0.22);
+    background: rgba(236, 72, 153, 0.12);
+    color: #BE185D;
+    border: 1px solid rgba(236, 72, 153, 0.28);
     font-weight: 700;
 }
 
 /* Hero visual elements */
 body.light-mode .hero-visual::before {
-    border-color: rgba(85, 66, 226, 0.14);
+    border-color: rgba(147, 51, 234, 0.16);
 }
 
 body.light-mode .photo-placeholder {
-    background: linear-gradient(135deg, #FBF9F5 0%, #EFECE4 100%);
-    border-color: rgba(85, 66, 226, 0.18);
-    color: #787285;
+    background: linear-gradient(135deg, #F8F5FC 0%, #EDE7F6 100%);
+    border-color: rgba(147, 51, 234, 0.20);
+    color: #766C91;
 }
 
 body.light-mode .orbit-ring {
-    border-color: rgba(85, 66, 226, 0.14);
+    border-color: rgba(147, 51, 234, 0.16);
 }
 
 body.light-mode .orbit-dot {
-    background: #5542E2;
-    box-shadow: 0 0 16px rgba(85, 66, 226, 0.45);
+    background: #7C3AED;
+    box-shadow: 0 0 16px rgba(124, 58, 237, 0.50);
 }
 
 body.light-mode .dev-badge {
-    background: #FAF8F5;
-    border-color: rgba(85, 66, 226, 0.16);
-    box-shadow: 0 6px 24px rgba(35, 25, 60, 0.08);
+    background: #F3EFF9;
+    border-color: rgba(147, 51, 234, 0.18);
+    box-shadow: 0 6px 24px rgba(76, 29, 149, 0.08);
 }
 
 body.light-mode .dev-badge span {
-    color: #787285;
+    color: #766C91;
 }
 
 /* Code styling */
 body.light-mode .code-bracket {
-    color: #5542E2;
+    color: #7C3AED;
 }
 
 body.light-mode .typing-text {
-    color: #181528;
+    color: #1A1230;
 }
 
 /* Scrollbar for light mode */
 body.light-mode::-webkit-scrollbar-track {
-    background: #EFECE4;
+    background: #DFDAED;
 }
 
 body.light-mode::-webkit-scrollbar-thumb {
-    background: rgba(85, 66, 226, 0.28);
+    background: rgba(124, 58, 237, 0.35);
     border-radius: 8px;
 }
 
 body.light-mode::-webkit-scrollbar-thumb:hover {
-    background: rgba(85, 66, 226, 0.50);
+    background: rgba(124, 58, 237, 0.60);
 }
 
 /* Theme transition overlay */
@@ -673,19 +693,19 @@ body {
     border-radius: 16px;
 }
 
-/* Light mode body background - warm cashmere oatmeal artist canvas */
+/* Light mode body background - Calming Cosmic Twilight Nebula Canvas */
 body.light-mode {
     background:
-        radial-gradient(ellipse 90% 60% at 15% 25%, rgba(85, 66, 226, 0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 70% 50% at 85% 75%, rgba(217, 70, 239, 0.05) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 50% 5%,  rgba(14, 165, 233, 0.05) 0%, transparent 70%),
-        #ECE7DE !important;
+        radial-gradient(ellipse 90% 60% at 15% 25%, rgba(147, 51, 234, 0.12) 0%, transparent 65%),
+        radial-gradient(ellipse 70% 50% at 85% 75%, rgba(236, 72, 153, 0.10) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 70% at 50% 5%,  rgba(99, 102, 241, 0.09) 0%, transparent 70%),
+        #EAE6F4 !important;
 }
 
 body.light-mode .glass-card {
-    background: #FAF8F5;
-    border: 1px solid rgba(85, 66, 226, 0.12);
-    box-shadow: 0 4px 20px rgba(35, 25, 60, 0.06), 0 1px 3px rgba(0,0,0,0.03);
+    background: #F3EFF9;
+    border: 1px solid rgba(147, 51, 234, 0.18);
+    box-shadow: 0 4px 20px rgba(76, 29, 149, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
@@ -3262,124 +3282,124 @@ body.light-mode .profile-photo:hover {
    LIGHT MODE OVERRIDES - MATCHED PALETTE
    ============================================ */
 body.light-mode .project-category-tabs {
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(237, 232, 247, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-color: rgba(91, 71, 214, 0.16);
-    box-shadow: 0 4px 20px rgba(91, 71, 214, 0.07);
+    border: 1px solid rgba(147, 51, 234, 0.22);
+    box-shadow: 0 4px 20px rgba(76, 29, 149, 0.07);
 }
 
 body.light-mode .proj-cat-tab {
-    color: #4E5769;
+    color: #55496F;
 }
 
 body.light-mode .proj-cat-tab:hover {
-    color: #1A1A2E;
-    background: rgba(91, 71, 214, 0.09);
+    color: #7C3AED;
+    background: rgba(147, 51, 234, 0.10);
 }
 
 body.light-mode .proj-cat-tab.active {
-    background: linear-gradient(135deg, rgba(85, 66, 226, 0.16), rgba(2, 132, 199, 0.14));
-    border-color: #5542E2;
-    color: #3F2EC7;
-    box-shadow: 0 2px 10px rgba(85, 66, 226, 0.14);
+    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
+    border-color: transparent !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35), 0 2px 6px rgba(236, 72, 153, 0.22) !important;
 }
 
 body.light-mode .project-card-structured {
-    background: #FAF8F5 !important;
+    background: #F3EFF9 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border: 1px solid rgba(85, 66, 226, 0.14) !important;
-    box-shadow: 0 4px 18px rgba(35, 25, 60, 0.06), 0 1px 3px rgba(0,0,0,0.03) !important;
+    border: 1px solid rgba(147, 51, 234, 0.18) !important;
+    box-shadow: 0 4px 18px rgba(76, 29, 149, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
 }
 
 body.light-mode .project-card-structured:hover {
-    border-color: #5542E2 !important;
-    background: #FFFFFF !important;
+    border-color: rgba(217, 70, 239, 0.45) !important;
+    background: #F8F5FC !important;
     transform: translateY(-6px) scale(1.01);
-    box-shadow: 0 16px 36px rgba(85, 66, 226, 0.13), 0 4px 10px rgba(0,0,0,0.04) !important;
+    box-shadow: 0 16px 36px rgba(124, 58, 237, 0.16), 0 4px 10px rgba(236, 72, 153, 0.10) !important;
 }
 
 body.light-mode .project-icon-badge {
-    background: linear-gradient(135deg, rgba(85, 66, 226, 0.12), rgba(2, 132, 199, 0.12));
-    border-color: rgba(85, 66, 226, 0.20);
-    color: #5542E2;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.14), rgba(236, 72, 153, 0.12));
+    border-color: rgba(147, 51, 234, 0.22);
+    color: #7C3AED;
 }
 
 body.light-mode .project-card-structured:hover .project-icon-badge {
-    background: linear-gradient(135deg, rgba(85, 66, 226, 0.20), rgba(2, 132, 199, 0.20));
-    border-color: #5542E2;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.22), rgba(236, 72, 153, 0.20));
+    border-color: #7C3AED;
 }
 
 body.light-mode .project-badge-domain {
-    background: rgba(85, 66, 226, 0.09);
-    color: #4338CA;
-    border-color: rgba(85, 66, 226, 0.22);
+    background: rgba(124, 58, 237, 0.10);
+    color: #6D28D9;
+    border-color: rgba(124, 58, 237, 0.24);
 }
 
 body.light-mode .project-badge-feat {
-    background: rgba(234, 88, 12, 0.10);
-    color: #C2410C;
-    border-color: rgba(234, 88, 12, 0.24);
+    background: rgba(236, 72, 153, 0.12);
+    color: #BE185D;
+    border-color: rgba(236, 72, 153, 0.28);
 }
 
 body.light-mode .project-card-title {
-    color: #181528;
+    color: #1A1230;
     text-shadow: none;
     font-weight: 700;
 }
 
 body.light-mode .project-card-structured:hover .project-card-title {
-    color: #5542E2;
+    color: #7C3AED;
 }
 
 body.light-mode .project-card-summary {
-    color: #474354;
+    color: #4A3F66;
     text-shadow: none;
 }
 
 body.light-mode .project-card-highlights li {
-    color: #474354;
+    color: #4A3F66;
     text-shadow: none;
 }
 
 body.light-mode .project-card-highlights li i {
-    color: #5542E2;
+    color: #7C3AED;
 }
 
 body.light-mode .project-card-techs {
-    border-top-color: rgba(85, 66, 226, 0.12);
+    border-top-color: rgba(147, 51, 234, 0.14);
 }
 
 body.light-mode .project-tech-pill {
-    background: rgba(85, 66, 226, 0.08);
-    border-color: rgba(85, 66, 226, 0.18);
-    color: #4338CA;
+    background: rgba(147, 51, 234, 0.09);
+    border-color: rgba(147, 51, 234, 0.20);
+    color: #6D28D9;
     font-weight: 600;
 }
 
 body.light-mode .project-card-structured:hover .project-tech-pill {
-    background: rgba(85, 66, 226, 0.16);
-    border-color: #5542E2;
-    color: #312E81;
+    background: rgba(147, 51, 234, 0.18);
+    border-color: #7C3AED;
+    color: #4C1D95;
 }
 
 body.light-mode .project-action-primary {
-    background: linear-gradient(135deg, #5542E2, #4338CA) !important;
+    background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(85, 66, 226, 0.28) !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.30) !important;
 }
 
 body.light-mode .project-action-ghost {
-    background: #FAF8F5 !important;
-    border: 1.5px solid rgba(85, 66, 226, 0.24) !important;
-    color: #5542E2 !important;
+    background: #F3EFF9 !important;
+    border: 1.5px solid rgba(147, 51, 234, 0.24) !important;
+    color: #7C3AED !important;
 }
 
 body.light-mode .project-action-ghost:hover {
-    background: rgba(85, 66, 226, 0.10) !important;
-    border-color: #5542E2 !important;
-    color: #5B47D6 !important;
+    background: rgba(147, 51, 234, 0.12) !important;
+    border-color: #7C3AED !important;
+    color: #5B21B6 !important;
 }
 
 .project-links {
@@ -5658,31 +5678,31 @@ body.light-mode .theme-toggle:hover {
 
 /* Light mode certificate styles */
 body.light-mode .certificate-frame {
-    background: linear-gradient(145deg, #FFFFFF 0%, #F5F3EC 100%);
+    background: linear-gradient(145deg, #F5F2FB 0%, #ECE7F5 100%);
     box-shadow:
-        0 20px 56px rgba(91, 71, 214, 0.10),
-        0 0 0 1px rgba(91, 71, 214, 0.10),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        0 20px 56px rgba(124, 58, 237, 0.10),
+        0 0 0 1px rgba(147, 51, 234, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 body.light-mode .certificate-frame:hover {
     box-shadow:
-        0 30px 72px rgba(91, 71, 214, 0.18),
-        0 0 0 1px rgba(91, 71, 214, 0.28),
-        0 0 40px rgba(91, 71, 214, 0.10),
-        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        0 30px 72px rgba(124, 58, 237, 0.18),
+        0 0 0 1px rgba(217, 70, 239, 0.35),
+        0 0 40px rgba(124, 58, 237, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 body.light-mode .certificate-frame-inner {
-    background: linear-gradient(135deg, #F7F5EE 0%, #EDE8DA 100%);
-    border-color: rgba(91, 71, 214, 0.10);
+    background: linear-gradient(135deg, #F8F6FD 0%, #EFEBF7 100%);
+    border-color: rgba(147, 51, 234, 0.14);
     box-shadow:
-        inset 0 2px 10px rgba(91, 71, 214, 0.04),
-        0 4px 20px rgba(0, 0, 0, 0.05);
+        inset 0 2px 10px rgba(124, 58, 237, 0.04),
+        0 4px 20px rgba(76, 29, 149, 0.04);
 }
 
 body.light-mode .certificate-info {
-    border-top-color: rgba(91, 71, 214, 0.10);
+    border-top-color: rgba(147, 51, 234, 0.14);
 }
 
 /* Responsive certificate styles */
@@ -6261,17 +6281,17 @@ body.light-mode .cert-lightbox-meta {
 
 /* Light mode overrides */
 body.light-mode .github-diagram-card {
-    background: #FAF8F5 !important;
-    border: 1px solid rgba(85, 66, 226, 0.16) !important;
-    box-shadow: 0 4px 20px rgba(35, 25, 60, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+    background: #F3EFF9 !important;
+    border: 1px solid rgba(147, 51, 234, 0.18) !important;
+    box-shadow: 0 4px 20px rgba(76, 29, 149, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
 
 body.light-mode .github-diagram-card:hover {
-    background: #FFFFFF !important;
-    border-color: rgba(85, 66, 226, 0.36) !important;
-    box-shadow: 0 12px 36px rgba(85, 66, 226, 0.12) !important;
+    background: #F8F5FC !important;
+    border-color: rgba(217, 70, 239, 0.42) !important;
+    box-shadow: 0 12px 36px rgba(124, 58, 237, 0.16) !important;
 }
 
 body.light-mode .heatmap-total {
@@ -6456,17 +6476,17 @@ body.light-mode .perf-labels .perf-val {
 }
 
 body.light-mode .skill-card-compact {
-    background: #FAF8F5 !important;
-    border: 1px solid rgba(85, 66, 226, 0.14) !important;
-    box-shadow: 0 4px 18px rgba(35, 25, 60, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+    background: #F3EFF9 !important;
+    border: 1px solid rgba(147, 51, 234, 0.18) !important;
+    box-shadow: 0 4px 18px rgba(76, 29, 149, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
 
 body.light-mode .skill-card-compact:hover {
-    background: #FFFFFF !important;
-    border-color: rgba(85, 66, 226, 0.35) !important;
-    box-shadow: 0 12px 32px rgba(85, 66, 226, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    background: #F8F5FC !important;
+    border-color: rgba(217, 70, 239, 0.42) !important;
+    box-shadow: 0 12px 32px rgba(124, 58, 237, 0.16), 0 2px 6px rgba(236, 72, 153, 0.10) !important;
 }
 
 .skill-icon-compact {
@@ -6914,38 +6934,44 @@ body.light-mode .theme-toggle .fa-sun {
 
 /* Light Mode Overrides for Satellite Telemetry */
 body.light-mode .sat-tab {
-  background: #FAF8F5 !important;
-  border: 1px solid rgba(85, 66, 226, 0.16) !important;
-  color: #474354 !important;
+  background: #EDE8F6 !important;
+  border: 1px solid rgba(147, 51, 234, 0.20) !important;
+  color: #4A3F66 !important;
 }
 
-body.light-mode .sat-tab:hover,
+body.light-mode .sat-tab:hover {
+  background: #F7F4FC !important;
+  border-color: rgba(217, 70, 239, 0.45) !important;
+  color: #7C3AED !important;
+}
+
 body.light-mode .sat-tab.active {
-  background: linear-gradient(135deg, #5542E2 0%, #0284C7 100%) !important;
+  background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 16px rgba(85, 66, 226, 0.32);
+  border-color: transparent !important;
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.36), 0 2px 8px rgba(236, 72, 153, 0.24) !important;
 }
 
 body.light-mode .telemetry-terminal {
-  background: #FAF8F5 !important;
-  border: 1px solid rgba(85, 66, 226, 0.16) !important;
-  box-shadow: 0 8px 28px rgba(35, 25, 60, 0.06) !important;
+  background: #F3EFF9 !important;
+  border: 1px solid rgba(147, 51, 234, 0.18) !important;
+  box-shadow: 0 8px 28px rgba(76, 29, 149, 0.07) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
 body.light-mode .terminal-header {
-  border-bottom-color: rgba(85, 66, 226, 0.12);
-  color: #474354;
+  border-bottom-color: rgba(147, 51, 234, 0.14);
+  color: #4A3F66;
 }
 
 body.light-mode .timeline-step {
-  background: rgba(85, 66, 226, 0.04);
-  border: 1px solid rgba(85, 66, 226, 0.12);
+  background: rgba(147, 51, 234, 0.05);
+  border: 1px solid rgba(147, 51, 234, 0.14);
 }
 
 body.light-mode .timeline-step .badge {
-  background: linear-gradient(135deg, #5542E2, #0284C7);
+  background: linear-gradient(135deg, #7C3AED, #EC4899);
   color: #ffffff;
 }
 
@@ -7655,13 +7681,13 @@ body.light-mode .timeline-step .badge {
             #060713 !important;
     }
 
-    /* Light Mode Mobile: Warm Cashmere Oatmeal Artist Canvas — 0% GPU overhead */
+    /* Light Mode Mobile: Calming Cosmic Twilight Nebula Canvas */
     body.light-mode {
         background: 
-            radial-gradient(ellipse 80% 50% at 20% 30%, rgba(85, 66, 226, 0.07) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 80% 70%, rgba(217, 70, 239, 0.05) 0%, transparent 55%),
-            radial-gradient(ellipse 100% 80% at 50% 10%, rgba(14, 165, 233, 0.05) 0%, transparent 70%),
-            #ECE7DE !important;
+            radial-gradient(ellipse 80% 50% at 20% 30%, rgba(147, 51, 234, 0.12) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 40% at 80% 70%, rgba(236, 72, 153, 0.10) 0%, transparent 55%),
+            radial-gradient(ellipse 100% 80% at 50% 10%, rgba(99, 102, 241, 0.09) 0%, transparent 70%),
+            #EAE6F4 !important;
     }
 
     /* Value statement: no clipping on small screens */
