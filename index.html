@@ -20,6 +20,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script>
+        // Guarantee portfolio originally loads in dark mode only
+        document.documentElement.classList.remove('light-mode');
+        try { localStorage.removeItem('theme'); } catch(e){}
+    </script>
 </head>
 <body>
     <!-- Cursor follower -->
@@ -817,6 +822,6 @@
 
     </main>
 
-    <script src="script.js?v=v12_perf" defer></script>
+    <script src="script.js?v=v13_dark_default" defer></script>
 </body>
 </html>

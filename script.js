@@ -348,14 +348,11 @@ function initThemeToggle() {
     const themeToggle = document.querySelector('.theme-toggle');
     if (!themeToggle) return;
     
-    // Check for saved theme preference (defaults to dark mode on first visit)
-    const savedTheme = localStorage.getItem('theme');
-    
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-    } else {
-        document.body.classList.remove('light-mode');
-    }
+    // Portfolio ALWAYS originally loads in dark mode only
+    document.body.classList.remove('light-mode');
+    try {
+        localStorage.removeItem('theme');
+    } catch (e) {}
 
     if (window.updateGalaxyTheme) {
         window.updateGalaxyTheme();
@@ -536,7 +533,6 @@ function createCreativeThemeTransition(toLight) {
     // Toggle theme class after animation starts
     setTimeout(() => {
         document.body.classList.toggle('light-mode');
-        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         updateGitHubStatsTheme();
         if (window.updateGalaxyTheme) window.updateGalaxyTheme();
     }, 100);
