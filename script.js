@@ -263,6 +263,7 @@ function initCursor() {
 
     // Throttled particle spawn for lightweight aura-like energy
     const spawnParticle = throttle((x, y) => {
+        if (document.body.classList.contains('light-mode')) return; // clean, pristine cursor in light mode
         const p = document.createElement('div');
         p.className = 'cursor-particle';
         const size = Math.floor(Math.random() * 5) + 6; // 6-10px
@@ -809,10 +810,13 @@ function initGalaxyBackground() {
 
         if (isLight) {
             starMat.blending = THREE.NormalBlending;
-            starMat.opacity = 0.92;
+            starMat.depthWrite = false;
+            starMat.opacity = 0.55;
             gasMat.blending = THREE.NormalBlending;
-            gasMat.opacity = 0.32;
-            bgMat.opacity = 0.75;
+            gasMat.depthWrite = false;
+            gasMat.opacity = 0.12;
+            bgMat.depthWrite = false;
+            bgMat.opacity = 0.35;
 
             // Vibrant Light-Theme Cosmic Palette (Royal Indigo -> Violet -> Sapphire -> Ocean Cyan -> Orchid Pink)
             const lcCore   = new THREE.Color(0x4f46e5); // Royal Indigo Core
@@ -858,9 +862,12 @@ function initGalaxyBackground() {
 
         } else {
             starMat.blending = THREE.AdditiveBlending;
+            starMat.depthWrite = false;
             starMat.opacity = 0.95;
             gasMat.blending = THREE.AdditiveBlending;
+            gasMat.depthWrite = false;
             gasMat.opacity = 0.25;
+            bgMat.depthWrite = false;
             bgMat.opacity = 0.6;
 
             for (let i = 0; i < starCount; i++) {
