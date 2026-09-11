@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle MUST run first so body class is set before WebGL initialization
     initThemeToggle();
     initLoader();
-    initCursor();
     initGalaxyBackground();
     initNavbar();
     initSmoothScroll();
@@ -222,121 +221,7 @@ function initNavbar() {
     updateActiveNavLink();
 }
 
-/* ============================================
-   3D PARALLAX TILT EFFECT ON MOUSE MOVE
-   ============================================ */
-function init3DParallax() {
-    // Disabled for performance - no continuous RAF loop needed
-    return;
-}
 
-// Initialize 3D parallax after DOM load
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(init3DParallax, 1000);
-});
-
-/* ============================================
-   SIMPLE FAST CURSOR - No Animations
-   ============================================ */
-function initCursor() {
-    const follower = document.querySelector('.cursor-follower');
-    const dot = document.querySelector('.cursor-dot');
-    
-    if (!follower || !dot) return;
-    
-    // Hide on touch devices
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-        follower.style.display = 'none';
-        dot.style.display = 'none';
-        document.body.style.cursor = 'auto';
-        return;
-    }
-    
-    // Direct cursor positioning - no animation delay
-    document.addEventListener('mousemove', (e) => {
-        follower.style.left = e.clientX + 'px';
-        follower.style.top = e.clientY + 'px';
-        dot.style.left = e.clientX + 'px';
-        dot.style.top = e.clientY + 'px';
-        spawnParticle(e.clientX, e.clientY);
-    }, { passive: true });
-
-    // Throttled particle spawn for lightweight aura-like energy
-    const spawnParticle = throttle((x, y) => {
-        if (document.body.classList.contains('light-mode')) return; // clean, pristine cursor in light mode
-        const p = document.createElement('div');
-        p.className = 'cursor-particle';
-        const size = Math.floor(Math.random() * 5) + 6; // 6-10px
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.left = x + (Math.random() * 4 - 2) + 'px'; // tiny random offset
-        p.style.top = y + (Math.random() * 4 - 2) + 'px';
-        p.style.opacity = '0.7';
-        document.body.appendChild(p);
-        setTimeout(() => {
-            if (p && p.parentNode) p.parentNode.removeChild(p);
-        }, 420); // short, gentle lifespan
-    }, 120); // sparser spawn for minimal disturbance
-    
-    // Hover effects on interactive elements
-    const interactiveElements = document.querySelectorAll(
-        'a, button, .btn, .project-card-compact, .skill-card-compact, ' +
-        '.hackathon-card-compact, .about-card-compact, .contact-box-compact, ' +
-        '.nav-link, .page-dot, .theme-toggle, .nav-logo'
-    );
-    
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            dot.classList.add('hover');
-        }, { passive: true });
-        
-        el.addEventListener('mouseleave', () => {
-            dot.classList.remove('hover');
-        }, { passive: true });
-    });
-    
-    // Click burst: subtle ripple + tiny sparks
-    document.addEventListener('click', (e) => {
-        // ripple
-        const ripple = document.createElement('div');
-        ripple.className = 'click-ripple';
-        ripple.style.left = e.clientX + 'px';
-        ripple.style.top = e.clientY + 'px';
-        document.body.appendChild(ripple);
-        setTimeout(() => { if (ripple && ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 650);
-
-        // sparks
-        const sparks = [];
-        const sparkCount = 5;
-        for (let i = 0; i < sparkCount; i++) {
-            const s = document.createElement('div');
-            s.className = 'click-spark';
-            const offsetX = Math.floor(Math.random() * 24) - 12; // -12..12
-            const offsetY = Math.floor(Math.random() * 18) - 9; // -9..9
-            s.style.left = (e.clientX + offsetX) + 'px';
-            s.style.top = (e.clientY + offsetY) + 'px';
-            const size = Math.floor(Math.random() * 3) + 3; // 3-5px
-            s.style.width = size + 'px';
-            s.style.height = size + 'px';
-            document.body.appendChild(s);
-            sparks.push(s);
-        }
-        setTimeout(() => {
-            sparks.forEach(s => { if (s && s.parentNode) s.parentNode.removeChild(s); });
-        }, 420);
-    }, { passive: true });
-    
-    // Hide when leaving window
-    document.addEventListener('mouseleave', () => {
-        follower.style.opacity = '0';
-        dot.style.opacity = '0';
-    }, { passive: true });
-    
-    document.addEventListener('mouseenter', () => {
-        follower.style.opacity = '0.6';
-        dot.style.opacity = '1';
-    }, { passive: true });
-}
 
 /* Custom SVG hand cursor: attach movement and click ripple (safe for pointer devices) */
 /* custom cursor removed */
@@ -1179,68 +1064,7 @@ function initScrollAnimations() {
         });
     });
     
-    // Animate skill cards
-    gsap.utils.toArray('.skill-card').forEach((card, i) => {
-        gsap.from(card, {
-            opacity: 0,
-            y: 60,
-            rotation: 5,
-            duration: 0.6,
-            delay: i * 0.1,
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse'
-            }
-        });
-    });
-    
-    // Animate project cards
-    gsap.utils.toArray('.project-card').forEach((card, i) => {
-        gsap.from(card, {
-            opacity: 0,
-            y: 80,
-            scale: 0.9,
-            duration: 0.7,
-            delay: i * 0.15,
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse'
-            }
-        });
-    });
-    
-    // Animate about cards
-    gsap.utils.toArray('.about-card').forEach((card, i) => {
-        gsap.from(card, {
-            opacity: 0,
-            x: i % 2 === 0 ? -50 : 50,
-            duration: 0.6,
-            delay: i * 0.1,
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse'
-            }
-        });
-    });
-    
-    // Animate hackathon cards
-    gsap.utils.toArray('.hackathon-card').forEach((card, i) => {
-        gsap.from(card, {
-            opacity: 0,
-            y: 50,
-            scale: 0.8,
-            duration: 0.6,
-            delay: i * 0.15,
-            scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse'
-            }
-        });
-    });
+
     
     // CTA section removed from DOM — animation skipped
     
@@ -1421,69 +1245,10 @@ function initParallax() {
         }
     });
     
-    // Scale effect on scroll for sections
-    gsap.utils.toArray('section').forEach(section => {
-        gsap.from(section, {
-            opacity: 0.8,
-            scrollTrigger: {
-                trigger: section,
-                start: 'top bottom',
-                end: 'top center',
-                scrub: 1
-            }
-        });
-    });
+
 }
 
-/* ============================================
-   COUNTER ANIMATIONS
-   ============================================ */
-function initCounterAnimations() {
-    const counters = document.querySelectorAll('.counter');
-    
-    counters.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-target'));
-        const duration = 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-        
-        const updateCounter = () => {
-            current += step;
-            if (current < target) {
-                counter.textContent = Math.ceil(current);
-                requestAnimationFrame(updateCounter);
-            } else {
-                counter.textContent = target;
-            }
-        };
-        
-        // Start counter when in view
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                updateCounter();
-                observer.disconnect();
-            }
-        }, { threshold: 0.5 });
-        
-        observer.observe(counter);
-    });
-}
 
-/* ============================================
-   MAGNETIC BUTTONS - Disabled for Performance
-   ============================================ */
-function initMagneticButtons() {
-    // Disabled - causes lag on hover
-    return;
-}
-
-/* ============================================
-   3D TILT EFFECT - Disabled for Performance
-   ============================================ */
-function initTiltEffect() {
-    // Disabled - causes lag on hover
-    return;
-}
 
 /* ============================================
    REVEAL ON SCROLL (Fallback for data-aos)
@@ -1502,8 +1267,7 @@ function initRevealOnScroll() {
     revealElements.forEach(el => observer.observe(el));
 }
 
-// Initialize reveal on scroll
-document.addEventListener('DOMContentLoaded', initRevealOnScroll);
+
 
 /* ============================================
    EASTER EGG - Konami Code
@@ -1540,71 +1304,13 @@ function activateEasterEgg() {
     }, 5000);
 }
 
-/* ============================================
-   PRELOAD IMAGES
-   ============================================ */
-function preloadImages() {
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-        const src = img.getAttribute('data-src') || img.src;
-        if (src) {
-            const preloadImg = new Image();
-            preloadImg.src = src;
-        }
-    });
-}
 
-// Call preload
-preloadImages();
 
 console.log('%c👋 Hello Developer!', 'font-size: 24px; font-weight: bold; color: #6366f1;');
 console.log('%c Built with ❤️ by Sahil Suresh Rane', 'font-size: 14px; color: #06b6d4;');
 console.log('%c Code • Optimize • Deploy • Repeat', 'font-size: 12px; color: #a1a1aa;');
 
-/* ============================================
-   LIVE CONTENT ENGINE
-   Fetches dynamic content from /api/content
-   and hydrates the portfolio sections.
-   Fully graceful: no errors if API is offline.
-   ============================================ */
-async function initLiveContent() {
-    try {
-        const res = await fetch('/api/content', { credentials: 'include' });
-        if (!res.ok) return;
-        const { content } = await res.json();
-        if (!content) return;
 
-        // ── Inject live certificate cards ───────────────
-        const certs = content.certificates;
-        if (Array.isArray(certs) && certs.length) {
-            injectCertificateCards(certs);
-        }
-
-        // ── Hydrate Hero text (if admin has saved overrides) ─
-        if (content.hero) {
-            const h = content.hero;
-            const lines = document.querySelectorAll('.hero-title .title-line');
-            if (h.heading  && lines[0]) lines[0].textContent = h.heading;
-            if (h.heading2 && lines[1]) lines[1].textContent = h.heading2;
-            if (h.description) {
-                const desc = document.querySelector('.hero-description');
-                if (desc) desc.textContent = h.description;
-            }
-        }
-
-        // ── Hydrate About blurbs ────────────────────────
-        if (content.about) {
-            const a = content.about;
-            const aboutCards = document.querySelectorAll('.about-card-compact p');
-            if (a.who     && aboutCards[0]) aboutCards[0].textContent = a.who;
-            if (a.excites && aboutCards[1]) aboutCards[1].textContent = a.excites;
-            if (a.focus   && aboutCards[3]) aboutCards[3].textContent = a.focus;
-        }
-
-    } catch (_) {
-        // Silently fail if API is unreachable (local dev without backend)
-    }
-}
 
 function injectCertificateCards(certs) {
     const achievementsCard = document.querySelector('#achievements');
