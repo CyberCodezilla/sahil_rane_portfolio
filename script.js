@@ -623,8 +623,19 @@ function createNebulaGasTexture() {
 }
 
 function initGalaxyBackground() {
+    const isMobileDevice = () => {
+        return window.innerWidth <= 900 || 
+               window.matchMedia('(pointer: coarse)').matches || 
+               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+
     const canvas = document.getElementById('bg-canvas');
     if (!canvas || typeof THREE === 'undefined') return;
+
+    if (isMobileDevice()) {
+        canvas.style.display = 'none';
+        return;
+    }
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -971,10 +982,23 @@ function initGalaxyBackground() {
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
+            if (isMobileDevice()) {
+                canvas.style.display = 'none';
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                return;
+            } else {
+                canvas.style.display = '';
+                if (!animationId && isTabVisible) {
+                    animate();
+                }
+            }
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         }, 100);
     }, { passive: true });
 }
@@ -2429,6 +2453,15 @@ function initSatelliteTelemetry() {
   const satContents = document.querySelectorAll('.sat-content');
 
   if (!satellite || !canvas || !aboutSection || typeof THREE === 'undefined') return;
+
+  // Skip WebGL satellite on mobile — saves significant GPU/CPU
+  const isMobile = window.innerWidth <= 900 || 
+                   window.matchMedia('(pointer: coarse)').matches || 
+                   /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isMobile) {
+    canvas.style.display = 'none';
+    return;
+  }
 
   // 1. WebGL Scene, Camera & Precision Renderer
   const scene = new THREE.Scene();

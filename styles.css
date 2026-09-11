@@ -4281,70 +4281,14 @@ body.light-mode #particles-canvas {
 
 /* ============================================
    THEME TOGGLE BUTTON - Creative Animation
+   (Base styles handled in the NAV ACTIONS block around line 6605)
    ============================================ */
-.theme-toggle {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    cursor: pointer;
-    z-index: 1001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow-md);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: visible;
-}
-
-.theme-toggle::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.theme-toggle:hover {
-    transform: scale(1.1);
-    border-color: var(--primary);
-    box-shadow: 
-        var(--shadow-glow),
-        0 0 30px rgba(99, 102, 241, 0.3);
-}
-
-.theme-toggle:hover::before {
-    opacity: 0.3;
-    transform: scale(1.5);
-}
-
-.theme-toggle:active {
-    transform: scale(0.95);
-}
-
-.theme-toggle-icon {
-    font-size: 20px;
-    color: var(--text-primary);
-    transition: 
-        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), 
-        opacity 0.3s ease,
-        color 0.3s ease;
-    position: absolute;
-}
 
 /* Moon icon - visible in dark mode */
 .theme-toggle .fa-moon {
     opacity: 1;
     transform: rotate(0deg) scale(1);
-    color: #fbbf24;
+    color: #818cf8;
 }
 
 /* Sun icon - hidden in dark mode */
@@ -4366,8 +4310,8 @@ body.light-mode .theme-toggle .fa-moon {
 }
 
 body.light-mode .theme-toggle {
-    background: #ffffff;
-    border-color: rgba(99, 102, 241, 0.3);
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(168, 85, 247, 0.28);
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.1),
         0 0 20px rgba(251, 191, 36, 0.2);
@@ -4377,10 +4321,6 @@ body.light-mode .theme-toggle:hover {
     box-shadow: 
         0 4px 20px rgba(0, 0, 0, 0.15),
         0 0 40px rgba(251, 191, 36, 0.3);
-}
-
-body.light-mode .theme-toggle::before {
-    background: radial-gradient(circle, #fbbf24 0%, transparent 70%);
 }
 
 /* ============================================
@@ -5723,75 +5663,6 @@ body.light-mode .certificate-info {
    ============================================ */
 
 @media (max-width: 1024px) {
-    body {
-        height: 100dvh;
-    }
-
-    .navbar {
-        height: 64px;
-        padding: 0 16px;
-    }
-
-    .card-deck-container {
-        top: 64px;
-        height: calc(100dvh - 64px);
-    }
-
-    .card-section {
-        align-items: flex-start;
-        padding: 18px 16px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .card-content {
-        padding: 14px 8px 28px;
-        min-height: calc(100dvh - 96px);
-    }
-
-    .hero-container {
-        grid-template-columns: 1fr;
-        gap: 22px;
-        text-align: center;
-        padding-top: 0;
-    }
-
-    .hero-content {
-        align-items: center;
-    }
-
-    .hero-description {
-        max-width: 100%;
-    }
-
-    .hero-cta {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .hero-image {
-        justify-content: center;
-        padding-right: 0;
-    }
-
-    .image-wrapper-simple {
-        width: min(72vw, 360px);
-        height: min(90vw, 460px);
-    }
-
-    .profile-photo-dark,
-    body.light-mode .profile-photo-light,
-    .profile-photo-light {
-        transform: translateX(0);
-    }
-
-    .profile-glow-effect {
-        width: min(70vw, 320px);
-        height: min(70vw, 320px);
-    }
-
     .journey-grid,
     .about-grid-compact,
     .github-stats-wrapper,
@@ -5812,41 +5683,8 @@ body.light-mode .certificate-info {
 }
 
 @media (max-width: 768px) {
-    .navbar {
-        height: 60px;
-        padding: 0;
-    }
-
-    .nav-container {
-        padding: 0 16px;
-    }
-
-    .card-deck-container {
-        top: 60px;
-        height: calc(100dvh - 60px);
-    }
-
-    .card-content {
-        padding: 12px 2px 26px;
-        min-height: calc(100dvh - 84px);
-    }
-
     .section-header-compact {
         margin-bottom: 20px;
-    }
-
-    .hero-cta {
-        width: 100%;
-    }
-
-    .magnetic-btn {
-        width: 100%;
-        max-width: 340px;
-    }
-
-    .image-wrapper-simple {
-        width: min(82vw, 320px);
-        height: min(96vw, 420px);
     }
 
     .projects-grid-compact,
@@ -6702,15 +6540,20 @@ body.light-mode .subsection-title::before {
 }
 
 /* ============================================
-   FLOATING THEME TOGGLE BUTTON - UPPER RIGHT CORNER
+   NAV ACTIONS & THEME TOGGLE BUTTON
    ============================================ */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1002;
+    flex-shrink: 0;
+}
+
 .theme-toggle {
-    position: fixed;
-    top: 22px;
-    right: 28px;
-    z-index: 1001;
-    width: 46px;
-    height: 46px;
+    position: relative;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: rgba(10, 10, 22, 0.7);
     backdrop-filter: blur(16px);
@@ -6722,9 +6565,10 @@ body.light-mode .subsection-title::before {
     justify-content: center;
     cursor: pointer;
     box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.4),
-        0 0 18px rgba(99, 102, 241, 0.2);
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        0 0 14px rgba(99, 102, 241, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 }
 
 .theme-toggle:hover {
@@ -7089,10 +6933,8 @@ body.light-mode .timeline-step .badge {
         padding-top: 4vh;
     }
 
-    /* Theme toggle: shift left so hamburger has room */
+    /* Theme toggle inside nav-actions — only resize */
     .theme-toggle {
-        right: 16px;
-        top: 18px;
         width: 42px;
         height: 42px;
     }
@@ -7126,8 +6968,6 @@ body.light-mode .timeline-step .badge {
     /* Navbar: hamburger visible, links hidden */
     .nav-toggle {
         display: flex;
-        z-index: 1002;
-        position: relative;
     }
 
     .nav-links {
@@ -7136,12 +6976,6 @@ body.light-mode .timeline-step .badge {
 
     .nav-contact {
         display: none;
-    }
-
-    /* Theme toggle: make room for hamburger */
-    .theme-toggle {
-        right: 72px;
-        top: 18px;
     }
 
     /* Hero: stack to single column */
@@ -7306,12 +7140,10 @@ body.light-mode .timeline-step .badge {
         padding: 0 8px;
     }
 
-    /* Theme toggle: compact & out of hamburger's way */
+    /* Theme toggle: compact */
     .theme-toggle {
         width: 38px;
         height: 38px;
-        right: 62px;
-        top: 16px;
     }
 
     .theme-toggle-icon {
@@ -7473,12 +7305,10 @@ body.light-mode .timeline-step .badge {
         font-size: 1.15rem;
     }
 
-    /* Theme toggle: smaller, out of the way */
+    /* Theme toggle: smaller */
     .theme-toggle {
         width: 36px;
         height: 36px;
-        right: 56px;
-        top: 14px;
     }
 
     .theme-toggle-icon {
@@ -7678,8 +7508,6 @@ body.light-mode .timeline-step .badge {
     .theme-toggle {
         width: 32px;
         height: 32px;
-        right: 48px;
-        top: 14px;
     }
 
     .title-line,
@@ -7723,6 +7551,62 @@ body.light-mode .timeline-step .badge {
     .earth-atmosphere-blur-aura {
         bottom: 30px;
         height: 80px;
+    }
+}
+
+/* ── Mobile: Lightweight CSS Cosmic Background (replaces Three.js WebGL) ── */
+@media (max-width: 900px), (pointer: coarse) {
+    /* Hide canvas entirely — mobile devices skip WebGL */
+    #bg-canvas {
+        display: none !important;
+    }
+
+    /* Buttery CSS cosmic nebula gradient — 0% GPU overhead */
+    body {
+        background: 
+            radial-gradient(ellipse 80% 50% at 20% 30%, rgba(79, 70, 229, 0.18) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 40% at 80% 70%, rgba(168, 85, 247, 0.14) 0%, transparent 55%),
+            radial-gradient(ellipse 100% 80% at 50% 10%, rgba(6, 182, 212, 0.08) 0%, transparent 70%),
+            #060713 !important;
+    }
+
+    /* Value statement: no clipping on small screens */
+    .value-statement {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 95vw;
+        justify-content: center;
+    }
+
+    /* Hero CTA: row on tablet, column on small */
+    .hero-cta {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .magnetic-btn {
+        min-width: 140px;
+        flex: 0 1 auto;
+    }
+}
+
+/* ── Value statement wrapping fix for wider text on mobile ── */
+@media (max-width: 480px) {
+    .value-statement {
+        font-size: 0.78rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 92vw;
+    }
+
+    /* CTA: vertical stacking at 480px to avoid overflow */
+    .hero-cta {
+        flex-direction: column;
+        align-items: center;
     }
 }
 
