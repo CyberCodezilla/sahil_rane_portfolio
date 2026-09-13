@@ -2161,6 +2161,31 @@ function initSatelliteTelemetry() {
   const satTabs = document.querySelectorAll('.sat-tab');
   const satContents = document.querySelectorAll('.sat-content');
 
+  // Tab Click: Fire Signal Transmission Waves & Decode Content
+  // Wired immediately so tabs work seamlessly across both mobile & desktop
+  satTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-tab');
+
+      // Update active states
+      satTabs.forEach(t => t.classList.remove('active'));
+      satContents.forEach(c => c.classList.remove('active'));
+
+      tab.classList.add('active');
+      const targetContent = document.getElementById(targetId);
+      
+      // Trigger Telemetry Pulse Wave Animation on Satellite (if present)
+      if (satellite) {
+        satellite.classList.add('transmitting');
+        setTimeout(() => satellite.classList.remove('transmitting'), 1200);
+      }
+
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+    });
+  });
+
   if (!satellite || !canvas || !aboutSection || typeof THREE === 'undefined') return;
 
   // Skip WebGL satellite on mobile — saves significant GPU/CPU
@@ -2646,28 +2671,6 @@ function initSatelliteTelemetry() {
   }
 
   requestAnimationFrame(animateSatellite);
-
-  // Tab Click: Fire Signal Transmission Waves & Decode Content
-  satTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const targetId = tab.getAttribute('data-tab');
-
-      // Update active states
-      satTabs.forEach(t => t.classList.remove('active'));
-      satContents.forEach(c => c.classList.remove('active'));
-
-      tab.classList.add('active');
-      const targetContent = document.getElementById(targetId);
-      
-      // Trigger Telemetry Pulse Wave Animation on Satellite
-      satellite.classList.add('transmitting');
-      setTimeout(() => satellite.classList.remove('transmitting'), 1200);
-
-      if (targetContent) {
-        targetContent.classList.add('active');
-      }
-    });
-  });
 }
 /* ============================================
    FLOATING ASTRONAUT ZERO-G DRIFT ENGINE
