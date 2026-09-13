@@ -632,66 +632,18 @@ body,
 .section,
 .card-section,
 .skill-card-compact,
-/* ============================================
-   SEAMLESS 120FPS THEME MORPH TRANSITIONS
-   ============================================ */
-:root {
-    --theme-morph-duration: 0.45s;
-    --theme-morph-ease: cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-/* Comprehensive theme transition for all interface elements */
-body,
-.navbar,
-.nav-container,
-.nav-links,
-.nav-link,
-.theme-toggle,
-.glass-card,
-.telemetry-terminal,
-.sat-tab,
-.proj-cat-tab,
-.project-category-tabs,
-.project-card-structured,
 .project-card-compact,
-.skill-card-compact,
-.stat-box,
-.achievement-card-compact,
+.about-card-compact,
+.hackathon-card-compact,
 .contact-box-compact,
-.cert-card-compact,
-.magnetic-btn,
-.section-title,
-.section-title-compact,
-.subsection-title,
-.hero-description,
-.card-content,
-.timeline-step,
-.skill-tags-compact span,
-.project-badge-domain,
-.project-badge-feat,
-.project-tech-tags span,
-.project-tech-stack span,
-.project-action-btn,
-.contact-box-compact span,
-.profile-glow-effect {
+.page-dot,
+.nav-link,
+.btn {
     transition: 
-        background-color var(--theme-morph-duration) var(--theme-morph-ease),
-        border-color var(--theme-morph-duration) var(--theme-morph-ease),
-        color var(--theme-morph-duration) var(--theme-morph-ease),
-        box-shadow var(--theme-morph-duration) var(--theme-morph-ease);
-}
-
-/* Native View Transitions API support for seamless GPU morph */
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
-}
-::view-transition-old(root) {
-    z-index: 1;
-}
-::view-transition-new(root) {
-    z-index: 99999;
+        background-color var(--theme-transition),
+        border-color var(--theme-transition),
+        color var(--theme-transition),
+        box-shadow var(--theme-transition);
 }
 
 /* Reset & Base Styles - 120fps Optimized */
@@ -1736,13 +1688,13 @@ body.light-mode .btn-neon:hover {
     filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
     display: block;
     border-radius: 0;
-    transition: opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1), filter 0.45s ease;
+    transition: opacity 0.3s ease, filter 0.3s ease, visibility 0s;
 }
 
 /* Dark mode - show dark image shifted right */
 .profile-photo-dark {
     opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
     z-index: 2;
     transform: translateX(170px);
     -webkit-mask-image: radial-gradient(ellipse 65% 75% at center 35%, black 30%, black 45%, transparent 85%);
@@ -1751,24 +1703,26 @@ body.light-mode .btn-neon:hover {
 
 .profile-photo-light {
     opacity: 0;
-    pointer-events: none;
+    visibility: hidden;
     z-index: 1;
     transform: translateX(170px);
-    -webkit-mask-image: radial-gradient(ellipse 65% 75% at center 35%, black 30%, black 45%, transparent 85%);
-    mask-image: radial-gradient(ellipse 65% 75% at center 35%, black 30%, black 45%, transparent 85%);
+    transition: opacity 0.3s ease, filter 0.3s ease, visibility 0s 0.3s;
 }
 
 /* Light mode - show light image shifted right */
 body.light-mode .profile-photo-dark {
     opacity: 0;
-    pointer-events: none;
+    visibility: hidden;
     z-index: 1;
+    transition: opacity 0.3s ease, filter 0.3s ease, visibility 0s 0.3s;
 }
 
 body.light-mode .profile-photo-light {
     opacity: 1;
-    pointer-events: auto;
+    visibility: visible;
     z-index: 2;
+    transform: translateX(170px);
+    transition: opacity 0.3s ease, filter 0.3s ease, visibility 0s;
 }
 
 /* Light mode shadow adjustment and edge blending */
@@ -6721,59 +6675,48 @@ body.light-mode .subsection-title::before {
     box-shadow: 
         0 4px 16px rgba(0, 0, 0, 0.3),
         0 0 14px rgba(99, 102, 241, 0.2);
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
-    overflow: hidden;
 }
 
 .theme-toggle:hover {
-    transform: scale(1.08);
+    transform: scale(1.1) rotate(15deg);
     border-color: rgba(6, 182, 212, 0.5);
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.5),
         0 0 25px rgba(6, 182, 212, 0.4);
 }
 
 .theme-toggle-icon {
-    font-size: 1.15rem;
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.38s ease !important;
+    font-size: 1.2rem;
+    transition: transform 0.4s ease, opacity 0.3s ease;
 }
 
 .theme-toggle .fa-sun {
+    display: none;
     color: #f59e0b;
-    opacity: 0;
-    transform: rotate(-120deg) scale(0.3);
 }
 
 .theme-toggle .fa-moon {
+    display: block;
     color: #818cf8;
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
 }
 
 /* Light mode theme toggle button */
 body.light-mode .theme-toggle {
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(168, 85, 247, 0.32);
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(168, 85, 247, 0.28);
     box-shadow: 
         0 8px 25px rgba(0, 0, 0, 0.08),
         0 0 18px rgba(168, 85, 247, 0.18);
 }
 
 body.light-mode .theme-toggle .fa-moon {
-    opacity: 0;
-    transform: rotate(120deg) scale(0.3);
+    display: none;
 }
 
 body.light-mode .theme-toggle .fa-sun {
-    opacity: 1;
-    transform: rotate(0deg) scale(1);
+    display: block;
     color: #d97706;
 }
 
