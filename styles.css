@@ -5137,7 +5137,6 @@ body.light-mode .theme-toggle:hover {
     }
     
     .timeline-wrapper-compact,
-    .github-stats-compact,
     .achievements-grid-compact,
     .testimonials-compact {
         grid-template-columns: 1fr;
@@ -5795,7 +5794,6 @@ body.light-mode .certificate-info {
     .journey-grid,
     .about-grid-compact,
     .github-stats-wrapper,
-    .github-stats-compact,
     .repos-grid,
     .achievements-grid,
     .achievements-grid-compact,
@@ -7391,29 +7389,36 @@ body.light-mode .timeline-step .badge {
         max-width: 100% !important;
     }
 
-    /* Project category tabs: touch-scrollable row */
+    /* Project category tabs: 2-Column Grid on Mobile */
     .project-category-tabs {
         width: 100% !important;
         max-width: 100% !important;
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-        justify-content: flex-start !important;
-        padding: 4px 6px 12px !important;
-        gap: 8px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px 10px !important;
+        padding: 6px !important;
+        overflow-x: visible !important;
         box-sizing: border-box !important;
+        background: rgba(11, 15, 25, 0.45) !important;
+        border-radius: 14px !important;
+        border: 1px solid rgba(99, 102, 241, 0.25) !important;
     }
     .project-category-tabs::-webkit-scrollbar {
         display: none !important;
     }
     .proj-cat-tab {
-        white-space: nowrap !important;
-        flex-shrink: 0 !important;
-        padding: 7px 14px !important;
-        font-size: 0.8rem !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        gap: 6px !important;
+        padding: 8px 8px !important;
+        font-size: 0.78rem !important;
+        white-space: normal !important;
+        box-sizing: border-box !important;
+        border-radius: 10px !important;
+        min-height: 40px !important;
     }
 
     /* Project card structured */
@@ -7489,29 +7494,36 @@ body.light-mode .timeline-step .badge {
         overflow: hidden;
     }
 
-    /* Telemetry tabs: touch-scrollable row */
+    /* Telemetry tabs: 2-Column Grid on Mobile */
     .telemetry-tabs {
         width: 100% !important;
         max-width: 100% !important;
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-        justify-content: flex-start !important;
-        padding: 4px 6px 10px !important;
-        gap: 8px !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px 10px !important;
+        padding: 4px 0 10px !important;
+        overflow-x: visible !important;
         box-sizing: border-box !important;
     }
     .telemetry-tabs::-webkit-scrollbar {
         display: none !important;
     }
     .sat-tab {
-        white-space: nowrap !important;
-        flex-shrink: 0 !important;
-        padding: 8px 13px !important;
-        font-size: 0.8rem !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        gap: 6px !important;
+        padding: 8px 8px !important;
+        font-size: 0.78rem !important;
+        white-space: normal !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+        min-height: 40px !important;
+    }
+    .sat-tab:last-child:nth-child(odd) {
+        grid-column: 1 / -1 !important;
     }
 
     .telemetry-terminal {
@@ -7568,10 +7580,24 @@ body.light-mode .timeline-step .badge {
         box-sizing: border-box !important;
     }
 
-    /* GitHub Stats & Activity */
+    /* Section & Subsection Titles */
+    .section-title,
+    .section-title-compact,
+    .subsection-title {
+        font-size: clamp(1.15rem, 4.2vw, 1.40rem) !important;
+        padding: 4px 8px !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .section-desc-compact {
+        font-size: 0.80rem !important;
+        line-height: 1.45 !important;
+    }
+
+    /* GitHub Stats & Activity: Guaranteed 2 Columns */
     .github-stats-compact {
         display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 10px !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -7582,8 +7608,93 @@ body.light-mode .timeline-step .badge {
         min-width: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
-        padding: 14px 8px !important;
+        padding: 13px 6px 11px !important;
+        border-radius: 12px !important;
         box-sizing: border-box !important;
+        text-align: center !important;
+    }
+
+    .stat-box i {
+        font-size: 1.35rem !important;
+        margin-bottom: 0.3rem !important;
+        filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.4)) !important;
+    }
+
+    .stat-num {
+        font-size: 1.55rem !important;
+        line-height: 1 !important;
+        font-weight: 800 !important;
+        display: inline-block !important;
+    }
+
+    .stat-plus {
+        font-size: 1.1rem !important;
+        font-weight: 800 !important;
+        margin-left: 1px !important;
+        display: inline-block !important;
+        vertical-align: super !important;
+    }
+
+    .stat-lbl {
+        font-size: 0.65rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.3px !important;
+        margin-top: 0.3rem !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+        word-break: break-word !important;
+        max-width: 100% !important;
+        display: block !important;
+    }
+
+    /* Skill & Project Text Sizing on Mobile */
+    .skill-info h3 {
+        font-size: 0.94rem !important;
+        margin-bottom: 3px !important;
+    }
+
+    .skill-info p {
+        font-size: 0.78rem !important;
+        line-height: 1.4 !important;
+    }
+
+    .skill-tags-compact span {
+        font-size: 0.70rem !important;
+        padding: 3px 6px !important;
+    }
+
+    .project-card-title {
+        font-size: 0.95rem !important;
+        margin: 5px 0 !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    .project-card-summary {
+        font-size: 0.80rem !important;
+        line-height: 1.4 !important;
+    }
+
+    .project-card-highlights li {
+        font-size: 0.76rem !important;
+        line-height: 1.38 !important;
+    }
+
+    .sat-content h3 {
+        font-size: 1.02rem !important;
+        margin-bottom: 6px !important;
+    }
+
+    .sat-content p {
+        font-size: 0.82rem !important;
+        line-height: 1.48 !important;
+    }
+
+    .achievement-card-compact h3 {
+        font-size: 0.88rem !important;
+    }
+
+    .achievement-card-compact p {
+        font-size: 0.76rem !important;
     }
 
     .github-diagrams-grid {
@@ -7814,9 +7925,19 @@ body.light-mode .timeline-step .badge {
         opacity: 0.6;
     }
 
-    .sat-tab {
-        padding: 7px 11px !important;
-        font-size: 0.75rem !important;
+    .telemetry-tabs,
+    .project-category-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px 8px !important;
+    }
+
+    .sat-tab,
+    .proj-cat-tab {
+        padding: 7px 6px !important;
+        font-size: 0.74rem !important;
+        min-height: 38px !important;
+        border-radius: 10px !important;
     }
 
     .telemetry-terminal {
@@ -7833,8 +7954,44 @@ body.light-mode .timeline-step .badge {
         padding: 14px;
     }
 
+    .section-title,
     .section-title-compact {
-        font-size: clamp(1.35rem, 5vw, 1.7rem);
+        font-size: clamp(1.12rem, 4.4vw, 1.35rem) !important;
+    }
+
+    .subsection-title {
+        font-size: clamp(1.08rem, 4.2vw, 1.30rem) !important;
+        padding: 4px 8px !important;
+    }
+
+    .github-stats-compact {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+
+    .stat-box {
+        padding: 12px 5px 10px !important;
+        border-radius: 11px !important;
+    }
+
+    .stat-box i {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .stat-num {
+        font-size: 1.45rem !important;
+    }
+
+    .stat-plus {
+        font-size: 1.05rem !important;
+    }
+
+    .stat-lbl {
+        font-size: 0.63rem !important;
+        letter-spacing: 0.25px !important;
+        margin-top: 0.25rem !important;
     }
 
     .earth-horizon-wrapper {
@@ -7880,6 +8037,35 @@ body.light-mode .timeline-step .badge {
         font-size: 0.8rem;
     }
 
+    .github-stats-compact {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+    }
+
+    .stat-box {
+        padding: 10px 4px 8px !important;
+        border-radius: 10px !important;
+    }
+
+    .stat-box i {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .stat-num {
+        font-size: 1.35rem !important;
+    }
+
+    .stat-plus {
+        font-size: 0.95rem !important;
+    }
+
+    .stat-lbl {
+        font-size: 0.60rem !important;
+        letter-spacing: 0.15px !important;
+    }
+
     .image-wrapper-simple {
         width: min(70vw, 190px);
         height: min(80vw, 250px);
@@ -7897,9 +8083,18 @@ body.light-mode .timeline-step .badge {
         display: none !important;
     }
 
-    .sat-tab {
-        padding: 6px 9px !important;
-        font-size: 0.72rem !important;
+    .telemetry-tabs,
+    .project-category-tabs {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 5px 6px !important;
+    }
+
+    .sat-tab,
+    .proj-cat-tab {
+        padding: 6px 4px !important;
+        font-size: 0.70rem !important;
+        min-height: 35px !important;
     }
 
     .earth-horizon-wrapper {
