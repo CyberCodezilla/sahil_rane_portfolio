@@ -53,7 +53,7 @@
     --radius-full: 50%;
     
     /* Theme transition */
-    --theme-transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --theme-transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 
     /* Fluid Type Scales using clamp() to prevent mobile clipping and desktop bloat */
     --font-hero-title: clamp(2rem, 4.5vw + 1rem, 4.5rem);

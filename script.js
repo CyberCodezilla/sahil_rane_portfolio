@@ -257,7 +257,7 @@ function toggleTheme() {
 }
 
 // ============================================
-// CREATIVE THEME TRANSITION - Full Original Multi-Effect (Silky Smooth)
+// CREATIVE THEME TRANSITION - Beautiful, Natural & Silky Smooth
 // ============================================
 function createCreativeThemeTransition(toLight) {
     const themeToggle = document.querySelector('.theme-toggle');
@@ -271,14 +271,23 @@ function createCreativeThemeTransition(toLight) {
         Math.hypot(window.innerWidth - centerX, centerY),
         Math.hypot(centerX, window.innerHeight - centerY),
         Math.hypot(window.innerWidth - centerX, window.innerHeight - centerY)
-    ) * 1.12;
+    ) * 1.15;
 
-    const primaryColor = toLight ? '#6366f1' : '#06b6d4';
-    const ringColor1 = toLight ? 'rgba(99, 102, 241, 0.6)' : 'rgba(6, 182, 212, 0.6)';
-    const ringColor2 = toLight ? 'rgba(99, 102, 241, 0.35)' : 'rgba(6, 182, 212, 0.35)';
-    const ringColor3 = toLight ? 'rgba(99, 102, 241, 0.15)' : 'rgba(6, 182, 212, 0.15)';
-    
-    // === 1. Create main circular wipe overlay (Solid crisp theme background) ===
+    // === 0. Tactile spring bounce on toggle button ===
+    if (themeToggle) {
+        themeToggle.animate([
+            { transform: 'scale(1)' },
+            { transform: 'scale(0.88) rotate(-6deg)', offset: 0.2 },
+            { transform: 'scale(1.14) rotate(4deg)', offset: 0.55 },
+            { transform: 'scale(0.98)', offset: 0.8 },
+            { transform: 'scale(1) rotate(0deg)' }
+        ], {
+            duration: 520,
+            easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+        });
+    }
+
+    // === 1. Luminous Celestial Theme Wavefront (Opaque with radiant radial heart) ===
     const mainOverlay = document.createElement('div');
     mainOverlay.style.cssText = `
         position: fixed;
@@ -288,14 +297,21 @@ function createCreativeThemeTransition(toLight) {
         height: 100%;
         pointer-events: none;
         z-index: 99999;
-        background: ${toLight ? '#EAE6F4' : '#0a0a0f'};
+        background: ${toLight 
+            ? `radial-gradient(circle at ${centerX}px ${centerY}px, #faf8ff 0%, #f3effe 35%, #eae6f4 75%, #dfd8f0 100%)`
+            : `radial-gradient(circle at ${centerX}px ${centerY}px, #151228 0%, #0d0c18 35%, #0a0a0f 75%, #050408 100%)`};
         clip-path: circle(0px at ${centerX}px ${centerY}px);
         will-change: clip-path, opacity;
     `;
     document.body.appendChild(mainOverlay);
     
-    // === 2. Create glowing ring effect (Multi-tiered cosmic corona) ===
+    // === 2. Luminous Corona Shockwave (Organic multi-layer aura with dispersion) ===
     const glowRing = document.createElement('div');
+    const ringBorder = toLight ? 'rgba(168, 85, 247, 0.75)' : 'rgba(34, 211, 238, 0.75)';
+    const ringAura1 = toLight ? 'rgba(168, 85, 247, 0.65)' : 'rgba(6, 182, 212, 0.65)';
+    const ringAura2 = toLight ? 'rgba(129, 140, 248, 0.4)' : 'rgba(59, 130, 246, 0.4)';
+    const ringAura3 = toLight ? 'rgba(192, 132, 252, 0.2)' : 'rgba(14, 165, 233, 0.2)';
+    
     glowRing.style.cssText = `
         position: fixed;
         left: ${centerX}px;
@@ -305,23 +321,32 @@ function createCreativeThemeTransition(toLight) {
         border-radius: 50%;
         pointer-events: none;
         z-index: 100000;
+        border: 2px solid ${ringBorder};
         box-shadow: 
-            0 0 60px 30px ${ringColor1},
-            0 0 100px 60px ${ringColor2},
-            0 0 140px 90px ${ringColor3};
+            0 0 50px 20px ${ringAura1},
+            0 0 100px 50px ${ringAura2},
+            0 0 160px 80px ${ringAura3},
+            inset 0 0 35px 12px rgba(255, 255, 255, 0.6);
         transform: translate(-50%, -50%);
         will-change: width, height, opacity;
     `;
     document.body.appendChild(glowRing);
     
-    // === 3. Create particle burst (16 cosmic sparks) ===
-    const particleCount = 16;
+    // === 3. Natural Organic Stardust Particles (Varying sizes, angles & celestial colors) ===
+    const particleCount = 22;
     const particles = [];
+    const lightPalette = ['#ffffff', '#fbbf24', '#c084fc', '#818cf8', '#f472b6', '#a855f7'];
+    const darkPalette = ['#ffffff', '#22d3ee', '#38bdf8', '#818cf8', '#06b6d4', '#60a5fa'];
+    const palette = toLight ? lightPalette : darkPalette;
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
-        const angle = (i / particleCount) * Math.PI * 2;
-        const size = 4 + Math.random() * 6;
+        // Organic natural jitter on trajectory
+        const baseAngle = (i / particleCount) * Math.PI * 2;
+        const angle = baseAngle + (Math.random() - 0.5) * 0.35;
+        const size = 3 + Math.random() * 4.5;
+        const color = palette[i % palette.length];
+        const travelDistance = maxRadius * (0.28 + Math.random() * 0.42);
         
         particle.style.cssText = `
             position: fixed;
@@ -329,48 +354,56 @@ function createCreativeThemeTransition(toLight) {
             top: ${centerY}px;
             width: ${size}px;
             height: ${size}px;
-            background: ${primaryColor};
+            background: ${color};
             border-radius: 50%;
             pointer-events: none;
             z-index: 100001;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 ${size * 3}px ${primaryColor};
+            box-shadow: 0 0 ${size * 3}px ${color}, 0 0 ${size * 5}px rgba(255, 255, 255, 0.5);
             will-change: transform, opacity;
         `;
         document.body.appendChild(particle);
-        particles.push({ el: particle, angle });
+        particles.push({ el: particle, angle, distance: travelDistance });
     }
     
-    // === 4. Create radial laser lines shooting out ===
-    const lineCount = 8;
+    // === 4. Radiant Light Beams / God Rays (Soft, varied widths and gradients) ===
+    const lineCount = 10;
     const lines = [];
     
     for (let i = 0; i < lineCount; i++) {
         const line = document.createElement('div');
-        const angle = (i / lineCount) * 360;
+        const angle = (i / lineCount) * 360 + (Math.random() - 0.5) * 12;
+        const thickness = 1.5 + (i % 3) * 0.8;
+        const rayLength = maxRadius * (0.75 + Math.random() * 0.3);
+        const rayGradient = toLight
+            ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(251, 191, 36, 0.75) 20%, rgba(192, 132, 252, 0.6) 60%, transparent 100%)'
+            : 'linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(34, 211, 238, 0.75) 25%, rgba(129, 140, 248, 0.5) 65%, transparent 100%)';
         
         line.style.cssText = `
             position: fixed;
             left: ${centerX}px;
             top: ${centerY}px;
             width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                ${primaryColor} 0%, 
-                transparent 100%);
+            height: ${thickness}px;
+            background: ${rayGradient};
             pointer-events: none;
             z-index: 100000;
             transform-origin: left center;
             transform: rotate(${angle}deg);
-            opacity: 0.85;
+            opacity: 0.9;
+            filter: blur(0.4px);
             will-change: width, opacity;
         `;
         document.body.appendChild(line);
-        lines.push(line);
+        lines.push({ el: line, length: rayLength });
     }
     
-    // === 5. Subtle ambient screen flash ===
+    // === 5. Natural Atmospheric Bloom Flash ===
     const flash = document.createElement('div');
+    const flashBloom = toLight
+        ? `radial-gradient(circle at ${centerX}px ${centerY}px, rgba(251, 191, 36, 0.24) 0%, rgba(168, 85, 247, 0.14) 40%, transparent 80%)`
+        : `radial-gradient(circle at ${centerX}px ${centerY}px, rgba(34, 211, 238, 0.24) 0%, rgba(99, 102, 241, 0.14) 40%, transparent 80%)`;
+    
     flash.style.cssText = `
         position: fixed;
         top: 0;
@@ -379,97 +412,99 @@ function createCreativeThemeTransition(toLight) {
         height: 100%;
         pointer-events: none;
         z-index: 99998;
-        background: ${toLight ? 'rgba(99, 102, 241, 0.12)' : 'rgba(6, 182, 212, 0.12)'};
+        background: ${flashBloom};
         opacity: 0;
         will-change: opacity;
     `;
     document.body.appendChild(flash);
     
-    // === ANIMATE EVERYTHING TOGETHER WITH PRECISE SYNCHRONIZATION ===
+    // === ANIMATE EVERYTHING TOGETHER WITH NATURAL ORGANIC EASING ===
     
-    // 1. Main circular wipe (silky smooth cubic-bezier easing)
+    // 1. Main circular wavefront (Apple-style natural deceleration)
     mainOverlay.animate([
         { clipPath: `circle(0px at ${centerX}px ${centerY}px)` },
         { clipPath: `circle(${maxRadius}px at ${centerX}px ${centerY}px)` }
     ], {
-        duration: 720,
-        easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
+        duration: 760,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
         fill: 'forwards'
     });
     
-    // 2. Glow ring expansion
+    // 2. Corona Shockwave expansion
     glowRing.animate([
         { width: '0px', height: '0px', opacity: 1 },
         { width: `${maxRadius * 2}px`, height: `${maxRadius * 2}px`, opacity: 0 }
     ], {
-        duration: 780,
-        easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
+        duration: 800,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
         fill: 'forwards'
     }).onfinish = () => glowRing.remove();
     
-    // 3. Radial lines shooting out
-    lines.forEach((line, i) => {
-        line.animate([
-            { width: '0px', opacity: 0.85 },
-            { width: `${maxRadius}px`, opacity: 0 }
+    // 3. Radiant light beams expanding
+    lines.forEach((item, i) => {
+        item.el.animate([
+            { width: '0px', opacity: 0.9 },
+            { width: `${item.length}px`, opacity: 0 }
         ], {
-            duration: 520,
-            easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
+            duration: 540 + (i % 3) * 60,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
             fill: 'forwards',
-            delay: i * 18
-        }).onfinish = () => line.remove();
+            delay: i * 14
+        }).onfinish = () => item.el.remove();
     });
     
-    // 4. Particles shooting outward
+    // 4. Stardust particles bursting outward with viscous air resistance
     particles.forEach((p, i) => {
-        const distance = maxRadius * 0.58;
+        const destX = Math.cos(p.angle) * p.distance;
+        const destY = Math.sin(p.angle) * p.distance;
+        
         p.el.animate([
             { 
                 transform: 'translate(-50%, -50%) scale(1)', 
                 opacity: 1 
             },
             { 
-                transform: `translate(calc(-50% + ${Math.cos(p.angle) * distance}px), calc(-50% + ${Math.sin(p.angle) * distance}px)) scale(0)`,
+                transform: `translate(calc(-50% + ${destX}px), calc(-50% + ${destY}px)) scale(0.2)`,
                 opacity: 0 
             }
         ], {
-            duration: 620 + Math.random() * 180,
-            easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
+            duration: 650 + Math.random() * 200,
+            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
             fill: 'forwards',
-            delay: 40 + i * 20
+            delay: 35 + (i % 4) * 18
         }).onfinish = () => p.el.remove();
     });
     
-    // 5. Screen flash
+    // 5. Atmospheric bloom flash
     flash.animate([
         { opacity: 0 },
-        { opacity: 1 },
+        { opacity: 1, offset: 0.25 },
         { opacity: 0 }
     ], {
-        duration: 550,
-        easing: 'ease-out',
+        duration: 580,
+        easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
         fill: 'forwards'
     }).onfinish = () => flash.remove();
 
     // === SEAMLESS THEME SWITCH TIMING (Zero visual snapping/popping) ===
-    // Toggle DOM classes at 380ms when the circular wipe already covers the screen
+    // Toggle DOM classes at 390ms when the circular wipe already covers the screen
     setTimeout(() => {
         document.body.classList.toggle('light-mode');
         updateGitHubStatsTheme();
         if (window.updateGalaxyTheme) window.updateGalaxyTheme();
-    }, 380);
+    }, 390);
     
-    // Smoothly dissolve the main overlay to reveal the new theme
+    // Smoothly dissolve the main overlay to reveal the newly rendered theme
     setTimeout(() => {
         mainOverlay.animate([
             { opacity: 1 },
             { opacity: 0 }
         ], {
-            duration: 340,
-            easing: 'ease-out',
+            duration: 350,
+            easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
             fill: 'forwards'
         }).onfinish = () => mainOverlay.remove();
-    }, 500);
+    }, 510);
 }
 
 // Global function to toggle theme (can be called from anywhere)
