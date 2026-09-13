@@ -257,7 +257,7 @@ function toggleTheme() {
 }
 
 // ============================================
-// CREATIVE THEME TRANSITION - Multiple Effects (Super-Smooth 60/120fps)
+// CREATIVE THEME TRANSITION - Full Original Multi-Effect (Silky Smooth)
 // ============================================
 function createCreativeThemeTransition(toLight) {
     const themeToggle = document.querySelector('.theme-toggle');
@@ -265,27 +265,20 @@ function createCreativeThemeTransition(toLight) {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    // Calculate max radius for full screen coverage with margin
+    // Calculate max radius for full screen coverage with safety margin
     const maxRadius = Math.max(
         Math.hypot(centerX, centerY),
         Math.hypot(window.innerWidth - centerX, centerY),
         Math.hypot(centerX, window.innerHeight - centerY),
         Math.hypot(window.innerWidth - centerX, window.innerHeight - centerY)
-    ) * 1.08;
+    ) * 1.12;
 
-    // === 0. Haptic button spin animation ===
-    if (themeToggle) {
-        themeToggle.animate([
-            { transform: 'scale(0.9) rotate(0deg)' },
-            { transform: 'scale(1.12) rotate(180deg)', offset: 0.5 },
-            { transform: 'scale(1) rotate(360deg)' }
-        ], {
-            duration: 550,
-            easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-        });
-    }
-
-    // === 1. Create main circular wipe overlay (rich celestial gradient) ===
+    const primaryColor = toLight ? '#6366f1' : '#06b6d4';
+    const ringColor1 = toLight ? 'rgba(99, 102, 241, 0.6)' : 'rgba(6, 182, 212, 0.6)';
+    const ringColor2 = toLight ? 'rgba(99, 102, 241, 0.35)' : 'rgba(6, 182, 212, 0.35)';
+    const ringColor3 = toLight ? 'rgba(99, 102, 241, 0.15)' : 'rgba(6, 182, 212, 0.15)';
+    
+    // === 1. Create main circular wipe overlay (Solid crisp theme background) ===
     const mainOverlay = document.createElement('div');
     mainOverlay.style.cssText = `
         position: fixed;
@@ -294,46 +287,41 @@ function createCreativeThemeTransition(toLight) {
         width: 100%;
         height: 100%;
         pointer-events: none;
-        z-index: 99998;
-        background: ${toLight 
-            ? 'radial-gradient(circle at ' + centerX + 'px ' + centerY + 'px, rgba(240, 237, 248, 0.96) 0%, rgba(234, 230, 244, 0.97) 50%, rgba(220, 214, 238, 0.99) 100%)' 
-            : 'radial-gradient(circle at ' + centerX + 'px ' + centerY + 'px, rgba(16, 12, 32, 0.96) 0%, rgba(10, 10, 22, 0.97) 50%, rgba(3, 0, 18, 0.99) 100%)'};
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        z-index: 99999;
+        background: ${toLight ? '#EAE6F4' : '#0a0a0f'};
         clip-path: circle(0px at ${centerX}px ${centerY}px);
         will-change: clip-path, opacity;
     `;
     document.body.appendChild(mainOverlay);
-
-    // === 2. Create glowing ring effect (GPU-accelerated scale, zero layout reflows) ===
-    const ringSize = 180;
+    
+    // === 2. Create glowing ring effect (Multi-tiered cosmic corona) ===
     const glowRing = document.createElement('div');
-    const ringColor = toLight ? 'rgba(168, 85, 247, 0.55)' : 'rgba(6, 182, 212, 0.55)';
     glowRing.style.cssText = `
         position: fixed;
         left: ${centerX}px;
         top: ${centerY}px;
-        width: ${ringSize}px;
-        height: ${ringSize}px;
+        width: 0;
+        height: 0;
         border-radius: 50%;
         pointer-events: none;
-        z-index: 99999;
-        transform: translate3d(-50%, -50%, 0) scale(0);
-        background: radial-gradient(circle, transparent 40%, ${ringColor} 70%, transparent 85%);
-        box-shadow: 0 0 35px ${ringColor};
-        will-change: transform, opacity;
+        z-index: 100000;
+        box-shadow: 
+            0 0 60px 30px ${ringColor1},
+            0 0 100px 60px ${ringColor2},
+            0 0 140px 90px ${ringColor3};
+        transform: translate(-50%, -50%);
+        will-change: width, height, opacity;
     `;
     document.body.appendChild(glowRing);
-
-    // === 3. Create particle burst (GPU translate3d + scale) ===
-    const particleCount = 14;
+    
+    // === 3. Create particle burst (16 cosmic sparks) ===
+    const particleCount = 16;
     const particles = [];
-    const particleColor = toLight ? '#a855f7' : '#06b6d4';
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         const angle = (i / particleCount) * Math.PI * 2;
-        const size = 5 + Math.random() * 4;
+        const size = 4 + Math.random() * 6;
         
         particle.style.cssText = `
             position: fixed;
@@ -341,23 +329,22 @@ function createCreativeThemeTransition(toLight) {
             top: ${centerY}px;
             width: ${size}px;
             height: ${size}px;
-            background: ${particleColor};
+            background: ${primaryColor};
             border-radius: 50%;
             pointer-events: none;
             z-index: 100001;
-            transform: translate3d(-50%, -50%, 0) scale(1);
-            box-shadow: 0 0 ${size * 2.5}px ${particleColor};
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 ${size * 3}px ${primaryColor};
             will-change: transform, opacity;
         `;
         document.body.appendChild(particle);
         particles.push({ el: particle, angle });
     }
-
-    // === 4. Create radial lines shooting out (GPU scaleX) ===
+    
+    // === 4. Create radial laser lines shooting out ===
     const lineCount = 8;
     const lines = [];
-    const lineLength = Math.min(maxRadius * 0.7, 700);
-
+    
     for (let i = 0; i < lineCount; i++) {
         const line = document.createElement('div');
         const angle = (i / lineCount) * 360;
@@ -366,21 +353,23 @@ function createCreativeThemeTransition(toLight) {
             position: fixed;
             left: ${centerX}px;
             top: ${centerY}px;
-            width: ${lineLength}px;
+            width: 0;
             height: 2px;
-            background: linear-gradient(90deg, ${ringColor} 0%, transparent 100%);
+            background: linear-gradient(90deg, 
+                ${primaryColor} 0%, 
+                transparent 100%);
             pointer-events: none;
             z-index: 100000;
-            transform-origin: 0 50%;
-            transform: rotate(${angle}deg) scaleX(0);
+            transform-origin: left center;
+            transform: rotate(${angle}deg);
             opacity: 0.85;
-            will-change: transform, opacity;
+            will-change: width, opacity;
         `;
         document.body.appendChild(line);
         lines.push(line);
     }
-
-    // === 5. Subtle luminous flash ===
+    
+    // === 5. Subtle ambient screen flash ===
     const flash = document.createElement('div');
     flash.style.cssText = `
         position: fixed;
@@ -389,96 +378,98 @@ function createCreativeThemeTransition(toLight) {
         width: 100%;
         height: 100%;
         pointer-events: none;
-        z-index: 99997;
-        background: ${toLight ? 'rgba(168, 85, 247, 0.08)' : 'rgba(6, 182, 212, 0.08)'};
+        z-index: 99998;
+        background: ${toLight ? 'rgba(99, 102, 241, 0.12)' : 'rgba(6, 182, 212, 0.12)'};
         opacity: 0;
         will-change: opacity;
     `;
     document.body.appendChild(flash);
-
-    // === ANIMATE EVERYTHING TOGETHER WITH PRECISE TIMING ===
-
-    // 1. Main circular wipe (silky cubic-bezier)
+    
+    // === ANIMATE EVERYTHING TOGETHER WITH PRECISE SYNCHRONIZATION ===
+    
+    // 1. Main circular wipe (silky smooth cubic-bezier easing)
     mainOverlay.animate([
         { clipPath: `circle(0px at ${centerX}px ${centerY}px)` },
         { clipPath: `circle(${maxRadius}px at ${centerX}px ${centerY}px)` }
     ], {
-        duration: 520,
-        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        duration: 720,
+        easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
         fill: 'forwards'
     });
-
-    // 2. Glow ring expansion (GPU scale)
-    const ringScale = (maxRadius * 2) / ringSize;
+    
+    // 2. Glow ring expansion
     glowRing.animate([
-        { transform: 'translate3d(-50%, -50%, 0) scale(0)', opacity: 1 },
-        { transform: `translate3d(-50%, -50%, 0) scale(${ringScale})`, opacity: 0 }
+        { width: '0px', height: '0px', opacity: 1 },
+        { width: `${maxRadius * 2}px`, height: `${maxRadius * 2}px`, opacity: 0 }
     ], {
-        duration: 620,
-        easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+        duration: 780,
+        easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
         fill: 'forwards'
     }).onfinish = () => glowRing.remove();
-
-    // 3. Radial lines shooting out (GPU scaleX)
+    
+    // 3. Radial lines shooting out
     lines.forEach((line, i) => {
-        const angle = (i / lineCount) * 360;
         line.animate([
-            { transform: `rotate(${angle}deg) scaleX(0)`, opacity: 0.85 },
-            { transform: `rotate(${angle}deg) scaleX(1)`, opacity: 0 }
+            { width: '0px', opacity: 0.85 },
+            { width: `${maxRadius}px`, opacity: 0 }
         ], {
-            duration: 480,
-            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            duration: 520,
+            easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
             fill: 'forwards',
-            delay: i * 15
+            delay: i * 18
         }).onfinish = () => line.remove();
     });
-
-    // 4. Particles shooting outward (GPU translate3d)
+    
+    // 4. Particles shooting outward
     particles.forEach((p, i) => {
-        const distance = maxRadius * 0.45;
-        const targetX = Math.cos(p.angle) * distance;
-        const targetY = Math.sin(p.angle) * distance;
-        
+        const distance = maxRadius * 0.58;
         p.el.animate([
-            { transform: 'translate3d(-50%, -50%, 0) scale(1)', opacity: 1 },
-            { transform: `translate3d(calc(-50% + ${targetX}px), calc(-50% + ${targetY}px), 0) scale(0)`, opacity: 0 }
+            { 
+                transform: 'translate(-50%, -50%) scale(1)', 
+                opacity: 1 
+            },
+            { 
+                transform: `translate(calc(-50% + ${Math.cos(p.angle) * distance}px), calc(-50% + ${Math.sin(p.angle) * distance}px)) scale(0)`,
+                opacity: 0 
+            }
         ], {
-            duration: 520 + Math.random() * 150,
-            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            duration: 620 + Math.random() * 180,
+            easing: 'cubic-bezier(0.25, 1, 0.35, 1)',
             fill: 'forwards',
-            delay: 30 + i * 18
+            delay: 40 + i * 20
         }).onfinish = () => p.el.remove();
     });
-
-    // 5. Flash pulse
+    
+    // 5. Screen flash
     flash.animate([
         { opacity: 0 },
-        { opacity: 1, offset: 0.4 },
+        { opacity: 1 },
         { opacity: 0 }
     ], {
-        duration: 450,
+        duration: 550,
         easing: 'ease-out',
         fill: 'forwards'
     }).onfinish = () => flash.remove();
 
-    // === CRITICAL SYNCHRONIZATION: Switch theme while covered by the wipe ===
+    // === SEAMLESS THEME SWITCH TIMING (Zero visual snapping/popping) ===
+    // Toggle DOM classes at 380ms when the circular wipe already covers the screen
     setTimeout(() => {
         document.body.classList.toggle('light-mode');
         updateGitHubStatsTheme();
         if (window.updateGalaxyTheme) window.updateGalaxyTheme();
-    }, 240);
-
-    // Fade out and remove main overlay after theme switch completes underneath
+    }, 380);
+    
+    // Smoothly dissolve the main overlay to reveal the new theme
     setTimeout(() => {
         mainOverlay.animate([
             { opacity: 1 },
             { opacity: 0 }
         ], {
-            duration: 360,
-            easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+            duration: 340,
+            easing: 'ease-out',
             fill: 'forwards'
         }).onfinish = () => mainOverlay.remove();
-    }, 380);
+    }, 500);
 }
 
 // Global function to toggle theme (can be called from anywhere)
