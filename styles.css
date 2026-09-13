@@ -4250,24 +4250,31 @@ body.light-mode .earth-horizon-wrapper {
 /* Responsive Scaling for Small Screens */
 @media (max-width: 768px) {
     .earth-horizon-wrapper {
-        height: 260px;
+        height: 220px;
+        width: 100%;
+        max-width: 100vw;
+        overflow: hidden;
     }
     .earth-realistic-img {
-        width: 100%;
-        min-width: 750px;
-        height: 170px;
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: 100vw !important;
+        height: 150px;
+        object-fit: cover;
     }
     .earth-atmosphere-blur-aura {
-        min-width: 750px;
-        height: 130px;
-        bottom: 60px;
+        width: 100% !important;
+        min-width: unset !important;
+        max-width: 100vw !important;
+        height: 120px;
+        bottom: 50px;
     }
     .earth-dawn-glint {
-        bottom: 105px;
+        bottom: 90px;
         left: 36.5%;
     }
     .dawn-flare-streak {
-        width: 180px;
+        width: 160px;
     }
 }
 
@@ -7238,6 +7245,14 @@ body.light-mode .timeline-step .badge {
 
 /* ── 768px: Large Phone / Small Tablet ─────────── */
 @media (max-width: 768px) {
+    /* Global lock for horizontal overflow */
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+        position: relative;
+    }
+
     /* Navbar: compact */
     .navbar {
         height: 56px;
@@ -7245,10 +7260,15 @@ body.light-mode .timeline-step .badge {
         border-radius: 40px;
         top: 10px;
         width: min(96%, 100vw - 16px);
+        max-width: calc(100vw - 16px);
+        box-sizing: border-box;
     }
 
     .nav-container {
         padding: 0 8px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     /* Theme toggle: compact */
@@ -7261,137 +7281,458 @@ body.light-mode .timeline-step .badge {
         font-size: 1rem;
     }
 
-    /* Section padding */
+    /* Section & Content Containers */
     .section {
-        padding: 40px var(--fluid-gutter);
+        padding: 40px var(--fluid-gutter, 16px);
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
     }
 
     #main-content {
         padding-top: 60px;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .card-content {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+        padding: 10px 4px 20px;
     }
 
     /* Hero: compact mobile layout */
     .hero-container {
-        gap: 20px;
+        gap: 16px;
         padding-top: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .hero-title {
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .title-line,
+    .highlight-name {
+        font-size: clamp(1.4rem, 5.2vw, 1.85rem) !important;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        line-height: 1.25;
     }
 
     .hero-cta {
         width: 100%;
         flex-direction: column;
         align-items: center;
+        gap: 10px;
     }
 
     .magnetic-btn {
         width: 100%;
-        max-width: 300px;
-        padding: 14px 20px;
+        max-width: 280px;
+        padding: 12px 18px;
     }
 
-    /* Hero image: prevent clipping */
+    /* Hero image & badges: prevent clipping */
     .image-wrapper-simple {
-        width: min(70vw, 280px);
-        height: min(85vw, 360px);
+        width: min(70vw, 260px);
+        height: min(82vw, 340px);
     }
 
     .profile-glow-effect {
-        width: min(60vw, 260px);
-        height: min(60vw, 260px);
+        width: min(60vw, 240px);
+        height: min(60vw, 240px);
+    }
+
+    .rotating-badge {
+        width: 84px;
+        height: 84px;
+        right: max(6px, calc(50% - 130px));
+        bottom: 0;
+        max-width: 90vw;
+    }
+
+    .floating-star {
+        display: none !important;
     }
 
     /* Skills: single column */
     .skills-grid-compact {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 14px !important;
+    }
+
+    .skill-card-compact {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     /* Projects: single column */
     .projects-grid-compact {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 16px !important;
     }
 
-    /* Project category tabs: scrollable */
+    .projects-header-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Project category tabs: touch-scrollable row */
     .project-category-tabs {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        flex-wrap: nowrap;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+        justify-content: flex-start !important;
+        padding: 4px 6px 12px !important;
+        gap: 8px !important;
+        box-sizing: border-box !important;
     }
     .project-category-tabs::-webkit-scrollbar {
-        display: none;
+        display: none !important;
     }
     .proj-cat-tab {
-        white-space: nowrap;
-        flex-shrink: 0;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        padding: 7px 14px !important;
+        font-size: 0.8rem !important;
     }
 
-    /* About satellite: much smaller */
-    .satellite-unit {
-        width: clamp(280px, 85vw, 450px);
-        height: clamp(120px, 35vw, 190px);
-        top: -40px;
+    /* Project card structured */
+    .project-card-structured {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        padding: 1.3rem !important;
     }
 
-    /* About section padding */
+    .project-card-top {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .project-card-badges {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .project-badge-domain,
+    .project-badge-feat {
+        white-space: normal !important;
+        max-width: 100% !important;
+        word-break: break-word !important;
+        font-size: 0.72rem !important;
+        display: inline-block !important;
+    }
+
+    .project-card-actions {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .project-action-btn {
+        flex: 1 1 calc(50% - 6px) !important;
+        min-width: 110px !important;
+        text-align: center !important;
+        justify-content: center !important;
+        font-size: 0.8rem !important;
+        padding: 8px 10px !important;
+    }
+
+    /* About Satellite: properly scaled & contained */
     .about-satellite-section {
-        padding: 40px 0;
+        padding: 35px 0;
+        overflow: hidden;
+        max-width: 100vw;
     }
 
     .satellite-orbit-wrapper {
-        max-width: 100%;
-        gap: 18px;
+        max-width: 100% !important;
+        width: 100% !important;
+        overflow: hidden !important;
+        gap: 16px;
     }
 
-    /* Telemetry terminal: compact */
+    .satellite-unit {
+        width: min(88vw, 360px) !important;
+        height: clamp(110px, 28vw, 160px) !important;
+        top: -30px;
+        max-width: 100vw;
+        overflow: hidden;
+    }
+
+    /* Telemetry tabs: touch-scrollable row */
+    .telemetry-tabs {
+        width: 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+        justify-content: flex-start !important;
+        padding: 4px 6px 10px !important;
+        gap: 8px !important;
+        box-sizing: border-box !important;
+    }
+    .telemetry-tabs::-webkit-scrollbar {
+        display: none !important;
+    }
+    .sat-tab {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        padding: 8px 13px !important;
+        font-size: 0.8rem !important;
+    }
+
     .telemetry-terminal {
-        min-height: 180px;
-        padding: 16px;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: 170px;
+        padding: 16px 14px;
         font-size: 0.9rem;
+        box-sizing: border-box !important;
+        overflow: hidden;
     }
 
-    /* Achievements: single column */
+    /* Achievements & Hackathon Planetary Orbit */
     .achievements-grid,
     .achievements-grid-compact {
         grid-template-columns: 1fr !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        gap: 12px !important;
     }
 
-    /* Certificate cards: 2 col on tablet, 1 on small */
+    .achievement-card-compact {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
     .live-cert-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.75rem;
     }
 
-    /* Earth horizon: scale */
+    .planets-header-top {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    .planets-controls-bar {
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+
+    .hackathon-planets-viewport {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+
+    .hackathon-planets-track {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* GitHub Stats & Activity */
+    .github-stats-compact {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .stat-box {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 14px 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .github-diagrams-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .github-diagram-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        padding: 16px 12px !important;
+    }
+
+    .diagram-scroll-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        display: block !important;
+        box-sizing: border-box !important;
+        padding-bottom: 6px;
+    }
+
+    .heatmap-header,
+    .heatmap-footer {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .heatmap-legend {
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 4px 8px !important;
+    }
+
+    #lang-donut-chart,
+    #perf-radar-chart {
+        max-width: min(220px, 70vw) !important;
+        max-height: min(220px, 70vw) !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 auto !important;
+    }
+
+    .lang-legend,
+    .perf-labels {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 6px 10px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Contact Section */
+    .contact-grid-compact {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .contact-box-compact {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        padding: 12px 14px !important;
+    }
+
+    .contact-box-compact span {
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
+        min-width: 0 !important;
+        font-size: clamp(0.74rem, 3.8vw, 0.88rem) !important;
+    }
+
+    .social-links-compact {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        max-width: 100% !important;
+    }
+
+    .social-link-compact {
+        width: 44px;
+        height: 44px;
+        font-size: 1.05rem;
+    }
+
+    /* Earth horizon */
     .earth-horizon-wrapper {
-        height: 230px;
+        height: 190px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow: hidden !important;
     }
     .earth-realistic-img {
-        min-width: 650px;
-        height: 150px;
+        min-width: unset !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        height: 120px !important;
+        object-fit: cover !important;
     }
     .earth-atmosphere-blur-aura {
-        bottom: 50px;
-        height: 120px;
+        min-width: unset !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        bottom: 35px !important;
+        height: 90px !important;
     }
 
-    /* Social links: proper touch targets */
-    .social-link-compact {
-        width: 46px;
-        height: 46px;
-        font-size: 1.1rem;
+    /* Astronaut: scale down and avoid overflow */
+    .astronaut-unit {
+        width: clamp(140px, 36vw, 200px);
+        top: 180px;
+        opacity: 0.65;
+        max-width: 90vw;
     }
 
-    /* Scrollable section: remove max-height for natural flow */
     .scrollable-section {
         max-height: none;
         overflow-y: visible;
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
-    /* Value statement */
     .value-statement {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
+        max-width: 95vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
-    /* Page indicators: hide on mobile (not useful without card-deck nav) */
     .page-indicators {
         display: none;
     }
@@ -7399,13 +7740,13 @@ body.light-mode .timeline-step .badge {
 
 /* ── 480px: Standard Phone ─────────────────────── */
 @media (max-width: 480px) {
-    /* Navbar: tighter */
     .navbar {
         height: 52px;
         padding: 0 12px;
         top: 8px;
         border-radius: 30px;
         width: calc(100% - 16px);
+        max-width: calc(100% - 16px);
     }
 
     .nav-container {
@@ -7416,7 +7757,6 @@ body.light-mode .timeline-step .badge {
         font-size: 1.15rem;
     }
 
-    /* Theme toggle: smaller */
     .theme-toggle {
         width: 36px;
         height: 36px;
@@ -7426,9 +7766,8 @@ body.light-mode .timeline-step .badge {
         font-size: 0.9rem;
     }
 
-    /* Section padding */
     .section {
-        padding: 30px 16px;
+        padding: 30px 14px;
     }
 
     #main-content {
@@ -7436,172 +7775,83 @@ body.light-mode .timeline-step .badge {
     }
 
     .card-content {
-        padding: 10px 4px 24px;
+        padding: 8px 2px 20px;
     }
 
-    /* Hero: aggressive scaling */
     .hero-badge {
         font-size: 0.72rem;
         letter-spacing: 1px;
         margin-top: 8px;
     }
 
-    .title-line {
-        font-size: clamp(1.5rem, 6vw, 2rem);
-    }
-
+    .title-line,
     .highlight-name {
-        font-size: clamp(1.5rem, 6vw, 2rem);
+        font-size: clamp(1.35rem, 5.8vw, 1.75rem) !important;
     }
 
     .hero-description {
-        font-size: 0.88rem;
-        line-height: 1.6;
-    }
-
-    .hero-cta {
-        gap: 10px;
-    }
-
-    .magnetic-btn {
-        padding: 12px 18px;
-        font-size: 0.85rem;
-        max-width: 280px;
-    }
-
-    /* Hero image: perfectly centered on mobile */
-    .hero-image {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto;
+        font-size: 0.86rem;
+        line-height: 1.55;
     }
 
     .image-wrapper-simple {
-        width: min(72vw, 240px);
-        height: min(85vw, 310px);
+        width: min(72vw, 230px);
+        height: min(85vw, 300px);
         margin: 0 auto;
     }
 
-    .image-wrapper-simple .profile-photo {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) !important;
-    }
-
-    .image-wrapper-simple .profile-photo-dark,
-    body.light-mode .image-wrapper-simple .profile-photo-light,
-    .image-wrapper-simple .profile-photo-light {
-        transform: translate(-50%, -50%) !important;
-    }
-
-    .profile-glow-effect {
-        width: min(55vw, 220px);
-        height: min(55vw, 220px);
-    }
-
     .rotating-badge {
-        width: 80px;
-        height: 80px;
-        right: max(6px, calc(50% - 130px));
+        width: 76px;
+        height: 76px;
+        right: max(4px, calc(50% - 120px));
         bottom: 0;
     }
 
-    /* About satellite: hide on very small screens to prevent overlap */
     .satellite-unit {
-        width: 260px;
-        height: 110px;
-        top: -30px;
+        width: min(85vw, 260px) !important;
+        height: 110px !important;
+        top: -25px;
         opacity: 0.6;
     }
 
-    /* Sat tabs: smaller */
     .sat-tab {
-        padding: 7px 11px;
-        font-size: 0.76rem;
-        gap: 4px;
-        border-radius: 16px;
+        padding: 7px 11px !important;
+        font-size: 0.75rem !important;
     }
 
-    .sat-tab i {
-        font-size: 0.7rem;
-    }
-
-    .telemetry-tabs {
-        gap: 6px;
-    }
-
-    /* Telemetry terminal */
     .telemetry-terminal {
-        min-height: 160px;
+        min-height: 155px;
         padding: 14px 12px;
-        border-radius: 10px;
+        border-radius: 12px;
     }
 
-    .terminal-header {
-        font-size: 0.72rem;
-    }
-
-    /* Project cards */
     .project-card-structured {
-        padding: 1.2rem;
+        padding: 1.1rem !important;
     }
 
-    .project-image-compact {
-        height: 100px;
-    }
-
-    /* Achievements */
     .achievement-card-compact {
-        padding: 16px;
-    }
-
-    /* Certificate grid */
-    .live-cert-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 0.75rem;
-    }
-
-    /* Contact */
-    .contact-box-compact {
-        padding: 12px 14px;
-        font-size: 0.88rem;
-    }
-
-    .social-link-compact {
-        width: 44px;
-        height: 44px;
-    }
-
-    /* Section headers */
-    .section-header-compact {
-        margin-bottom: 16px;
+        padding: 14px;
     }
 
     .section-title-compact {
-        font-size: clamp(1.4rem, 5vw, 1.8rem);
+        font-size: clamp(1.35rem, 5vw, 1.7rem);
     }
 
-    /* Earth horizon */
     .earth-horizon-wrapper {
-        height: 190px;
+        height: 160px !important;
     }
     .earth-realistic-img {
-        min-width: 550px;
-        height: 120px;
+        min-width: unset !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        height: 100px !important;
     }
     .earth-atmosphere-blur-aura {
-        min-width: 550px;
-        height: 100px;
-        bottom: 40px;
-    }
-
-    /* Astronaut: smaller on mobile */
-    .astronaut-unit {
-        width: clamp(150px, 40vw, 220px);
-        top: 200px;
-        opacity: 0.65;
+        min-width: unset !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        bottom: 25px !important;
+        height: 80px !important;
     }
 }
 
@@ -7623,45 +7873,50 @@ body.light-mode .timeline-step .badge {
 
     .title-line,
     .highlight-name {
-        font-size: clamp(1.3rem, 5.5vw, 1.6rem);
+        font-size: clamp(1.25rem, 5.2vw, 1.55rem) !important;
     }
 
     .hero-description {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
     }
 
     .image-wrapper-simple {
-        width: min(70vw, 200px);
-        height: min(80vw, 270px);
+        width: min(70vw, 190px);
+        height: min(80vw, 250px);
         margin: 0 auto;
     }
 
     .rotating-badge {
-        width: 68px;
-        height: 68px;
-        right: max(4px, calc(50% - 110px));
+        width: 66px;
+        height: 66px;
+        right: max(2px, calc(50% - 100px));
         bottom: 0;
     }
 
     .satellite-unit {
-        display: none;
+        display: none !important;
     }
 
     .sat-tab {
-        padding: 6px 9px;
-        font-size: 0.72rem;
+        padding: 6px 9px !important;
+        font-size: 0.72rem !important;
     }
 
     .earth-horizon-wrapper {
-        height: 150px;
+        height: 140px !important;
     }
     .earth-realistic-img {
-        min-width: 450px;
-        height: 90px;
+        min-width: unset !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        height: 85px !important;
     }
     .earth-atmosphere-blur-aura {
-        bottom: 30px;
-        height: 80px;
+        min-width: unset !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        bottom: 20px !important;
+        height: 70px !important;
     }
 }
 
